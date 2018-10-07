@@ -6,11 +6,13 @@ To pass each level, there are some platforms of blue color that are unactive. To
 There are also obstacles that works the same way but they are activated and you must deactivate them to pass!
 
 ### Controls
--Movement with left and right arrow keys.
--Jump with upper arrow key.
+-Movement with left and right arrow keys
+
+-Jump with upper arrow key
 
 ### Developers
 -Roger Leon Borras
+
 -Lucho Suaya Leiro
 
 ### Github

@@ -31,7 +31,7 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 	//App->map->Load("hello2.tmx");
-	App->map->Load("jaume.tmx");
+	App->map->Load("level1_blocking.tmx");
 	
 	return true;
 }

@@ -28,7 +28,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	if(map_loaded == false)
+	if (map_loaded == false)
 		return;
 
 	// TODO 5(old): Prepare the loop to draw all tilesets + Blit
@@ -49,7 +49,7 @@ void j1Map::Draw()
 
 
 					if (gid != 0) {
-						
+
 						SDL_Rect *rect = &tileset->data->GetTileRect(gid);
 						iPoint position = MapToWorld(i, j);
 						App->render->Blit(tileset->data->texture, position.x, position.y, rect);
@@ -63,20 +63,6 @@ void j1Map::Draw()
 
 		layer = layer->next;
 	}
-
-	//MapLayer *layer = data.layers.start->data;
-	//TileSet *tileset = data.tilesets.start->data;
-
-	//for (int j = 0; j < layer->height; j++) {
-	//	for (int i = 0; i < layer->width; i++) {
-
-	//		uint gid = layer->data[layer->Get(i, j)];
-	//		SDL_Rect rect = tileset->GetTileRect(gid);
-	//		iPoint position = MapToWorld(i, j);
-
-	//		App->render->Blit(tileset->texture, position.x, position.y, &rect);
-	//	}
-	//}
 }
 
 // TODO 10(old): Complete the draw function
@@ -88,17 +74,17 @@ iPoint j1Map::MapToWorld(int x, int y) const
 	if (data.type == MAPTYPE_ORTHOGONAL) {
 
 		ret.x = x * data.tile_width;
-		ret.y = y * data.tile_height; //This could be a division
+		ret.y = y * data.tile_height;
 
-	// TODO 1: Add isometric map to world coordinates
-		if (data.type == MAPTYPE_ISOMETRIC) {
-
-			ret.x = (x - y) * (data.tile_width * 0.5f);
-			ret.y = (x + y) * (data.tile_height * 0.5f);
-		}
-
-		return ret;
 	}
+	// TODO 1: Add isometric map to world coordinates
+	if (data.type == MAPTYPE_ISOMETRIC) {
+
+		ret.x = (x - y) * (data.tile_width * 0.5f);
+		ret.y = (x + y) * (data.tile_height * 0.5f);
+	}
+
+	return ret;
 }
 
 
@@ -128,10 +114,10 @@ iPoint j1Map::WorldToMap(int x, int y) const
 
 		//2ret.x = (x / (data.tile_width*0.5f)) + (y / (data.tile_height*0.5f)) --> Now just isolate ret.x:
 
-		ret.x = (	(x / (data.tile_width * 0.5f)) + (y / (data.tile_height * 0.5f))	) * 0.5f; //same with ret.y
-		ret.y = (	(y / (data.tile_height * 0.5f)) - (x / (data.tile_width * 0.5f))	) * 0.5f;
-	/*	ret.x = x / data.tile_width + y / data.tile_height;
-		ret.y = y / data.tile_height - x / data.tile_width;*/
+		//ret.x = (	(x / (data.tile_width * 0.5f)) + (y / (data.tile_height * 0.5f))	) * 0.5f; //same with ret.y
+		//ret.y = (	(y / (data.tile_height * 0.5f)) - (x / (data.tile_width * 0.5f))	) * 0.5f;
+		ret.x = x / data.tile_width + y / data.tile_height;
+		ret.y = y / data.tile_height - x / data.tile_width;
 	}
 
 	return ret;
@@ -363,6 +349,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 bool j1Map::LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set)
 {
 	bool ret = true;
+	//pugi::xml_node image = tileset_node.child("image");
 	pugi::xml_node image = tileset_node.child("image");
 
 	if(image == NULL)

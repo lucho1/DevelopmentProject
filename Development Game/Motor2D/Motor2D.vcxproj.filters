@@ -34,6 +34,9 @@
     <ClCompile Include="j1Main.cpp">
       <Filter>Game\Basis</Filter>
     </ClCompile>
+    <ClCompile Include="j1Player.cpp">
+      <Filter>Game\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="p2Defs.h">
@@ -86,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="j1App.h">
       <Filter>Game\Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Player.h">
+      <Filter>Game\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,12 @@
 
 struct SDL_Texture;
 
+enum Level {
+
+	LEVEL_1 = 0,
+	LEVEL_2
+};
+
 class j1Scene : public j1Module
 {
 public:
@@ -33,6 +39,9 @@ public:
 	bool CleanUp();
 
 private:
+
+	Level current_level;
+
 };
 
 #endif // __j1SCENE_H__

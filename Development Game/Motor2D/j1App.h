@@ -4,6 +4,7 @@
 #include "p2List.h"
 #include "j1Module.h"
 #include "PugiXml\src\pugixml.hpp"
+#include "SDL/include/SDL.h"
 
 // Modules
 class j1Window;
@@ -13,6 +14,7 @@ class j1Textures;
 class j1Audio;
 class j1Scene;
 class j1Map;
+class j1Player;
 
 class j1App
 {
@@ -83,6 +85,7 @@ public:
 	j1Audio*			audio;
 	j1Scene*			scene;
 	j1Map*				map;
+	j1Player*			player;
 
 private:
 

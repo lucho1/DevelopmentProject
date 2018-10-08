@@ -30,8 +30,13 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	//App->map->Load("hello2.tmx");
+
+	//if (current_level == LEVEL_1) //Uncomment all this to start loading levels. We could do it through a counter in some module
 	App->map->Load("level1_blocking.tmx");
+	//else if(current_level == LEVEL_2)
+
+	//App->map->Load("hello2.tmx");
+	
 	
 	return true;
 }
@@ -45,10 +50,10 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	if(App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)

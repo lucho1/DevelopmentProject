@@ -13,6 +13,7 @@
 #include "j1Map.h"
 #include "j1App.h"
 #include "j1Player.h"
+#include "j1Colliders.h"
 
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
@@ -24,10 +25,12 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	win = new j1Window();
 	render = new j1Render();
 	tex = new j1Textures();
+	colliders = new j1Colliders();
 	audio = new j1Audio();
 	scene = new j1Scene();
 	map = new j1Map();
 	player = new j1Player();
+
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -38,6 +41,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(map);
 	AddModule(scene);
 	AddModule(player);
+	AddModule(colliders);
 
 	// render last to swap buffer
 	AddModule(render);

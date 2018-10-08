@@ -3,7 +3,7 @@
 <game_state>
 
   <renderer>
-    <camera x="100" y="0"/>
+    <camera x="100" y="20"/>
   </renderer>
 
 </game_state>

@@ -37,19 +37,29 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	void OnCollision(Collider*c1, Collider*c2);
+
+public:
+
+	Collider* PlayerCollider=nullptr;
+	SDL_Rect Player;
+	iPoint position;
+	int gravity = 0;
+	int top;
+
 private:
 
 	int Xvel;
 	float Yvel;
 	bool jumping;
+	bool falling;
 
 	int max_height;
 	int min_height;
 	bool top_reached = false;
 	bool bot_reached = false;
 
-	SDL_Rect rect;
-	iPoint position;
+	
 
 	//bool Death = false; //Uncomment this and the line in .cpp in order to make it work
 

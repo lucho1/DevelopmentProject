@@ -96,7 +96,7 @@ public:
 	iPoint WorldToMap(int x, int y) const;
 
 private:
-
+	bool LoadColliders();
 	bool LoadMap();
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);

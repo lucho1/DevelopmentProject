@@ -4,6 +4,7 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Map.h"
+#include "j1Colliders.h"
 #include <math.h>
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
@@ -23,7 +24,44 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 	folder.create(config.child("folder").child_value());
 
+
 	return ret;
+}
+bool j1Map::LoadColliders() {
+
+
+	if (map_loaded == false)
+		return false;
+
+	// TODO 5(old): Prepare the loop to draw all tilesets + Blit
+	p2List_item<MapLayer*>* layer = data.layers.start; // for now we just use the first layer and tileset
+	p2List_item<TileSet*>* tileset;
+
+	while (layer != nullptr) {
+
+		tileset = data.tilesets.start;
+
+		while (tileset != nullptr) {
+
+			for (int j = 0; j < data.height; j++) {
+				for (int i = 0; i < data.width; i++) {
+
+					uint gid = layer->data->Get(i, j);
+					gid = layer->data->data[gid];
+					SDL_Rect *rect = &tileset->data->GetTileRect(gid);
+					iPoint position = MapToWorld(i, j);
+					
+					if (gid == 1) 
+						App->colliders->AddCollider({position.x,position.y,170,30},COLLIDER_STATIC);// Preguntar a rick si
+				}
+			}
+			tileset = tileset->next;
+		}
+		layer = layer->next;
+	}
+
+	return true;
+
 }
 
 void j1Map::Draw()
@@ -53,6 +91,9 @@ void j1Map::Draw()
 						SDL_Rect *rect = &tileset->data->GetTileRect(gid);
 						iPoint position = MapToWorld(i, j);
 						App->render->Blit(tileset->data->texture, position.x, position.y, rect);
+						if (gid == 1) {
+							//App->colliders->AddCollider({position.x,position.y,170,30},COLLIDER_STATIC);// Preguntar a rick si 
+						}
 					}
 				}
 
@@ -251,7 +292,7 @@ bool j1Map::Load(const char* file_name)
 	}
 
 	map_loaded = ret;
-
+	LoadColliders();
 	return ret;
 }
 
@@ -317,6 +358,9 @@ bool j1Map::LoadMap()
 			data.type = MAPTYPE_UNKNOWN;
 		}
 	}
+
+
+
 
 	return ret;
 }

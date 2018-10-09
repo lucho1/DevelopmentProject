@@ -27,98 +27,70 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 	return ret;
 }
-bool j1Map::LoadColliders() {
-
-
-	if (map_loaded == false)
-		return false;
-
-	// TODO 5(old): Prepare the loop to draw all tilesets + Blit
-	p2List_item<MapLayer*>* layer = data.layers.start; // for now we just use the first layer and tileset
-	p2List_item<TileSet*>* tileset;
-
-	while (layer != nullptr) {
-
-		tileset = data.tilesets.start;
-
-		while (tileset != nullptr) {
-
-			for (int j = 0; j < data.height; j++) {
-				for (int i = 0; i < data.width; i++) {
-
-					uint gid = layer->data->Get(i, j);
-					gid = layer->data->data[gid];
-					SDL_Rect *rect = &tileset->data->GetTileRect(gid);
-					iPoint position = MapToWorld(i, j);
-					
-					if (gid == 1) 
-						App->colliders->AddCollider({position.x,position.y,170,30},COLLIDER_STATIC);// Preguntar a rick si
-				}
-			}
-			tileset = tileset->next;
-		}
-		layer = layer->next;
-	}
-
-	return true;
-
-}
 
 void j1Map::Draw()
 {
 	if (map_loaded == false)
 		return;
 
-	// TODO 5(old): Prepare the loop to draw all tilesets + Blit
-	p2List_item<MapLayer*>* layer = data.layers.start; // for now we just use the first layer and tileset
-	p2List_item<TileSet*>* tileset;
+	p2List_item<MapLayer*>* layer_item = data.layers.start;
+	MapLayer* layer;
 
-	while (layer != nullptr) {
+	while (layer_item != nullptr) {
 
-		tileset = data.tilesets.start;
+		layer = layer_item->data;
 
-		while (tileset != nullptr) {
+		for (int j = 0; j < data.height; j++) {
+			for (int i = 0; i < data.width; i++) {
 
-			for (int j = 0; j < data.height; j++) {
-				for (int i = 0; i < data.width; i++) {
+				int gid = layer->Get(i, j);
 
-					uint gid = layer->data->Get(i, j);
-					gid = layer->data->data[gid];
+				if (gid > 0) {
 
+					TileSet *tileset = GetTilesetFromId(gid);
 
-					if (gid != 0) {
+					if (tileset != nullptr) {
 
-						SDL_Rect *rect = &tileset->data->GetTileRect(gid);
+						SDL_Rect rect = tileset->GetTileRect(gid);
 						iPoint position = MapToWorld(i, j);
-						App->render->Blit(tileset->data->texture, position.x, position.y, rect);
-						if (gid == 1) {
-							//App->colliders->AddCollider({position.x,position.y,170,30},COLLIDER_STATIC);// Preguntar a rick si 
-						}
+						App->render->Blit(tileset->texture, position.x, position.y, &rect);
+						
 					}
 				}
-
 			}
-
-			tileset = tileset->next;
 		}
 
-		layer = layer->next;
+		layer_item = layer_item->next;
 	}
 }
 
-// TODO 10(old): Complete the draw function
+TileSet* j1Map::GetTilesetFromId(int id) const {
+
+	p2List_item<TileSet*>* item = data.tilesets.start;
+
+	while (item->next != nullptr) {
+
+		if (item->next->data->firstgid > id)
+			return item->data;
+		else
+			item = item->next;
+	}
+
+	return data.tilesets.end->data;
+}
+
 
 iPoint j1Map::MapToWorld(int x, int y) const
 {
 	iPoint ret(0, 0);
-	// TODO 8(old): Create a method that translates x,y coordinates from map positions to world positions
+
 	if (data.type == MAPTYPE_ORTHOGONAL) {
 
 		ret.x = x * data.tile_width;
 		ret.y = y * data.tile_height;
 
 	}
-	// TODO 1: Add isometric map to world coordinates
+
 	if (data.type == MAPTYPE_ISOMETRIC) {
 
 		ret.x = (x - y) * (data.tile_width * 0.5f);
@@ -133,30 +105,15 @@ iPoint j1Map::WorldToMap(int x, int y) const
 {
 
 	iPoint ret(0,0);
-	// TODO 2: Add orthographic world to map coordinates
+	
 	if (data.type == MAPTYPE_ORTHOGONAL) {
 
 		ret.x = x / data.tile_width;
 		ret.y = y / data.tile_height;
 	}
 
-	// TODO 3: Add the case for isometric maps to WorldToMap
 	if (data.type == MAPTYPE_ISOMETRIC) {
 
-		//See the previous TODO 1 and use that functions:
-		//ret.x / (data.tile_width * 0.5f) = (x - y) ----> x = [ret.x / (data.tile_width*0.5f)] + y
-		//ret.y / (data.tile_height*0.5f) = (x + y) -----> y = [ret.y / (data.tile_height*0.5f)] - x
-		
-		//x = [ret.x / (data.tile_width*0.5f)] + ([ret.y / (data.tile_height*0.5f)] - x)
-
-		//2x = (ret.x/(data.tile_width*0.5f)) + (ret.y / (data.tile_height*0.5f))
-
-		//Now you just change x by ret.x and y by ret.y because you used to isolate the previous function and now you have to return the other unknown
-
-		//2ret.x = (x / (data.tile_width*0.5f)) + (y / (data.tile_height*0.5f)) --> Now just isolate ret.x:
-
-		//ret.x = (	(x / (data.tile_width * 0.5f)) + (y / (data.tile_height * 0.5f))	) * 0.5f; //same with ret.y
-		//ret.y = (	(y / (data.tile_height * 0.5f)) - (x / (data.tile_width * 0.5f))	) * 0.5f;
 		ret.x = x / data.tile_width + y / data.tile_height;
 		ret.y = y / data.tile_height - x / data.tile_width;
 	}
@@ -169,7 +126,7 @@ SDL_Rect TileSet::GetTileRect(int id) const
 
 	int relativeID = id - firstgid;
 	SDL_Rect rect = { 0, 0, 0, 0};
-	//TODO 7(old): Create a method that receives a tile id and returns it's Rect
+
 	rect.w = tile_width;
 	rect.h = tile_height;
 
@@ -292,7 +249,7 @@ bool j1Map::Load(const char* file_name)
 	}
 
 	map_loaded = ret;
-	LoadColliders();
+//	LoadColliders();
 	return ret;
 }
 

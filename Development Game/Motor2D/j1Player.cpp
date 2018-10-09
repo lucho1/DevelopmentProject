@@ -122,10 +122,10 @@ bool j1Player::PostUpdate() {
 	return true;
 }
 
-void j1Player::OnCollision(Collider* c1, Collider* c2) {
-
-	if ((c1->type == COLLIDER_TYPE::COLLIDER_STATIC) && (c2->type == COLLIDER_TYPE::COLLIDER_PLAYER) || (c2->type == COLLIDER_TYPE::COLLIDER_STATIC) && (c1->type == COLLIDER_TYPE::COLLIDER_PLAYER)) {
-		gravity = 0;
-	}
-
-}
+//void j1Player::OnCollision(Collider* c1, Collider* c2) {
+//
+//	if ((c1->type == COLLIDER_TYPE::COLLIDER_STATIC) && (c2->type == COLLIDER_TYPE::COLLIDER_PLAYER) || (c2->type == COLLIDER_TYPE::COLLIDER_STATIC) && (c1->type == COLLIDER_TYPE::COLLIDER_PLAYER)) {
+//		gravity = 0;
+//	}
+//
+//}

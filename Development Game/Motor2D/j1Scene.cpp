@@ -32,10 +32,10 @@ bool j1Scene::Start()
 {
 
 	//if (current_level == LEVEL_1) //Uncomment all this to start loading levels. We could do it through a counter in some module
-	App->map->Load("level1_blocking.tmx");
+	//App->map->Load("test.tmx");
 	//else if(current_level == LEVEL_2)
 
-	//App->map->Load("hello2.tmx");
+	App->map->Load("hello2.tmx");
 	
 	
 	return true;

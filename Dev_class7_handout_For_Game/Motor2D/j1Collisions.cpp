@@ -93,6 +93,7 @@ void j1Collisions::DebugDraw() {
 
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		debug = !debug;
+
 	if (!debug)
 		return;
 
@@ -107,7 +108,7 @@ void j1Collisions::DebugDraw() {
 			App->render->DrawQuad(colliders[i]->rect, 255, 255, 255, 40);
 			break;
 		case COLLIDER_STATIC:
-			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, 40);
+			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, 40);
 			break;
 		case COLLIDER_PLAYER:
 			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 40);
@@ -159,7 +160,7 @@ bool Collider::CheckCollision(const SDL_Rect &r) const {
 }
 
 
-void j1Collisions::AssignMapColliders(pugi::xml_node &node, const SDL_Rect r) { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
+void j1Collisions::AssignMapColliders(pugi::xml_node &node) { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
 
 	p2List_item<MapLayer*>*layers = App->map->data.layers.start;
 
@@ -171,13 +172,22 @@ void j1Collisions::AssignMapColliders(pugi::xml_node &node, const SDL_Rect r) { 
 
 			for (pugi::xml_node tile = layer_data.child("tile"); tile; tile = tile.next_sibling("tile")) {
 
-				if(tile.attribute("gid").as_int() == 39){
+				if (tile.attribute("gid").as_int() == 39) {
 
+					TileSet* tileset = App->map->GetTilesetFromTileId(39);
 
+					for (int i = 0; i < MAX_COLLIDERS; i++) {
+
+						if (colliders[i] == nullptr) {
+							AddCollider(tileset->GetTileRect(39), COLLIDER_STATIC);
+							break;
+						}
+
+					}
 				}
 			}
 
-			break;
+			return;
 		}
 		else
 			layers = layers->next;

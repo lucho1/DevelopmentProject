@@ -60,8 +60,8 @@ public:
 
 	void DebugDraw();
 	Collider* AddCollider(SDL_Rect r, COLLIDER_TYPE type, j1Module*callback = nullptr);
-	bool PreCollision(Collider c1, Collider c2);
-	void AssignMapColliders(pugi::xml_node &node, const SDL_Rect r);
+	//bool PreCollision(Collider c1, Collider c2);
+	void AssignMapColliders(pugi::xml_node &node);
 
 private:
 

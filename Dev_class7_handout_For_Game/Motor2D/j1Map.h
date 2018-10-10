@@ -102,6 +102,8 @@ public:
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
+	TileSet* GetTilesetFromTileId(int id) const;
+
 private:
 
 	bool LoadMap();
@@ -110,7 +112,6 @@ private:
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
 
-	TileSet* GetTilesetFromTileId(int id) const;
 
 public:
 

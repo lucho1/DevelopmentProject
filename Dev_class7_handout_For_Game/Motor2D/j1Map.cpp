@@ -6,6 +6,7 @@
 #include "j1Map.h"
 #include <math.h>
 #include <cmath>
+#include "j1Collisions.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -29,7 +30,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	if(map_loaded == false)
+	if (map_loaded == false)
 		return;
 
 	// TODO 4: Make sure we draw all the layers and not just the first one
@@ -55,6 +56,9 @@ void j1Map::Draw()
 						iPoint pos = MapToWorld(x, y);
 
 						App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+
+						if (tile_id == 39)
+							App->collisions->AddCollider(r, COLLIDER_STATIC);
 					}
 				}
 			}
@@ -63,6 +67,7 @@ void j1Map::Draw()
 		layer_item = layer_item->next;
 	}
 }
+
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
@@ -179,13 +184,13 @@ bool j1Map::CleanUp()
 bool j1Map::Load(const char* file_name)
 {
 	bool ret = true;
-//	p2SString tmp("maps\\%s", folder.GetString(), file_name);
+	p2SString tmp("maps\\%s", file_name);
 
-	pugi::xml_parse_result result = map_file.load_file(file_name);
+	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
 
 	if(result == NULL)
 	{
-		LOG("Could not load map xml file %s. pugi error: %s", file_name, result.description());
+		LOG("Could not load map xml file %s. pugi error: %s", tmp.GetString(), result.description());
 		ret = false;
 	}
 
@@ -228,7 +233,7 @@ bool j1Map::Load(const char* file_name)
 
 	if(ret == true)
 	{
-		LOG("Successfully parsed map XML file: %s", file_name);
+		LOG("Successfully parsed map XML file: %s", tmp.GetString());
 		LOG("width: %d height: %d", data.width, data.height);
 		LOG("tile_width: %d tile_height: %d", data.tile_width, data.tile_height);
 

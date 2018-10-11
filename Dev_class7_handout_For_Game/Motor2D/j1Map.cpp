@@ -41,29 +41,27 @@ void j1Map::Draw()
 
 		//MapLayer* layer = this->data.layers.start->data;
 		layer = layer_item->data;
-
-		for (int y = 0; y < data.height; ++y)
-		{
-			for (int x = 0; x < data.width; ++x)
+		if (layer->name != ("Colliders")) {
+			for (int y = 0; y < data.height; ++y)
 			{
-				int tile_id = layer->Get(x, y);
-				if (tile_id > 0)
+				for (int x = 0; x < data.width; ++x)
 				{
-					TileSet* tileset = GetTilesetFromTileId(tile_id);
-					if (tileset != nullptr)
+					int tile_id = layer->Get(x, y);
+					if (tile_id > 0)
 					{
-						SDL_Rect r = tileset->GetTileRect(tile_id);
-						iPoint pos = MapToWorld(x, y);
+						TileSet* tileset = GetTilesetFromTileId(tile_id);
+						if (tileset != nullptr)
+						{
+							SDL_Rect r = tileset->GetTileRect(tile_id);
+							iPoint pos = MapToWorld(x, y);
 
-						App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+							App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 
-						if (tile_id == 39)
-							App->collisions->AddCollider(r, COLLIDER_STATIC);
+						}
 					}
 				}
 			}
 		}
-
 		layer_item = layer_item->next;
 	}
 }

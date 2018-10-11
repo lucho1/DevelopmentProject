@@ -7,7 +7,8 @@
 	<map />
 	<scene />
 	<:anonymous />
+	<:anonymous />
 	<renderer>
-		<camera x="0" y="-31" />
+		<camera x="0" y="298" />
 	</renderer>
 </game_state>

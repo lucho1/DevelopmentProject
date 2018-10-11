@@ -34,6 +34,8 @@ bool j1Collisions::Awake() {
 
 bool j1Collisions::Start() {
 
+	AssignMapColliders();
+
 	return true;
 }
 
@@ -108,7 +110,7 @@ void j1Collisions::DebugDraw() {
 			App->render->DrawQuad(colliders[i]->rect, 255, 255, 255, 40);
 			break;
 		case COLLIDER_STATIC:
-			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, 40);
+			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, 40);
 			break;
 		case COLLIDER_PLAYER:
 			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 40);
@@ -160,37 +162,32 @@ bool Collider::CheckCollision(const SDL_Rect &r) const {
 }
 
 
-void j1Collisions::AssignMapColliders(pugi::xml_node &node) { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
+void j1Collisions::AssignMapColliders() { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
 
-	p2List_item<MapLayer*>*layers = App->map->data.layers.start;
+	/*Es pot fer que la funció tingui com a parametres (const char* file_name, int id, const SDL_Rect rect), crear un tmp amb el file_name i assignar els colliders segons l'ID*/
 
-	while (layers != nullptr) {
+	p2List_item <MapLayer*>* layer_item = App->map->data.layers.start;
 
-		if (layers->data->name == "Colliders") {
+	while (layer_item != nullptr) {
 
-			pugi::xml_node layer_data = node.child("data");
+		if (layer_item->data->name == "Colliders") {
 
-			for (pugi::xml_node tile = layer_data.child("tile"); tile; tile = tile.next_sibling("tile")) {
+			for (int y = 0; y < App->map->data.height; ++y)
+			{
+				for (int x = 0; x < App->map->data.width; ++x)
+				{
 
-				if (tile.attribute("gid").as_int() == 39) {
+					int tile_id = layer_item->data->Get(x, y);
+					if (tile_id == 39) {
 
-					TileSet* tileset = App->map->GetTilesetFromTileId(39);
-
-					for (int i = 0; i < MAX_COLLIDERS; i++) {
-
-						if (colliders[i] == nullptr) {
-							AddCollider(tileset->GetTileRect(39), COLLIDER_STATIC);
-							break;
-						}
+						iPoint pos = App->map->MapToWorld(x, y);
+						App->collisions->AddCollider({ pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height }, COLLIDER_STATIC);
 
 					}
 				}
 			}
-
-			return;
 		}
-		else
-			layers = layers->next;
+		layer_item = layer_item->next;
 	}
 
 	LOG("Error Parsing map, couldn't find colliders layer");

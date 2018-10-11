@@ -14,6 +14,7 @@ enum COLLIDER_TYPE {
 
 	COLLIDER_NONE = -1,
 	COLLIDER_STATIC,
+	COLLIDER_UNACTIVE,
 	COLLIDER_PLAYER,
 	COLLIDER_MAX
 };
@@ -21,8 +22,8 @@ enum COLLIDER_TYPE {
 struct Collider {
 
 	SDL_Rect rect;
-	bool to_delete;
-	COLLIDER_TYPE type;
+	bool to_delete = false;
+	COLLIDER_TYPE type = COLLIDER_NONE;
 	j1Module *callback = nullptr;
 
 	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Module *callback = nullptr) :
@@ -61,7 +62,7 @@ public:
 	void DebugDraw();
 	Collider* AddCollider(SDL_Rect r, COLLIDER_TYPE type, j1Module*callback = nullptr);
 	//bool PreCollision(Collider c1, Collider c2);
-	void AssignMapColliders(pugi::xml_node &node);
+	void AssignMapColliders();
 
 private:
 

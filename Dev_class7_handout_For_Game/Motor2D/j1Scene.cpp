@@ -66,6 +66,7 @@ bool j1Scene::Update(float dt)
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
+
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
 					App->map->data.width, App->map->data.height,

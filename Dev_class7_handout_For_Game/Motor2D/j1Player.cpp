@@ -2,6 +2,7 @@
 #include "j1Render.h"
 #include "j1Input.h"
 #include "j1Scene.h"
+#include "j1Collisions.h"
 
 
 j1Player::j1Player() {}
@@ -26,14 +27,17 @@ bool j1Player::Start() {
 	
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
 	position.x = 200;
-	position.y = 0;
+	position.y = -200;
 	Xvel = 1;
+	Yvel = 1;
 
 	//Player Rect
 	player_rect.x = position.x;
 	player_rect.y = position.y;
 	player_rect.w = 32;
 	player_rect.h = 64;
+
+	player_collider = App->collisions->AddCollider(player_rect, COLLIDER_PLAYER, this);
 
 	return true;
 }
@@ -50,11 +54,28 @@ bool j1Player::Update(float dt) {
 		position.x += Xvel;
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		position.x -= Xvel;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		position.y -= Yvel;
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		position.y += Yvel;
 
-	player_rect.x = position.x;
-	player_rect.y = position.y;
+	player_rect.x = player_collider->rect.x = position.x;
+	player_rect.y = player_collider->rect.y = position.y;
 
-	App->render->DrawQuad(player_rect, 0, 255, 0, 200);
+	iPoint vel;
+	vel.x = Xvel;
+	vel.y = Yvel;
+	COLLISION_POSITION col_pos = NONE;
+
+	if (player_collider->PreCollision(vel, (player_rect.y + player_rect.w + height), player_rect, col_pos)) {
+		
+		
+		Yvel = 0;
+	}
+	else
+		Yvel = 1;
+
+	App->render->DrawQuad(player_rect, 0, 0, 255, 200);
 
 	return true;
 }

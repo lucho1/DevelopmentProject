@@ -40,6 +40,8 @@ public:
 	iPoint position;
 	int Xvel;
 	int Yvel;
+	int height;
+	Collider *player_collider = nullptr;
 
 };
 

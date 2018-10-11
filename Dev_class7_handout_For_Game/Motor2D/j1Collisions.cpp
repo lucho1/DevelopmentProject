@@ -113,7 +113,7 @@ void j1Collisions::DebugDraw() {
 			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, 40);
 			break;
 		case COLLIDER_PLAYER:
-			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 40);
+			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 200);
 			break;
 		default:
 			break;
@@ -159,6 +159,18 @@ bool Collider::CheckCollision(const SDL_Rect &r) const {
 
 	if ((r.x + r.w) < rect.x || (r.y + r.h) < rect.y || r.x > (rect.x + rect.w) || r.y > (rect.y + rect.h)) { return false; }
 	return true;
+}
+
+
+bool Collider::PreCollision(iPoint Vel, int h, const SDL_Rect &r, COLLISION_POSITION cpos) {
+
+	if (Vel.y > (rect.y - (r.y + h))) {
+
+		cpos = UP;
+		return true;
+	}
+
+	return false;
 }
 
 

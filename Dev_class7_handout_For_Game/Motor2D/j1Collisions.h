@@ -19,6 +19,14 @@ enum COLLIDER_TYPE {
 	COLLIDER_MAX
 };
 
+enum COLLISION_POSITION {
+
+	RIGHT = 0,
+	LEFT,
+	UP,
+	NONE
+};
+
 struct Collider {
 
 	SDL_Rect rect;
@@ -32,6 +40,7 @@ struct Collider {
 	void SetPos(int x, int y) { rect.x = x; rect.y = y; }
 	bool CheckCollision(const SDL_Rect &r) const;
 	void ChangeCollider(COLLIDER_TYPE type_) { type = type_; }
+	bool PreCollision(iPoint Vel, int h, const SDL_Rect &r, COLLISION_POSITION cpos);
 
 };
 
@@ -61,7 +70,6 @@ public:
 
 	void DebugDraw();
 	Collider* AddCollider(SDL_Rect r, COLLIDER_TYPE type, j1Module*callback = nullptr);
-	//bool PreCollision(Collider c1, Collider c2);
 	void AssignMapColliders();
 
 private:

@@ -6,6 +6,12 @@
 #include "p2Point.h"
 #include "j1Module.h"
 
+//Flags to be able to rotate a tile --> Extracted from http://docs.mapeditor.org/en/stable/reference/tmx-map-format/#tile-flipping
+const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+const unsigned FLIPPED_VERTICALLY_FLAG = 0x40000000;
+const unsigned FLIPPED_DIAGONALLY_FLAG = 0x20000000;
+
+
 // TODO 5: Create a generic structure to hold properties
 // TODO 7: Our custom properties should have one method
 // to ask for the value of a custom property

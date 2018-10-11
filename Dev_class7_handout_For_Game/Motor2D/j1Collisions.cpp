@@ -34,7 +34,7 @@ bool j1Collisions::Awake() {
 
 bool j1Collisions::Start() {
 
-	AssignMapColliders();
+	AssignMapColliders("level1_blocking.tmx");
 
 	return true;
 }
@@ -113,7 +113,10 @@ void j1Collisions::DebugDraw() {
 			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, 40);
 			break;
 		case COLLIDER_PLAYER:
-			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 200);
+			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 40);
+			break;
+		case COLLIDER_DEATH:
+			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, 40);
 			break;
 		default:
 			break;
@@ -174,33 +177,62 @@ bool Collider::PreCollision(iPoint Vel, int h, const SDL_Rect &r, COLLISION_POSI
 }
 
 
-void j1Collisions::AssignMapColliders() { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
+void j1Collisions::AssignMapColliders(const char* file_name) { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
 
 	/*Es pot fer que la funció tingui com a parametres (const char* file_name, int id, const SDL_Rect rect), crear un tmp amb el file_name i assignar els colliders segons l'ID*/
 
-	p2List_item <MapLayer*>* layer_item = App->map->data.layers.start;
+	//p2List_item <MapLayer*>* layer_item = App->map->data.layers.start;
 
-	while (layer_item != nullptr) {
+	//while (layer_item != nullptr) {
 
-		if (layer_item->data->name == "Colliders") {
+	//	if (layer_item->data->name == "Colliders") {
 
-			for (int y = 0; y < App->map->data.height; ++y)
-			{
-				for (int x = 0; x < App->map->data.width; ++x)
-				{
+	//		for (int y = 0; y < App->map->data.height; ++y)
+	//		{
+	//			for (int x = 0; x < App->map->data.width; ++x)
+	//			{
 
-					int tile_id = layer_item->data->Get(x, y);
-					if (tile_id == 39) {
+	//				int tile_id = layer_item->data->Get(x, y);
+	//				if (tile_id == 39) {
 
-						iPoint pos = App->map->MapToWorld(x, y);
-						App->collisions->AddCollider({ pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height }, COLLIDER_STATIC);
+	//					iPoint pos = App->map->MapToWorld(x, y);
+	//					App->collisions->AddCollider({ pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height }, COLLIDER_STATIC);
 
-					}
-				}
+	//				}
+	//			}
+	//		}
+	//	}
+	//	layer_item = layer_item->next;
+	//}
+
+	p2SString tmp("%s%s", App->map->folder.GetString(), file_name);
+
+	pugi::xml_parse_result result = App->map->map_file.load_file(tmp.GetString());
+
+	if (result == NULL) {
+
+		LOG("Could not load tiled xml file %s. pugi error: %s", file_name, result.description());
+		return;
+	}
+	pugi::xml_node collider;
+	pugi::xml_node type;
+	const char* collidertype;
+
+	for (type = App->map->map_file.child("map").child("objectgroup");type && result; type = type.next_sibling("objectgroup")) {
+
+		collidertype = type.attribute("name").as_string();
+
+		for (collider = type.child("object"); collider&&result; collider= collider.next_sibling("object")) {
+			
+			if (strcmp(collidertype, "Colliders") == 0) {
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_STATIC);
+			}
+			if (strcmp(collidertype, "Death_Colliders") == 0) {
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_DEATH);
 			}
 		}
-		layer_item = layer_item->next;
 	}
+
 
 	LOG("Error Parsing map, couldn't find colliders layer");
 }

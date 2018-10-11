@@ -15,9 +15,13 @@ enum COLLIDER_TYPE {
 	COLLIDER_NONE = -1,
 	COLLIDER_STATIC,
 	COLLIDER_UNACTIVE,
+	COLLIDER_DEATH,
 	COLLIDER_PLAYER,
 	COLLIDER_MAX
 };
+
+
+
 
 enum COLLISION_POSITION {
 
@@ -70,7 +74,7 @@ public:
 
 	void DebugDraw();
 	Collider* AddCollider(SDL_Rect r, COLLIDER_TYPE type, j1Module*callback = nullptr);
-	void AssignMapColliders();
+	void AssignMapColliders(const char* file_name);
 
 private:
 

@@ -29,8 +29,8 @@ bool j1Player::Start() {
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
 	position.x = App->render->camera.w / 2;
 	position.y = App->render->camera.h / 2;
-	Xvel = 1;
-	Yvel = 1;
+	Xvel = 8;
+	Yvel =8;
 
 	//Player Rect
 	player_rect.x = position.x;

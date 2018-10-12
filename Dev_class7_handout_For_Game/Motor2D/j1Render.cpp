@@ -4,7 +4,7 @@
 #include "j1Window.h"
 #include "j1Render.h"
 #include "j1Player.h"
-
+#include "j1Map.h"
 
 j1Render::j1Render() : j1Module()
 {
@@ -75,9 +75,19 @@ bool j1Render::Update(float dt)
 
 bool j1Render::PostUpdate()
 {
-
-	camera.x = -(App->player->position.x - 200);
-	camera.y = -(App->player->position.y - (App->win->screen_surface->h/2));
+	//if (camera.x <= 0) {
+	//if (camera.x >= 0 && (camera.x + camera.w) <= App->map->data.width*App->map->data.tile_width) {
+	if (App->player->position.x <= -(camera.x - 170) && camera.x <0 ) {
+		camera.x += App->player->Xvel ;
+		}
+		else if (App->player->position.x >= -(camera.x - camera.w + App->map->data.tile_width)){
+			camera.x -= App->player->Xvel;
+		}
+	
+	//}
+	
+	//}
+	camera.y = -(App->player->position.y - (App->win->screen_surface->h / 2));
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
 	return true;

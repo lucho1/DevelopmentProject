@@ -80,8 +80,8 @@ void j1Map::Draw()
 									App->render->Blit(tileset->texture, pos.x, pos.y, &r); //add NULL, angle after &r
 							}
 							else {
-								if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
-										App->render->Blit(tileset->texture, pos.x, pos.y - 500, &r);
+								//if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
+										App->render->Blit(tileset->texture, pos.x, pos.y - 500, &r,0.18);
 							}
 						}
 					}

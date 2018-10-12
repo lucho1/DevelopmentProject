@@ -3,6 +3,7 @@
 #include "j1Input.h"
 #include "j1Scene.h"
 #include "j1Collisions.h"
+#include "j1Map.h"
 
 
 j1Player::j1Player() {}
@@ -26,8 +27,8 @@ bool j1Player::Start() {
 	//Load & Start everything here // Remember that gravity is a map parameter pls
 	
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
-	position.x = 200;
-	position.y = -200;
+	position.x = App->render->camera.w / 2;
+	position.y = App->render->camera.h / 2;
 	Xvel = 1;
 	Yvel = 1;
 
@@ -65,15 +66,15 @@ bool j1Player::Update(float dt) {
 	iPoint vel;
 	vel.x = Xvel;
 	vel.y = Yvel;
-	COLLISION_POSITION col_pos = NONE;
+	//COLLISION_POSITION col_pos = NONE;
 
-	if (player_collider->PreCollision(vel, (player_rect.y + player_rect.w + height), player_rect, col_pos)) {
+	/*if (player_collider->PreCollision(vel, (player_rect.y + player_rect.w + height), player_rect, col_pos)) {
 		
 		
 		Yvel = 0;
 	}
 	else
-		Yvel = 1;
+		Yvel = 1;*/
 
 	App->render->DrawQuad(player_rect, 0, 0, 255, 200);
 

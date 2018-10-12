@@ -3,8 +3,8 @@
 #include "j1App.h"
 #include "j1Window.h"
 #include "j1Render.h"
+#include "j1Player.h"
 
-#define VSYNC true
 
 j1Render::j1Render() : j1Module()
 {
@@ -69,11 +69,15 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
+
 	return true;
 }
 
 bool j1Render::PostUpdate()
 {
+
+	camera.x = -(App->player->position.x - 200);
+	camera.y = -(App->player->position.y - (App->win->screen_surface->h/2));
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
 	return true;

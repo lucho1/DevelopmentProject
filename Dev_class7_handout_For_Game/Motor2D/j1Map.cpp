@@ -74,8 +74,15 @@ void j1Map::Draw()
 							if (flipped_diagonally)
 								angle += 270;*/
 
-							App->render->Blit(tileset->texture, pos.x, pos.y, &r); //add NULL, angle after &r
+							if (layer->name != ("Background")) {
 
+								if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
+									App->render->Blit(tileset->texture, pos.x, pos.y, &r); //add NULL, angle after &r
+							}
+							else {
+								if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
+										App->render->Blit(tileset->texture, pos.x, pos.y - 500, &r);
+							}
 						}
 					}
 				}

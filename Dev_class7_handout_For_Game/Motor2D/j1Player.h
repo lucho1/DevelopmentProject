@@ -7,6 +7,7 @@
 #include "j1Module.h"
 #include "j1App.h"
 
+
 class j1Player : public j1Module
 {
 
@@ -34,6 +35,8 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	//void LoadPushbacks(pugi::xml_node node,)
+
 public:
 
 	SDL_Rect player_rect;
@@ -42,6 +45,10 @@ public:
 	int Yvel;
 	int height;
 	Collider *player_collider = nullptr;
+private :
+
+	pugi::xml_document	AnimationDocument;
+	pugi::xml_node		Animation_node;
 
 };
 

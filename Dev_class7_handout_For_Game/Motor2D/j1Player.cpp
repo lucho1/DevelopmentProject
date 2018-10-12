@@ -6,7 +6,19 @@
 #include "j1Map.h"
 
 
-j1Player::j1Player() {}
+j1Player::j1Player() {
+
+	pugi::xml_parse_result result = AnimationDocument.load_file("PlayerSettings.xml");
+
+	if (result == NULL) {
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+	}
+
+	Animation_node = AnimationDocument.child("config").child("AnimationCoords").child("Idle");
+	Animation_node = AnimationDocument.child("config").child("AnimationCoords").child("Run");
+	Animation_node = AnimationDocument.child("config").child("AnimationCoords").child("Jump");
+
+}
 
 j1Player::~j1Player() {}
 

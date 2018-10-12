@@ -47,16 +47,15 @@ void j1Map::Draw()
 				for (int x = 0; x < data.width; ++x)
 				{
 
-					int tile_id;
+					int tile_id=layer->Get(x,y);
 
-					//bool flipped_horizontally = (tile_id & FLIPPED_HORIZONTALLY_FLAG);
-					//bool flipped_vertically = (tile_id & FLIPPED_VERTICALLY_FLAG);
-					//bool flipped_diagonally = (tile_id & FLIPPED_DIAGONALLY_FLAG);
+					bool flipped_horizontally = (tile_id & FLIPPED_HORIZONTALLY_FLAG);
+					bool flipped_vertically = (tile_id & FLIPPED_VERTICALLY_FLAG);
+					bool flipped_diagonally = (tile_id & FLIPPED_DIAGONALLY_FLAG);
 
 					//// Clear the flags
-					//tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
-					
-					tile_id = layer->Get(x, y);
+					tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
+
 					if (tile_id > 0)
 					{
 						TileSet* tileset = GetTilesetFromTileId(tile_id);
@@ -65,23 +64,23 @@ void j1Map::Draw()
 							SDL_Rect r = tileset->GetTileRect(tile_id);
 							iPoint pos = MapToWorld(x, y);
 
-							/*double angle = 0;
 
-							if (flipped_horizontally)
-								angle += 180;
-							if (flipped_vertically)
-								angle += 360;
-							if (flipped_diagonally)
-								angle += 270;*/
+							if (flipped_horizontally) {
+							//	/*if (layer->name != ("Background")) {
+
+									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r,SDL_FLIP_HORIZONTAL);
+							//	//}
+							}
 
 							if (layer->name != ("Background")) {
-
-								if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
-									App->render->Blit(tileset->texture, pos.x, pos.y, &r); //add NULL, angle after &r
+								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+								/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
+									 //add NULL, angle after &r
 							}
 							else {
-								//if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
-										App->render->Blit(tileset->texture, pos.x, pos.y - 500, &r,0.18);
+							//	//if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))
+									App->render->Blit(tileset->texture, pos.x, pos.y - 500, &r,0.18);
 							}
 						}
 					}

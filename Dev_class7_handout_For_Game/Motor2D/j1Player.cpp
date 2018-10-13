@@ -7,8 +7,18 @@
 
 
 j1Player::j1Player() {
-
+  
 	name.create("player");
+	pugi::xml_parse_result result = AnimationDocument.load_file("PlayerSettings.xml");
+
+	if (result == NULL) {
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+	}
+
+	Animation_node = AnimationDocument.child("config").child("AnimationCoords").child("Idle");
+	Animation_node = AnimationDocument.child("config").child("AnimationCoords").child("Run");
+	Animation_node = AnimationDocument.child("config").child("AnimationCoords").child("Jump");
+
 }
 
 j1Player::~j1Player() {}
@@ -31,8 +41,8 @@ bool j1Player::Start() {
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
 	position.x = App->render->camera.w / 2;
 	position.y = App->render->camera.h / 2;
-	velocity.x = 1;
-	velocity.y = 1;
+	velocity.x = 8;
+	velocity.y = 8;
 	direction.x = 0;
 	direction.y = 0;
 	jump = false;

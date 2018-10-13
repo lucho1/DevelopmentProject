@@ -7,6 +7,7 @@
 #include "j1Module.h"
 #include "j1App.h"
 
+
 class j1Player : public j1Module
 {
 
@@ -34,6 +35,9 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+  //Pushbacks loading
+	//void LoadPushbacks(pugi::xml_node node,)
+
 	//Load & Save
 	bool Load(pugi::xml_node& data);
 
@@ -43,6 +47,7 @@ public:
 public:
 
 	void OnCollision(Collider *c1, Collider *c2);
+
 
 public:
 
@@ -55,6 +60,10 @@ public:
 	bool fall;
 
 	Collider *player_collider = nullptr;
+private :
+
+	pugi::xml_document	AnimationDocument;
+	pugi::xml_node		Animation_node;
 
 };
 

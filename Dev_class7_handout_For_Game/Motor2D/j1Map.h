@@ -7,7 +7,7 @@
 #include "j1Module.h"
 
 //Flags to be able to rotate a tile --> Extracted from http://docs.mapeditor.org/en/stable/reference/tmx-map-format/#tile-flipping
-const unsigned FLIPPED_HORIZONTALLY_FLAG =	0x80000000;
+const unsigned FLIPPED_HORIZONTALLY_FLAG =	0x60000000;
 const unsigned FLIPPED_VERTICALLY_FLAG =	0x40000000;
 const unsigned FLIPPED_DIAGONALLY_FLAG =	0x20000000;
 
@@ -29,6 +29,7 @@ struct MapLayer
 	uint*		data;
 	Properties	properties;
 
+
 	MapLayer() : data(NULL)
 	{}
 
@@ -39,7 +40,8 @@ struct MapLayer
 
 	inline uint Get(int x, int y) const
 	{
-		return data[(y*width) + x];
+			return data[(y*width) + x];
+
 	}
 };
 

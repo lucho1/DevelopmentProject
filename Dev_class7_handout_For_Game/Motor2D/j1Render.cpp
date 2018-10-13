@@ -77,7 +77,6 @@ bool j1Render::Update(float dt)
 bool j1Render::PostUpdate()
 {
 
-	
 	camera.x = -(App->player->position.x - 200);
 	camera.y = -(App->player->position.y - (App->win->screen_surface->h/2));
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
@@ -96,8 +95,8 @@ bool j1Render::CleanUp()
 // Load Game State
 bool j1Render::Load(pugi::xml_node& data)
 {
-	camera.x = data.child("camera").attribute("x").as_int();
-	camera.y = data.child("camera").attribute("y").as_int();
+	/*camera.x = data.child("camera").attribute("x").as_int();
+	camera.y = data.child("camera").attribute("y").as_int();*/
 
 	return true;
 }
@@ -105,10 +104,10 @@ bool j1Render::Load(pugi::xml_node& data)
 // Save Game State
 bool j1Render::Save(pugi::xml_node& data) const
 {
-	pugi::xml_node cam = data.append_child("camera");
+	//pugi::xml_node cam = data.append_child("camera");
 
-	cam.append_attribute("x") = camera.x;
-	cam.append_attribute("y") = camera.y;
+	//cam.append_attribute("x") = camera.x;
+	//cam.append_attribute("y") = camera.y;
 
 	return true;
 }

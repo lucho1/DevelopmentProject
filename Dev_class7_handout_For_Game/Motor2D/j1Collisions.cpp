@@ -202,7 +202,7 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 
 	if (result == NULL) {
 
-		LOG("Could not load tiled xml file %s. pugi error: %s", file_name, result.description());
+		LOG("Could not load xml file %s. pugi error: %s", file_name, result.description());
 		return;
 	}
 	pugi::xml_node collider;
@@ -223,7 +223,4 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 			}
 		}
 	}
-
-
-	LOG("Error Parsing map, couldn't find colliders layer");
 }

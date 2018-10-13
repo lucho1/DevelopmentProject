@@ -34,6 +34,12 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	//Load & Save
+	bool Load(pugi::xml_node& data);
+
+	// Save Game State
+	bool Save(pugi::xml_node& data) const;
+
 public:
 
 	void OnCollision(Collider *c1, Collider *c2);
@@ -44,9 +50,10 @@ public:
 	iPoint position;
 	iPoint direction;
 	iPoint velocity;
-	int height;
+
 	bool jump;
-	bool fall = false;
+	bool fall;
+
 	Collider *player_collider = nullptr;
 
 };

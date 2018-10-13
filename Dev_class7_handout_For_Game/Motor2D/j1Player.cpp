@@ -6,7 +6,10 @@
 #include "j1Map.h"
 
 
-j1Player::j1Player() {}
+j1Player::j1Player() {
+
+	name.create("player");
+}
 
 j1Player::~j1Player() {}
 
@@ -43,6 +46,9 @@ bool j1Player::Start() {
 
 	player_collider = App->collisions->AddCollider(player_rect, COLLIDER_PLAYER, this);
 
+	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error
+	App->SaveGame("save_game.xml");
+
 	return true;
 }
 
@@ -52,8 +58,6 @@ bool j1Player::PreUpdate() {
 }
 
 bool j1Player::Update(float dt) {
-
-	fall = true;
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
@@ -66,26 +70,33 @@ bool j1Player::Update(float dt) {
 		direction.x = -1;
 		position.x -= velocity.x;
 	}
+
+	//Y axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		velocity.y = 2;
+
+		jump = true;
+		velocity.y = 1;
 		direction.y = 1;
 		position.y -= velocity.y;
 	}
-	if (fall) {
+	if (fall && App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE) {
 		velocity.y = 1;
 		direction.y = -1;
 		position.y += velocity.y;
 	}
-	
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE && !fall) 
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE && !fall)
 		direction.y = 0;
+	
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE)
 		direction.x = 0;
 
+
+	if (direction.y != -1)
+		fall = true;
+
 	player_rect.x = player_collider->rect.x = position.x;
 	player_rect.y = player_collider->rect.y = position.y;
-
-	//App->render->DrawQuad(player_rect, 0, 0, 255, 200);
 
 	return true;
 }
@@ -96,21 +107,37 @@ bool j1Player::PostUpdate() {
 	return true;
 }
 
+bool j1Player::Load(pugi::xml_node& data)
+{
+	position.x = data.child("player").attribute("x").as_int();
+	position.y = data.child("player").attribute("y").as_int();
+
+	return true;
+}
+
+// Save Game State
+bool j1Player::Save(pugi::xml_node& data) const
+{
+	pugi::xml_node pl = data.append_child("player");
+
+	pl.append_attribute("x") = position.x;
+	pl.append_attribute("y") = position.y;
+
+	return true;
+}
+
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	if (c1->type == COLLIDER_STATIC || c2->type == COLLIDER_STATIC) {
 
 		if (c1->type == COLLIDER_STATIC) {
 
-			if (direction.y == 1) {
-				velocity.y = 0;
-				position.y = c1->rect.y - c2->rect.h + 1;
-			}
-
-			if (direction.y == -1) {
+			if (direction.y == 1)
+				return;
+			else if (direction.y == -1) {
 				velocity.y = 0;
 				position.y = c1->rect.y - c2->rect.h - 1;
-				fall = false;
+				
 			}
 
 			if (direction.x == 1) {
@@ -132,15 +159,11 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		}
 		else if (c2->type == COLLIDER_STATIC) {
 
-			if (direction.y == 1) {
-				velocity.y = 0;
-				position.y = c2->rect.y - c1->rect.h + 1;
-			}
-
-			if (direction.y == -1) {
+			if (direction.y == 1)
+				return;
+			else if (direction.y == -1) {
 				velocity.y = 0;
 				position.y = c2->rect.y - c1->rect.h - 1;
-				fall = false;
 			}
 
 			if (direction.x == 1) {
@@ -163,8 +186,9 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		}
 	}
 
-	/*if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) { //When the player's saving/load works, uncomment this as a way of dying --> This mechanic is cool so we force the player to save before each decision
+	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) { //When the player's saving/load works, uncomment this as a way of dying --> This mechanic is cool so we force the player to save before each decision
 
 		App->LoadGame("save_game.xml");
-	}*/
+
+	}
 }

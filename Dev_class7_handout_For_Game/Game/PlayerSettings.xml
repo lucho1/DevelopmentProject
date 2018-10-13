@@ -1,0 +1,32 @@
+<!-- Config file for Player-->
+
+<config>
+    <AnimationCoords>
+
+	 <Idle loop="true" speed="0.15">
+		<Pushback x="1" y="1" w="102" h="102"/>
+		<Pushback x="103" y="1" w="102" h="102"/>
+		<Pushback x="205" y="1" w="102" h="102"/>
+		<Pushback x="307" y="1" w="102" h="102"/>
+		<Pushback x="409" y="1" w="102" h="102"/>
+		<Pushback x="1" y="103" w="102" h="102"/>
+		<Pushback x="103" y="103" w="102" h="102"/>
+	</Idle>
+	
+	<Run loop="true" speed="0.15">
+		<Pushback x="205" y="103" w="102" h="102"/>
+		<Pushback x="307" y="103" w="102" h="102"/>
+		<Pushback x="409" y="103" w="102" h="102"/>
+		<Pushback x="1" y="205" w="102" h="102"/>
+		<Pushback x="103" y="205" w="102" h="102"/>
+		<Pushback x="205" y="205" w="102" h="102"/>
+	</Run>
+
+	<Jump loop="false"speed=0.15">
+		<Pushback x="307" y="205" w="102" h="102"/>
+		<Pushback x="409" y="205" w="102" h="102"/>
+		<Pushback x="1" y="307" w="102" h="102"/>
+	</Jump
+
+     </AnimationCoords>
+</config>

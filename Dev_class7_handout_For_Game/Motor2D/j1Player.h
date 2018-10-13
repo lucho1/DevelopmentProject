@@ -35,15 +35,30 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+  //Pushbacks loading
 	//void LoadPushbacks(pugi::xml_node node,)
+
+	//Load & Save
+	bool Load(pugi::xml_node& data);
+
+	// Save Game State
+	bool Save(pugi::xml_node& data) const;
+
+public:
+
+	void OnCollision(Collider *c1, Collider *c2);
+
 
 public:
 
 	SDL_Rect player_rect;
 	iPoint position;
-	int Xvel;
-	int Yvel;
-	int height;
+	iPoint direction;
+	iPoint velocity;
+
+	bool jump;
+	bool fall;
+
 	Collider *player_collider = nullptr;
 private :
 

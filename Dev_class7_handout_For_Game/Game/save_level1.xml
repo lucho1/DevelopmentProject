@@ -9,5 +9,6 @@
 	<player>
 		<player x="360" y="321" />
 	</player>
+	<:anonymous />
 	<renderer />
 </game_state>

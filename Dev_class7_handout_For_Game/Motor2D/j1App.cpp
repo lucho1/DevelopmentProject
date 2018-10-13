@@ -312,8 +312,19 @@ bool j1App::LoadGameNow()
 
 	pugi::xml_parse_result result = data.load_file(load_game.GetString());
 
-	if(result != NULL)
-	{
+	//if (result == NULL) {
+
+	//	LOG("Could not parse game state xml file %s. pugi error: %s.", load_game.GetString(), result.description());
+	//	load_game.create(load_game.GetString());
+	//	LOG("Creating a new savefile");
+
+	//	root = data.append_child("game_state");
+	//	result = data.load_file(load_game.GetString());
+	//}
+
+
+	if(result != NULL) {
+
 		LOG("Loading new Game State from %s...", load_game.GetString());
 
 		root = data.child("game_state");

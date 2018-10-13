@@ -69,7 +69,6 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
-
 	return true;
 }
 
@@ -78,10 +77,10 @@ bool j1Render::PostUpdate()
 	//if (camera.x <= 0) {
 	//if (camera.x >= 0 && (camera.x + camera.w) <= App->map->data.width*App->map->data.tile_width) {
 	if (App->player->position.x <= -(camera.x - 170) && camera.x <0 ) {
-		camera.x += App->player->Xvel ;
+		camera.x += App->player->velocity.x;
 		}
 		else if (App->player->position.x >= -(camera.x - camera.w + App->map->data.tile_width)){
-			camera.x -= App->player->Xvel;
+			camera.x -= App->player->velocity.x;
 		}
 	
 	//}
@@ -104,8 +103,8 @@ bool j1Render::CleanUp()
 // Load Game State
 bool j1Render::Load(pugi::xml_node& data)
 {
-	camera.x = data.child("camera").attribute("x").as_int();
-	camera.y = data.child("camera").attribute("y").as_int();
+	/*camera.x = data.child("camera").attribute("x").as_int();
+	camera.y = data.child("camera").attribute("y").as_int();*/
 
 	return true;
 }
@@ -113,10 +112,10 @@ bool j1Render::Load(pugi::xml_node& data)
 // Save Game State
 bool j1Render::Save(pugi::xml_node& data) const
 {
-	pugi::xml_node cam = data.append_child("camera");
+	//pugi::xml_node cam = data.append_child("camera");
 
-	cam.append_attribute("x") = camera.x;
-	cam.append_attribute("y") = camera.y;
+	//cam.append_attribute("x") = camera.x;
+	//cam.append_attribute("y") = camera.y;
 
 	return true;
 }

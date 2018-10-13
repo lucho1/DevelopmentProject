@@ -48,16 +48,17 @@ bool j1Player::Start() {
 	p2SString tmp = ("maps\\Character_tileset.png");
 	Player_texture = App->tex->Load(tmp.GetString());
 	//Load & Start everything here // Remember that gravity is a map parameter pls
+
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
  	position.x = App->render->camera.w / 2;
 	position.y = App->render->camera.h / 2;
 	velocity.x = 3;
-	velocity.y = 3;
-	direction.x = 0;
+	velocity.y = 6;
+	direction.x = 1;
 	direction.y = 0;
 	jump = false;
 	fall = true;
-
+	
 	//Player Rect
 	player_rect.x = position.x;
 	player_rect.y = position.y;
@@ -98,12 +99,12 @@ bool j1Player::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
 		jump = true;
-		velocity.y = 5;
+		velocity.y = 10;
 		direction.y = 1;
 		position.y -= velocity.y;
 	}
 	if (fall && App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE) {
-		velocity.y = 5;
+		velocity.y = 10;
 		direction.y = -1;
 		position.y += velocity.y;
 	}

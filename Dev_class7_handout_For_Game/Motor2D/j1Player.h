@@ -55,9 +55,11 @@ public:
 	SDL_Rect player_rect;
 	iPoint position;
 	iPoint direction;
-	iPoint velocity;
+	fPoint velocity;
 
-	bool jump;
+
+	bool jump = false;
+	bool collide = false;
 	bool fall;
 
 	Animation*		current_animation = nullptr;

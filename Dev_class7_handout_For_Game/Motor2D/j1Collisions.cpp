@@ -26,14 +26,14 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_PLAYER][COLLIDER_FALL] = true;
 
 	matrix[COLLIDER_UNACTIVE][COLLIDER_NONE] = false;
-	matrix[COLLIDER_UNACTIVE][COLLIDER_STATIC] = true;
+	matrix[COLLIDER_UNACTIVE][COLLIDER_STATIC] = false;
 	matrix[COLLIDER_UNACTIVE][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_UNACTIVE][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_UNACTIVE][COLLIDER_FALL] = false;
 
 	matrix[COLLIDER_FALL][COLLIDER_NONE] = false;
-	matrix[COLLIDER_FALL][COLLIDER_STATIC] = true;
-	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_FALL][COLLIDER_STATIC] = false;
+	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_FALL][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_FALL][COLLIDER_FALL] = false;
 
@@ -72,14 +72,6 @@ bool j1Collisions::PreUpdate() {
 		}
 	}
 
-	
-
-	return ret;
-}
-
-
-bool j1Collisions::Update(float dt) {
-
 	Collider *c1;
 	Collider *c2;
 
@@ -107,6 +99,11 @@ bool j1Collisions::Update(float dt) {
 		}
 	}
 
+	return ret;
+}
+
+
+bool j1Collisions::Update(float dt) {
 	
 	return true;
 }

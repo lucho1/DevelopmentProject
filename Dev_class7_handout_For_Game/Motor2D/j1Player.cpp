@@ -41,8 +41,8 @@ bool j1Player::Start() {
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
 	position.x = App->render->camera.w / 2;
 	position.y = App->render->camera.h / 2;
-	velocity.x = 8;
-	velocity.y = 8;
+	velocity.x = 3;
+	velocity.y = 3;
 	direction.x = 0;
 	direction.y = 0;
 	jump = false;
@@ -71,12 +71,12 @@ bool j1Player::Update(float dt) {
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		velocity.x = 1;
+		velocity.x = 3;
 		direction.x = 1;
 		position.x += velocity.x;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		velocity.x = 1;
+		velocity.x = 3;
 		direction.x = -1;
 		position.x -= velocity.x;
 	}
@@ -85,12 +85,12 @@ bool j1Player::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
 		jump = true;
-		velocity.y = 1;
+		velocity.y = 2;
 		direction.y = 1;
 		position.y -= velocity.y;
 	}
 	if (fall && App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE) {
-		velocity.y = 1;
+		velocity.y = 2;
 		direction.y = -1;
 		position.y += velocity.y;
 	}
@@ -155,7 +155,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				if (c2->rect.x + c2->rect.w >= c1->rect.x && c2->rect.x + c2->rect.w <= c1->rect.x + velocity.x) {
 
 					velocity.x = 0;
-					position.x = c1->rect.x - c2->rect.w - 1;
+					position.x = c1->rect.x - c2->rect.w - 2;
 				}
 
 			}
@@ -163,7 +163,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				if (c2->rect.x <= c1->rect.x + c1->rect.w && c2->rect.x >= c1->rect.x + c1->rect.w - velocity.x) {
 
 					velocity.x = 0;
-					position.x = c1->rect.x + c1->rect.w + 1;
+					position.x = c1->rect.x + c1->rect.w + 2;
 				}
 			}
 		}
@@ -181,7 +181,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) {
 
 					velocity.x = 0;
-					position.x = c2->rect.x - c1->rect.w - 1;
+					position.x = c2->rect.x - c1->rect.w - 2;
 				}
 
 			}
@@ -189,7 +189,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) {
 
 					velocity.x = 0;
-					position.x = c2->rect.x + c2->rect.w + 1;
+					position.x = c2->rect.x + c2->rect.w + 2;
 				}
 			}
 

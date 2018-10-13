@@ -36,11 +36,17 @@ public:
 
 public:
 
+	void OnCollision(Collider *c1, Collider *c2);
+
+public:
+
 	SDL_Rect player_rect;
 	iPoint position;
-	int Xvel;
-	int Yvel;
+	iPoint direction;
+	iPoint velocity;
 	int height;
+	bool jump;
+	bool fall = false;
 	Collider *player_collider = nullptr;
 
 };

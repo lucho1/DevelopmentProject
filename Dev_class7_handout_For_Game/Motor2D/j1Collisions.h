@@ -15,20 +15,9 @@ enum COLLIDER_TYPE {
 	COLLIDER_NONE = -1,
 	COLLIDER_STATIC,
 	COLLIDER_UNACTIVE,
-	COLLIDER_DEATH,
+	COLLIDER_FALL,
 	COLLIDER_PLAYER,
 	COLLIDER_MAX
-};
-
-
-
-
-enum COLLISION_POSITION {
-
-	RIGHT = 0,
-	LEFT,
-	UP,
-	NONE
 };
 
 struct Collider {
@@ -44,7 +33,6 @@ struct Collider {
 	void SetPos(int x, int y) { rect.x = x; rect.y = y; }
 	bool CheckCollision(const SDL_Rect &r) const;
 	void ChangeCollider(COLLIDER_TYPE type_) { type = type_; }
-	bool PreCollision(iPoint Vel, int h, const SDL_Rect &r, COLLISION_POSITION cpos);
 
 };
 
@@ -65,6 +53,8 @@ public:
 	// Called each loop iteration
 	bool PreUpdate();
 
+	bool PostUpdate();
+
 	bool Update(float dt);
 
 	// Called before quitting
@@ -79,7 +69,7 @@ public:
 private:
 
 	Collider* colliders[MAX_COLLIDERS];
-	bool debug = true;
+	bool debug = false;
 	bool matrix[COLLIDER_MAX][COLLIDER_MAX];
 
 	

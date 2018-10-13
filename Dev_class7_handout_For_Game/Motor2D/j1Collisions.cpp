@@ -10,14 +10,33 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_NONE][COLLIDER_NONE] = false;
 	matrix[COLLIDER_NONE][COLLIDER_STATIC] = false;
 	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_NONE][COLLIDER_UNACTIVE] = false;
+	matrix[COLLIDER_NONE][COLLIDER_FALL] = false;
 
 	matrix[COLLIDER_STATIC][COLLIDER_NONE] = false;
 	matrix[COLLIDER_STATIC][COLLIDER_STATIC] = false;
 	matrix[COLLIDER_STATIC][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_STATIC][COLLIDER_UNACTIVE] = false;
+	matrix[COLLIDER_STATIC][COLLIDER_FALL] = false;
 
 	matrix[COLLIDER_PLAYER][COLLIDER_NONE] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_STATIC] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_PLAYER][COLLIDER_UNACTIVE] = false;
+	matrix[COLLIDER_PLAYER][COLLIDER_FALL] = true;
+
+	matrix[COLLIDER_UNACTIVE][COLLIDER_NONE] = false;
+	matrix[COLLIDER_UNACTIVE][COLLIDER_STATIC] = true;
+	matrix[COLLIDER_UNACTIVE][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_UNACTIVE][COLLIDER_UNACTIVE] = false;
+	matrix[COLLIDER_UNACTIVE][COLLIDER_FALL] = false;
+
+	matrix[COLLIDER_FALL][COLLIDER_NONE] = false;
+	matrix[COLLIDER_FALL][COLLIDER_STATIC] = true;
+	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_FALL][COLLIDER_UNACTIVE] = false;
+	matrix[COLLIDER_FALL][COLLIDER_FALL] = false;
+
 }
 
 
@@ -34,7 +53,7 @@ bool j1Collisions::Awake() {
 
 bool j1Collisions::Start() {
 
-	AssignMapColliders("level1_blocking.tmx");
+	AssignMapColliders("level1_blocking.tmx"); //This should be called in scene!!!!
 
 	return true;
 }
@@ -53,6 +72,14 @@ bool j1Collisions::PreUpdate() {
 		}
 	}
 
+	
+
+	return ret;
+}
+
+
+bool j1Collisions::Update(float dt) {
+
 	Collider *c1;
 	Collider *c2;
 
@@ -63,7 +90,7 @@ bool j1Collisions::PreUpdate() {
 
 		c1 = colliders[i];
 
-		for (uint j = i + 1; j < MAX_COLLIDERS; ++j) {
+		for (uint j = 0; j < MAX_COLLIDERS; ++j) {
 
 			if (colliders[j] == nullptr)
 				continue;
@@ -80,15 +107,14 @@ bool j1Collisions::PreUpdate() {
 		}
 	}
 
-	return ret;
+	
+	return true;
 }
 
+bool j1Collisions::PostUpdate() {
 
-bool j1Collisions::Update(float dt) {
-
-	bool ret = true;
 	DebugDraw();
-	return ret;
+	return true;
 }
 
 void j1Collisions::DebugDraw() {
@@ -115,8 +141,11 @@ void j1Collisions::DebugDraw() {
 		case COLLIDER_PLAYER:
 			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, 40);
 			break;
-		case COLLIDER_DEATH:
+		case COLLIDER_FALL:
 			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, 40);
+			break;
+		case COLLIDER_UNACTIVE:
+			App->render->DrawQuad(colliders[i]->rect, 0, 0, 200, 20);
 			break;
 		default:
 			break;
@@ -165,45 +194,7 @@ bool Collider::CheckCollision(const SDL_Rect &r) const {
 }
 
 
-bool Collider::PreCollision(iPoint Vel, int h, const SDL_Rect &r, COLLISION_POSITION cpos) {
-
-	if (Vel.y > (rect.y - (r.y + h))) {
-
-		cpos = UP;
-		return true;
-	}
-
-	return false;
-}
-
-
-void j1Collisions::AssignMapColliders(const char* file_name) { //At node pass the node layer = map_file.child("map").child("layer") It's at the map
-
-	/*Es pot fer que la funció tingui com a parametres (const char* file_name, int id, const SDL_Rect rect), crear un tmp amb el file_name i assignar els colliders segons l'ID*/
-
-	//p2List_item <MapLayer*>* layer_item = App->map->data.layers.start;
-
-	//while (layer_item != nullptr) {
-
-	//	if (layer_item->data->name == "Colliders") {
-
-	//		for (int y = 0; y < App->map->data.height; ++y)
-	//		{
-	//			for (int x = 0; x < App->map->data.width; ++x)
-	//			{
-
-	//				int tile_id = layer_item->data->Get(x, y);
-	//				if (tile_id == 39) {
-
-	//					iPoint pos = App->map->MapToWorld(x, y);
-	//					App->collisions->AddCollider({ pos.x, pos.y, App->map->data.tile_width, App->map->data.tile_height }, COLLIDER_STATIC);
-
-	//				}
-	//			}
-	//		}
-	//	}
-	//	layer_item = layer_item->next;
-	//}
+void j1Collisions::AssignMapColliders(const char* file_name) { 
 
 	p2SString tmp("%s%s", App->map->folder.GetString(), file_name);
 
@@ -228,7 +219,7 @@ void j1Collisions::AssignMapColliders(const char* file_name) { //At node pass th
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_STATIC);
 			}
 			if (strcmp(collidertype, "Death_Colliders") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_DEATH);
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_FALL);
 			}
 		}
 	}

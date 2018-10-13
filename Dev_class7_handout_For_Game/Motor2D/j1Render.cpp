@@ -79,8 +79,8 @@ bool j1Render::PostUpdate()
 	if (App->player->position.x <= -(camera.x - 170) && camera.x <0 ) {
 		camera.x += App->player->velocity.x;
 		}
-		else if (App->player->position.x >= -(camera.x - camera.w + App->map->data.tile_width)){
-			camera.x -= App->player->velocity.x;
+	else if (App->player->position.x >= -(camera.x - camera.w + App->map->data.tile_width+80)){
+		camera.x -= App->player->velocity.x;
 		}
 	
 	//}

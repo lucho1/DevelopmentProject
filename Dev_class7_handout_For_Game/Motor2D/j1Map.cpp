@@ -38,7 +38,7 @@ void j1Map::Draw()
 	MapLayer* layer;
 
 	while (layer_item != nullptr) {
-
+	
 		//MapLayer* layer = this->data.layers.start->data;
 		layer = layer_item->data;
 		if (layer->name != ("Colliders")) {
@@ -46,15 +46,15 @@ void j1Map::Draw()
 			{
 				for (int x = 0; x < data.width; ++x)
 				{
-
+				
 					int tile_id=layer->Get(x,y);
 
-					/*bool flipped_horizontally = (tile_id & FLIPPED_HORIZONTALLY_FLAG);
+					bool flipped_horizontally = (tile_id & FLIPPED_HORIZONTALLY_FLAG);
 					bool flipped_vertically = (tile_id & FLIPPED_VERTICALLY_FLAG);
-					bool flipped_diagonally = (tile_id & FLIPPED_DIAGONALLY_FLAG);*/
+					bool flipped_diagonally = (tile_id & FLIPPED_DIAGONALLY_FLAG);
 
 					//// Clear the flags
-					//tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
+					tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 
 					if (tile_id > 0)
 					{
@@ -65,19 +65,23 @@ void j1Map::Draw()
 							iPoint pos = MapToWorld(x, y);
 
 
-							//if (flipped_horizontally) {
+							if (flipped_horizontally) {
 							////	/*if (layer->name != ("Background")) {
-
-							//		if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
-							//			App->render->Blit(tileset->texture, pos.x, pos.y, &r,SDL_FLIP_HORIZONTAL);
+								if (tile_id == 32) {
+									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0,90);
+								}
+								else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r,1.0,0,0,0,SDL_FLIP_HORIZONTAL);
 							////	//}
-							//}
+							}
 
-							if (layer->name != ("Background")) {
+							else if (layer->name != ("Background")) {
 								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 								/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
 									 //add NULL, angle after &r
-							}
+							}else
+								App->render->Blit(tileset->texture, pos.x, pos.y-400, &r,0.14);
 							
 						}
 					}
@@ -89,7 +93,7 @@ void j1Map::Draw()
 }
 
 
-TileSet* j1Map::GetTilesetFromTileId(int id) const
+TileSet* j1Map::GetTilesetFromTileId( int id) const
 {
 	// TODO 3: Complete this method so we pick the right
 	// Tileset based on a tile id

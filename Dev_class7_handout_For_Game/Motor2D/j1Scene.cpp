@@ -30,7 +30,7 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	App->map->Load("level1_blocking.tmx");
+	App->map->Load("level1_blocking_test.tmx");
 	
 	return true;
 }

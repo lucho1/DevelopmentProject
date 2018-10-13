@@ -1,9 +1,12 @@
 <!-- Config file for Player-->
 
 <config>
+
+    <image source="Character_tileset.png" width="512" height="512" w="102" h="102"/>
+
     <AnimationCoords>
 
-	 <Idle loop="true" speed="0.15">
+	 <Idle loop="true" speed="0.17">
 		<Pushback x="1" y="1" w="102" h="102"/>
 		<Pushback x="103" y="1" w="102" h="102"/>
 		<Pushback x="205" y="1" w="102" h="102"/>

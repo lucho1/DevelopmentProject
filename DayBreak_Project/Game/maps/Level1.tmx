@@ -5656,7 +5656,7 @@
   <object id="9" x="2720" y="1531" width="169.75" height="20"/>
   <object id="12" x="2040" y="1697.33" width="1188" height="342.667"/>
   <object id="13" x="3058" y="1551.33" width="42.6667" height="146.667"/>
-  <object id="14" x="3740" y="1359.83" width="340" height="856.167"/>
+  <object id="14" x="3740" y="1380.5" width="340" height="835.5"/>
   <object id="17" x="3225" y="633" width="173" height="385"/>
   <object id="18" x="3398" y="678" width="610" height="185"/>
   <object id="19" x="3910.5" y="862.5" width="43" height="158"/>
@@ -5683,7 +5683,7 @@
   <object id="72" x="2209.33" y="865" width="340.667" height="349.667"/>
   <object id="73" x="2379.33" y="1214" width="170.667" height="146"/>
   <object id="74" x="2040" y="1188.67" width="168.667" height="25.3333"/>
-  <object id="77" x="3570.67" y="1359.91" width="169.277" height="19.4242"/>
+  <object id="77" x="3570.67" y="1359.91" width="509.975" height="19.4242"/>
  </objectgroup>
  <objectgroup name="Death_Colliders">
   <object id="50" x="-521.333" y="1892" width="2955.33" height="174"/>

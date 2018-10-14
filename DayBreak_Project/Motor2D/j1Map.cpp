@@ -62,8 +62,16 @@ void j1Map::Draw()
 					//// Clear the flags
 					tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 
+
 					if (tile_id > 0)
 					{
+
+						if (tile_id == 433 && TriggerActive)
+							tile_id = 434;
+
+						if (tile_id == 435 && TriggerActive)
+							tile_id = 436;
+						
 						TileSet* tileset = GetTilesetFromTileId(tile_id);
 						if (tileset != nullptr)
 						{
@@ -72,20 +80,18 @@ void j1Map::Draw()
 
 
 							if (flipped_horizontally) {
-							////	/*if (layer->name != ("Background")) {
+							/*if (layer->name != ("Background")) { */
 								if (tile_id == 32) {
 									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
 										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0,90);
 								}
 								else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
 										App->render->Blit(tileset->texture, pos.x, pos.y, &r,1.0,0,0,0,SDL_FLIP_HORIZONTAL);
-							////	//}
+							//}
 							}
 							
 							else if (layer->name != ("Background")&&layer->name!=("Foreground")) {
 								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-								/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
-									 //add NULL, angle after &r
 							}
 							else if (layer->name == ("Foreground")) {
 								App->render->Blit(tileset->texture, pos.x, pos.y-250, &r, 0.30);

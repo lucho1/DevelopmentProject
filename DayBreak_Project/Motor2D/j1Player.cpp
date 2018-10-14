@@ -59,8 +59,8 @@ bool j1Player::Start() {
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.y").as_int();
 	}
 
-	velocity.x = 8;
-	velocity.y = 10;
+	velocity.x = 5.5;
+	velocity.y = 8;
 	direction.x = 1;
 	direction.y = -1;
 
@@ -91,13 +91,13 @@ bool j1Player::Update(float dt) {
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		velocity.x = 8;
+		velocity.x = 5.5;
 		direction.x = 1;
 		position.x += velocity.x;
 		current_animation = &Run;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		velocity.x = 8;
+		velocity.x = 5.5;
 		direction.x = -1;
 		position.x -= velocity.x;
 		current_animation = &Run;
@@ -109,7 +109,7 @@ bool j1Player::Update(float dt) {
 		jump = true;
 		jump_falling = false;
 		auxY = position.y;
-		velocity.y = 10;
+		velocity.y = 8;
 
 	}
 
@@ -141,7 +141,7 @@ bool j1Player::Update(float dt) {
 
 		direction.y = -1;
 
-		if (velocity.y < 10)
+		if (velocity.y < 8)
 			velocity.y += 0.2;
 
 		position.y += velocity.y;
@@ -200,8 +200,7 @@ bool j1Player::Save(pugi::xml_node& data) const
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	//Checking collision with walls
-
-	if (c2->type == COLLIDER_STATIC) {
+	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLOCS && App->map->TriggerActive)) {
 
 		if (direction.y != 0) {
 
@@ -222,12 +221,12 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
 
 				velocity.x = 0;
-				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 7;
+				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 			}
 			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
 
 				velocity.x = 0;
-				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 7;
+				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
 			}
 
 		}
@@ -237,6 +236,13 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking if falling
 	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
 		App->LoadGame("save_game.xml");
+
+	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
+		App->map->TriggerActive = true;
+
+	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF)
+		App->map->TriggerActive = false;
+	
 }
 
 

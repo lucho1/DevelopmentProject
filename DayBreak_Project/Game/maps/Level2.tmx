@@ -10609,7 +10609,7 @@
  </layer>
  <objectgroup name="Colliders">
   <object id="2" x="1.33333" y="681.333" width="506.667" height="362.667"/>
-  <object id="3" x="510" y="1019.33" width="164" height="42"/>
+  <object id="3" x="507" y="1019.33" width="167" height="24.5"/>
   <object id="4" x="0" y="1190.67" width="849.333" height="362.667"/>
   <object id="5" x="1026" y="1190" width="332" height="340"/>
   <object id="6" x="1700" y="1188.67" width="340" height="28"/>
@@ -10724,8 +10724,8 @@
   <object id="137" x="12809.5" y="726.5" width="44.5" height="123"/>
  </objectgroup>
  <objectgroup name="PushOff_Triggers">
-  <object id="139" x="3640" y="874" width="31.5" height="142.5"/>
-  <object id="140" x="7548.33" y="526" width="34.3333" height="151.667"/>
-  <object id="141" x="11634.3" y="1383" width="23.6667" height="146"/>
+  <object id="139" x="3636" y="874" width="41.1667" height="142.5"/>
+  <object id="140" x="7542.66" y="526" width="47" height="151.667"/>
+  <object id="141" x="11624.3" y="1383" width="39.9167" height="146"/>
  </objectgroup>
 </map>

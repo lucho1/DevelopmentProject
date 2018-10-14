@@ -53,7 +53,7 @@ bool j1Collisions::Awake() {
 
 bool j1Collisions::Start() {
 
-	AssignMapColliders("level1_blocking_test.tmx"); //This should be called in scene!!!!
+	AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
 
 	return true;
 }

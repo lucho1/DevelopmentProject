@@ -6,8 +6,8 @@
 	
     <PlayerSettings>
 	<StartingPose>
-	<Level1 position.x="580" position.y="1450" />
-	<Level2 position.x="200" position.y="1550" />
+	<Level1 position.x="580" position.y="1400" />
+	<Level2 position.x="200" position.y="1080" />
 	</StartingPose>
 
 	<Velocity velocity.x="8" velocity.y="8"/>

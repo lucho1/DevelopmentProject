@@ -36,13 +36,13 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-  //Pushbacks loading
+	//Pushbacks loading
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
 
 	//Load & Save
 	bool Load(pugi::xml_node& data);
 
-	// Save Game State
+	//Save Game State
 	bool Save(pugi::xml_node& data) const;
 
 public:
@@ -59,10 +59,6 @@ public:
 	
 	bool jump = false;
 	bool jump_falling = false;
-
-	/*bool double_jump = true;
-	bool doblejump_falling = false;
-	int jump_counter = 0;*/
 	
 	bool collide = false;
 	bool fall = true;
@@ -72,6 +68,7 @@ public:
 	Animation		Run;
 	Animation		Jump;
 	SDL_Texture*	Player_texture = nullptr;
+	SDL_Rect player_rect;
 
 	Collider *player_collider = nullptr;
 private :

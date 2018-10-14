@@ -12,8 +12,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	/*Level2 = true;
-	Level2 = false;*/
+	Level1 = true;
+	Level2 = false;
 }
 
 // Destructor

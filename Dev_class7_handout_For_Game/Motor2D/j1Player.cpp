@@ -72,7 +72,7 @@ bool j1Player::Start() {
 	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
 	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
-	player_collider = App->collisions->AddCollider({ position.x +50, position.y, PlayerSettings.attribute("w").as_int() -50, PlayerSettings.attribute("h").as_int() }, COLLIDER_PLAYER, this);
+	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, player_rect.w - 50, player_rect.h }, COLLIDER_PLAYER, this);
 
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error
 	App->SaveGame("save_game.xml");
@@ -88,6 +88,7 @@ bool j1Player::PreUpdate() {
 bool j1Player::Update(float dt) {
 
 	current_animation = &Idle;
+
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 		velocity.x = 8;
@@ -102,8 +103,6 @@ bool j1Player::Update(float dt) {
 		current_animation = &Run;
 	}
 
-	
-
 	//Y axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump) {
 
@@ -113,18 +112,11 @@ bool j1Player::Update(float dt) {
 		velocity.y = 10;
 
 	}
-	//if (!double_jump && jump_counter == 0/*double_jump*/ && App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 
-	//	double_jump = true;
-	//	doblejump_falling = false;
-	//	velocity.y = 8;
-	//	direction.y = 0;
-	//}
 
 	//JUMP
 	if (jump) {
 
-		//double_jump = false;
 
 		if (velocity.y >= 0 && !jump_falling) {
 
@@ -134,10 +126,6 @@ bool j1Player::Update(float dt) {
 			velocity.y -= 0.2;
 			direction.y = 1;
 
-		/*	if (position.y <= auxY) 
-				double_jump = false;*/
-			
-				//double_jump = true;
 		}
 
 		else if (velocity.y < 0) {
@@ -145,31 +133,9 @@ bool j1Player::Update(float dt) {
 			jump_falling = true;
 			fall = true;
 			
-			/*if (position.y >= auxY)
-				double_jump = true;*/
-				//double_jump = false;
-			
 		}
-		
-		/*if (position.y >= auxY) {
-			jump = false;
-			jump_falling = false;*/
-			/*double_jump = true;
-			jump_counter = 0;*/
-		//}
 	}
-
-	//Doble Jump
-	/*if (double_jump) {
-
-		jump_counter++;
-		velocity.y = 8;
-		double_jump = true;
-
-	}*/
 	
-	
-
 	//FALL
 	if (fall) {
 
@@ -190,7 +156,6 @@ bool j1Player::Update(float dt) {
 		fall = true;
 
 
-
 	//BLIT PLAYER
 	if (direction.x == 1 || direction.x == 0) {
 		player_collider->SetPos(position.x, position.y);
@@ -202,8 +167,8 @@ bool j1Player::Update(float dt) {
 
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE)
-		direction.x = 0;
+	/*if (App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE)
+		direction.x = 0;*/
 
 	return true;
 }
@@ -246,7 +211,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
-				jump = false; //Be careful with this ELSE
+				jump = false;
 				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
@@ -272,7 +237,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking if falling
 	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
 		App->LoadGame("save_game.xml");
-} //OJU ALS CORCHETES AQUI
+}
 
 
 

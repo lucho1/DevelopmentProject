@@ -51,10 +51,8 @@ void j1Map::Draw()
 	
 		//MapLayer* layer = this->data.layers.start->data;
 		layer = layer_item->data;
-			for (int y = 0; y < data.height; ++y)
-			{
-				for (int x = 0; x < data.width; ++x)
-				{
+			for (int y = 0; y < data.height; ++y) {
+				for (int x = 0; x < data.width; ++x) {
 				
 					int tile_id=layer->Get(x,y);
 
@@ -65,47 +63,53 @@ void j1Map::Draw()
 					//// Clear the flags
 					tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 
-					if (tile_id > 0)
-					{
+					if (tile_id > 0) {
+
+						if (tile_id == 433 && TriggerActive)
+							tile_id = 434;
+						if (tile_id == 435 && TriggerActive)
+							tile_id = 436;
+
 						TileSet* tileset = GetTilesetFromTileId(tile_id);
-						if (tileset != nullptr)
-						{
+						if (tileset != nullptr) {
+
 							SDL_Rect r = tileset->GetTileRect(tile_id);
 							iPoint pos = MapToWorld(x, y);
 
 							if (App->scene->currentLevel != MAIN_MENU) {
+
 								if (flipped_horizontally) {
-									////	/*if (layer->name != ("Background")) {
+
 									if (tile_id == 32) {
 										if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
 											App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 90);
 									}
 									else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
 										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 0, 0, 0, SDL_FLIP_HORIZONTAL);
-									////	//}
+									
 								}
 
 								else if (layer->name != ("Background") && layer->name != ("Foreground")) {
-                  if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-									  App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 								}
-								else if (layer->name == ("Foreground")) {
+								else if (layer->name == ("Foreground")) 
 									App->render->Blit(tileset->texture, pos.x, pos.y - 200, &r, 0.30);
-								}
-								else if (layer->name == ("Background")) {
+								
+								else if (layer->name == ("Background")) 
 									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
-								}
+								
 							}
-							else if(App->scene->currentLevel==MAIN_MENU){
-								if (layer->name == ("Foreground")) {
+							else if(App->scene->currentLevel==MAIN_MENU) {
+								if (layer->name == ("Foreground")) 
 									App->render->Blit(tileset->texture, pos.x, (pos.y - 250) , &r);
-								}
-								else if (layer->name == ("Background")) {
+								
+								else if (layer->name == ("Background")) 
 									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
-								}
-								else if (layer->name == ("Title")) {
+								
+								else if (layer->name == ("Title"))
 									App->render->Blit(tileset->texture, pos.x, pos.y, &r, false);
-								}
+								
 							}
 							
 						}

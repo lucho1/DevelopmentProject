@@ -87,7 +87,7 @@ bool j1Player::Start() {
 
 	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, player_rect.w - 50, player_rect.h }, COLLIDER_PLAYER, this);
 
-	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error
+	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	App->SaveGame("save_game.xml");
 
 	return true;
@@ -226,18 +226,17 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
-		if (direction.y != 0) {
 
-			//Checking Y Axis Collisions
-			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
-				velocity.y = 0;
-				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
-			}
-			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
-				jump = false;
-				velocity.y = 0;
-				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
-			}
+		//Checking Y Axis Collisions
+		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
+			velocity.y = 0;
+			position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
+		}
+		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
+			jump = false;
+			velocity.y = 0;
+			position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+		}
 
 		//Checking X Axis Collisions
 		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
@@ -248,27 +247,26 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			velocity.x = 0;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
 		}
-	
+	}
 
 	if (!God) {
 
-	//Checking if falling
-	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL){ //This mechanic is cool so we force the player to save before each decision
-		App->LoadGame("save_game.xml");
-		App->render->ResetCamera();
+		//Checking if falling
+		if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
+			App->LoadGame("save_game.xml");
+			
+		
 	}
-}
 
 	//Check if touched button
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
 		App->map->TriggerActive = true;
-	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF)
+	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;
-
 }
 
 
-void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
+void j1Player::LoadPushbacks(pugi::xml_node node, Animation &animation) {
 
 	animation.loop = node.attribute("loop").as_bool();
 	animation.speed = node.attribute("speed").as_float();
@@ -283,4 +281,3 @@ void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 		animation.PushBack({ rect });
 	}
 }
-

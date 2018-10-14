@@ -110,8 +110,8 @@ bool j1Render::CleanUp()
 // Load Game State
 bool j1Render::Load(pugi::xml_node& data)
 {
-	/*camera.x = data.child("camera").attribute("x").as_int();
-	camera.y = data.child("camera").attribute("y").as_int();*/
+	camera.x = data.child("camera").attribute("x").as_int();
+	camera.y = data.child("camera").attribute("y").as_int();
 
 	return true;
 }
@@ -119,10 +119,10 @@ bool j1Render::Load(pugi::xml_node& data)
 // Save Game State
 bool j1Render::Save(pugi::xml_node& data) const
 {
-	//pugi::xml_node cam = data.append_child("camera");
+	pugi::xml_node cam = data.append_child("camera");
 
-	//cam.append_attribute("x") = camera.x;
-	//cam.append_attribute("y") = camera.y;
+	cam.append_attribute("x") = camera.x;
+	cam.append_attribute("y") = camera.y;
 
 	return true;
 }
@@ -265,4 +265,9 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 	}
 
 	return ret;
+}
+
+void j1Render::SetCamera(int x, int y) {
+
+	
 }

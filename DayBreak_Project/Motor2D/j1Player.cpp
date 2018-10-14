@@ -117,6 +117,7 @@ bool j1Player::Update(float dt) {
 
 	if (God) {
 
+		LOG("GOD MODE ACTIVE");
 		jump = true;
 		fall = false;
 

@@ -76,12 +76,17 @@ void j1Map::Draw()
 							////	//}
 							}
 
-							else if (layer->name != ("Background")) {
+							else if (layer->name != ("Background")&&layer->name!=("Foreground")) {
 								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 								/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
 									 //add NULL, angle after &r
-							}else
-								App->render->Blit(tileset->texture, pos.x, pos.y-400, &r,0.14);
+							}
+							else if (layer->name == ("Foreground")) {
+								App->render->Blit(tileset->texture, pos.x, pos.y-250, &r, 0.30);
+							}
+							else if (layer->name == ("Background")) {
+								App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+							}
 							
 						}
 					}

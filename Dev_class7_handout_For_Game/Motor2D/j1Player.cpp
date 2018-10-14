@@ -133,11 +133,11 @@ bool j1Player::Update(float dt) {
 	player_rect.y  = position.y;
 	if (direction.x == 1) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL);
+		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0,0, 0, SDL_FLIP_HORIZONTAL);
 	}
 	if (direction.x == -1) {
-		player_collider->SetPos(position.x+48, position.y);
-		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()));
+		player_collider->SetPos(position.x, position.y);
+		App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()));
 	}
 
 	if (!collide)
@@ -183,7 +183,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		collide = true;
 
 			if (direction.y == 1){
-				
+			
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 				velocity.y = 0;
 
@@ -196,7 +196,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
 
 					velocity.x = 0;
-					//position.x = c1->rect.x - ((c1->rect.x + c1->rect.w) - c2->rect.x); //Put this when colliders rotated
 					position.x = c1->rect.x + ((c2->rect.x + c2->rect.w) - c1->rect.x) + 1;
 
 				}
@@ -249,8 +248,8 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //When the player's saving/load works, uncomment this as a way of dying --> This mechanic is cool so we force the player to save before each decision
 		App->LoadGame("save_game.xml");
 
-	} //OJU ALS CORCHETES AQUI
-}
+} //OJU ALS CORCHETES AQUI
+
 
 void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 
@@ -269,7 +268,7 @@ void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 
 } //OJU AQUI TAMBE
 
-}
+
 
 
 

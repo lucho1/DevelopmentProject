@@ -8,58 +8,85 @@
 
 j1Collisions::j1Collisions()
 {
-	
+	//Collider NONE interactions
 	matrix[COLLIDER_NONE][COLLIDER_NONE] = false;
 	matrix[COLLIDER_NONE][COLLIDER_STATIC] = false;
-	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;
-	matrix[COLLIDER_NONE][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_NONE][COLLIDER_FALL] = false;
-	matrix[COLLIDER_NONE][COLLIDER_BLOCS] = false;
+	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_NONE][COLLIDER_BLINKING] = false;
 	matrix[COLLIDER_NONE][TRIGGER_PUSH] = false;
 	matrix[COLLIDER_NONE][TRIGGER_PUSHOFF] = false;
+	matrix[COLLIDER_NONE][TRIGGER_WIN] = false;
 
-
-
+	//Collider Static Interactions
 	matrix[COLLIDER_STATIC][COLLIDER_NONE] = false;
 	matrix[COLLIDER_STATIC][COLLIDER_STATIC] = false;
-	matrix[COLLIDER_STATIC][COLLIDER_PLAYER] = true;
-	matrix[COLLIDER_STATIC][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_STATIC][COLLIDER_FALL] = false;
+	matrix[COLLIDER_STATIC][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_STATIC][COLLIDER_BLINKING] = false;
+	matrix[COLLIDER_STATIC][TRIGGER_PUSH] = false;
+	matrix[COLLIDER_STATIC][TRIGGER_PUSHOFF] = true;
+	matrix[COLLIDER_STATIC][TRIGGER_WIN] = false;
 
-	matrix[COLLIDER_PLAYER][COLLIDER_NONE] = false;
-	matrix[COLLIDER_PLAYER][COLLIDER_STATIC] = true;
-	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
-	matrix[COLLIDER_PLAYER][COLLIDER_UNACTIVE] = false;
-	matrix[COLLIDER_PLAYER][COLLIDER_FALL] = true;
-	matrix[COLLIDER_PLAYER][TRIGGER_PUSH] = true;
-	matrix[COLLIDER_PLAYER][COLLIDER_BLOCS] = true;
-
-	matrix[COLLIDER_UNACTIVE][COLLIDER_NONE] = false;
-	matrix[COLLIDER_UNACTIVE][COLLIDER_STATIC] = false;
-	matrix[COLLIDER_UNACTIVE][COLLIDER_PLAYER] = false;
-	matrix[COLLIDER_UNACTIVE][COLLIDER_UNACTIVE] = false;
-	matrix[COLLIDER_UNACTIVE][COLLIDER_FALL] = false;
-
+	//Collider Fall Interactions
 	matrix[COLLIDER_FALL][COLLIDER_NONE] = false;
 	matrix[COLLIDER_FALL][COLLIDER_STATIC] = false;
-	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = true;
-	matrix[COLLIDER_FALL][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_FALL][COLLIDER_FALL] = false;
+	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_FALL][COLLIDER_BLINKING] = false;
+	matrix[COLLIDER_FALL][TRIGGER_PUSH] = false;
+	matrix[COLLIDER_FALL][TRIGGER_PUSHOFF] = false;
+	matrix[COLLIDER_FALL][TRIGGER_WIN] = false;
 
-	matrix[TRIGGER_PUSH][TRIGGER_PUSH] = false;
-	matrix[TRIGGER_PUSH][COLLIDER_PLAYER] = true;
-	matrix[TRIGGER_PUSH][TRIGGER_PUSHOFF] = false;
-	matrix[TRIGGER_PUSH][COLLIDER_STATIC] = false;
-	matrix[TRIGGER_PUSH][COLLIDER_UNACTIVE] = false;
+	//Collider Player Interactions
+	matrix[COLLIDER_PLAYER][COLLIDER_NONE] = false;
+	matrix[COLLIDER_PLAYER][COLLIDER_STATIC] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_FALL] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_PLAYER][COLLIDER_BLINKING] = true;
+	matrix[COLLIDER_PLAYER][TRIGGER_PUSH] = true;
+	matrix[COLLIDER_PLAYER][TRIGGER_PUSHOFF] = true;
+	matrix[COLLIDER_PLAYER][TRIGGER_WIN] = true;
+
+	//Collider Blinking Interactions
+	matrix[COLLIDER_BLINKING][COLLIDER_NONE] = false;
+	matrix[COLLIDER_BLINKING][COLLIDER_STATIC] = false;
+	matrix[COLLIDER_BLINKING][COLLIDER_FALL] = false;
+	matrix[COLLIDER_BLINKING][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_BLINKING][COLLIDER_BLINKING] = false;
+	matrix[COLLIDER_BLINKING][TRIGGER_PUSH] = false;
+	matrix[COLLIDER_BLINKING][TRIGGER_PUSHOFF] = false;
+	matrix[COLLIDER_BLINKING][TRIGGER_WIN] = false;
+
+	//Trigger Push (Button) Interactions
 	matrix[TRIGGER_PUSH][COLLIDER_NONE] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_STATIC] = false;
 	matrix[TRIGGER_PUSH][COLLIDER_FALL] = false;
-	matrix[TRIGGER_PUSH][COLLIDER_BLOCS] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_PLAYER] = true;
+	matrix[TRIGGER_PUSH][COLLIDER_BLINKING] = false;
+	matrix[TRIGGER_PUSH][TRIGGER_PUSH] = false;
+	matrix[TRIGGER_PUSH][TRIGGER_PUSHOFF] = false;
+	matrix[TRIGGER_PUSH][TRIGGER_WIN] = false;
 
-	matrix[TRIGGER_PUSHOFF][TRIGGER_PUSHOFF] = false;
+	//Trigger Pushoff (Uncoloring Ray) Interactions
+	matrix[TRIGGER_PUSHOFF][COLLIDER_NONE] = false;
+	matrix[TRIGGER_PUSHOFF][COLLIDER_STATIC] = false;
+	matrix[TRIGGER_PUSHOFF][COLLIDER_FALL] = false;
 	matrix[TRIGGER_PUSHOFF][COLLIDER_PLAYER] = true;
+	matrix[TRIGGER_PUSHOFF][COLLIDER_BLINKING] = false;
+	matrix[TRIGGER_PUSHOFF][TRIGGER_PUSH] = false;
+	matrix[TRIGGER_PUSHOFF][TRIGGER_PUSHOFF] = false;
+	matrix[TRIGGER_PUSHOFF][TRIGGER_WIN] = false;
 
-	matrix[COLLIDER_BLOCS][COLLIDER_BLOCS] = false;
-	matrix[COLLIDER_BLOCS][COLLIDER_PLAYER] = true;
+	//Trigger Win (Door) Interactions
+	matrix[TRIGGER_WIN][COLLIDER_NONE] = false;
+	matrix[TRIGGER_WIN][COLLIDER_STATIC] = false;
+	matrix[TRIGGER_WIN][COLLIDER_FALL] = false;
+	matrix[TRIGGER_WIN][COLLIDER_PLAYER] = true;
+	matrix[TRIGGER_WIN][COLLIDER_BLINKING] = false;
+	matrix[TRIGGER_WIN][TRIGGER_PUSH] = false;
+	matrix[TRIGGER_WIN][TRIGGER_PUSHOFF] = false;
+	matrix[TRIGGER_WIN][TRIGGER_WIN] = false;
 
 }
 
@@ -170,10 +197,7 @@ void j1Collisions::DebugDraw() {
 		case COLLIDER_FALL:
 			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, 40);
 			break;
-		case COLLIDER_UNACTIVE:
-			App->render->DrawQuad(colliders[i]->rect, 0, 0, 200, 20);
-			break;
-		case COLLIDER_BLOCS:
+		case COLLIDER_BLINKING:
 			App->render->DrawQuad(colliders[i]->rect, 0, 200, 200, 20);
 			break;
 		case TRIGGER_PUSH:
@@ -255,7 +279,7 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_FALL);
 			}
 			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLOCS);
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLINKING);
 			}
 			if (strcmp(collidertype, "Push_Triggers") == 0) {
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSH);

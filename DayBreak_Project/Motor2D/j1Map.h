@@ -128,6 +128,8 @@ public:
 	p2SString			folder;
 	pugi::xml_document	map_file;
 
+	int spawnMargin = 400;
+
 	bool TriggerActive = false;
 
 private:

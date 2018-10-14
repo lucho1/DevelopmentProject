@@ -112,9 +112,6 @@ public:
 	iPoint WorldToMap(int x, int y) const;
 
 	TileSet* GetTilesetFromTileId(int id) const;
-
-	uint VelocityForeground=5;
-	uint VelocityBackground=10;
 	
 
 private:

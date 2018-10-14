@@ -47,20 +47,25 @@ public:
 
 public:
 
-	void OnCollision(Collider *c1, Collider *c2);
-
+	void OnCollision(Collider *c1, Collider *c2/* bool collX, bool collY*/);
 
 public:
 
-	SDL_Rect player_rect;
 	iPoint position;
 	iPoint direction;
 	fPoint velocity;
 
-
+	int auxY;
+	
 	bool jump = false;
+	bool jump_falling = false;
+
+	/*bool double_jump = true;
+	bool doblejump_falling = false;
+	int jump_counter = 0;*/
+	
 	bool collide = false;
-	bool fall;
+	bool fall = true;
 
 	Animation*		current_animation = nullptr;
 	Animation		Idle;

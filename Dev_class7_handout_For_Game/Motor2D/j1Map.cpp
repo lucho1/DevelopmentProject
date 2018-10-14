@@ -33,7 +33,6 @@ void j1Map::Draw()
 	if (map_loaded == false)
 		return;
 
-	// TODO 4: Make sure we draw all the layers and not just the first one
 	p2List_item <MapLayer*>* layer_item = data.layers.start;
 	MapLayer* layer;
 
@@ -95,8 +94,7 @@ void j1Map::Draw()
 
 TileSet* j1Map::GetTilesetFromTileId( int id) const
 {
-	// TODO 3: Complete this method so we pick the right
-	// Tileset based on a tile id
+
 	p2List_item<TileSet*>*item = data.tilesets.start;
 
 	while (item->next != nullptr) {

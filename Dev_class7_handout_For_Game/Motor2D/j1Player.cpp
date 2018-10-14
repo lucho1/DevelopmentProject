@@ -44,28 +44,21 @@ bool j1Player::Awake() {
 }
 
 bool j1Player::Start() {
+
 	//const char* path = PlayerSettings.child("image").attribute("source").as_string();
 	p2SString tmp = ("maps\\Character_tileset.png");
 	Player_texture = App->tex->Load(tmp.GetString());
-	//Load & Start everything here // Remember that gravity is a map parameter pls
 
-	//Starting Position & Velocity FOR VEL & POS load them at player config pls
+	//Starting Position & Velocity FOR VEL & POS load them at player config
  	position.x = App->render->camera.w / 2;
 	position.y = App->render->camera.h / 2;
 	velocity.x = 8;
-	velocity.y = 8;
+	velocity.y = 10;
 	direction.x = 1;
-	direction.y = 0;
+	direction.y = -1;
 
-	fall = true;
-	
-	//Player Rect
-	player_rect.x = position.x;
-	player_rect.y = position.y;
-	player_rect.w = PlayerSettings.attribute("w").as_int();
-	player_rect.h = PlayerSettings.attribute("h").as_int();
 
-	player_collider = App->collisions->AddCollider({player_rect.x+50,player_rect.y,player_rect.w-50,player_rect.h}, COLLIDER_PLAYER, this);
+	player_collider = App->collisions->AddCollider({ position.x +50, position.y, PlayerSettings.attribute("w").as_int() -50, PlayerSettings.attribute("h").as_int() }, COLLIDER_PLAYER, this);
 
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error
 	App->SaveGame("save_game.xml");
@@ -95,63 +88,112 @@ bool j1Player::Update(float dt) {
 		current_animation = &Run;
 	}
 
+	
+
 	//Y axis Movement
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump) {
 
-		if (!jump) {
-			direction.y = 1;
-			collide = false;
-			velocity.y = 8;
-			jump = true;
-		}
+		jump = true;
+		jump_falling = false;
+		auxY = position.y;
+		velocity.y = 10;
+
 	}
+	//if (!double_jump && jump_counter == 0/*double_jump*/ && App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 
+	//	double_jump = true;
+	//	doblejump_falling = false;
+	//	velocity.y = 8;
+	//	direction.y = 0;
+	//}
+
+	//JUMP
 	if (jump) {
 
-		fall = false;
-		direction.y = 1;
-		position.y -= velocity.y;
-		velocity.y -= 0.2;
+		//double_jump = false;
 
-		if (velocity.y < 0) {
-			direction.y = -1;
-			fall = true;
-			jump = false;	
+		if (velocity.y >= 0 && !jump_falling) {
+
+			
+			fall = false;
+			position.y -= velocity.y;
+			velocity.y -= 0.2;
+			direction.y = 1;
+
+		/*	if (position.y <= auxY) 
+				double_jump = false;*/
+			
+				//double_jump = true;
 		}
+
+		else if (velocity.y < 0) {
+		
+			jump_falling = true;
+			fall = true;
+			
+			/*if (position.y >= auxY)
+				double_jump = true;*/
+				//double_jump = false;
+			
+		}
+		
+		/*if (position.y >= auxY) {
+			jump = false;
+			jump_falling = false;*/
+			/*double_jump = true;
+			jump_counter = 0;*/
+		//}
 	}
 
-	if (fall && !collide) {
+	//Doble Jump
+	/*if (double_jump) {
+
+		jump_counter++;
+		velocity.y = 8;
+		double_jump = true;
+
+	}*/
+	
+	
+
+	//FALL
+	if (fall) {
+
 		direction.y = -1;
 
-		if(velocity.y < 8)
+		if (velocity.y < 10)
 			velocity.y += 0.2;
-		
+
 		position.y += velocity.y;
 	}
-	
-	player_rect.x  = position.x;
-	player_rect.y  = position.y;
-	if (direction.x == 1) {
+
+	//COLLIDE
+	if (collide) {
+		velocity.y = 0;
+		fall = false;
+	}
+	else
+		fall = true;
+
+
+
+	//BLIT PLAYER
+	if (direction.x == 1 || direction.x == 0) {
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL);
 	}
 	if (direction.x == -1) {
-		player_collider->SetPos(position.x+48, position.y);
-		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()));
+		player_collider->SetPos(position.x, position.y);
+		App->render->Blit(Player_texture, position.x - 46, position.y, &(current_animation->GetCurrentFrame()));
 	}
 
-	if (!collide)
-		fall = true;
-
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE)
+		direction.x = 0;
 
 	return true;
 }
 
 bool j1Player::PostUpdate() {
-
-	//player_rect.x = player_collider->rect.x = position.x;
-	//player_rect.y = player_collider->rect.y = position.y;
-	//App->render->DrawQuad(player_rect, 0, 0, 255, 200);
 
 	return true;
 }
@@ -180,77 +222,43 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC) {
 
-		collide = true;
+		if (direction.y != 0) {
 
-			if (direction.y == 1){
-				
+			//Checking Y Axis Collisions
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.y - velocity.y) { //direction.y == 1
+				velocity.y = 0;
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
-				velocity.y = 0;
-
-				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
-
-					velocity.x = 0;
-					position.x = c1->rect.x - ((c1->rect.x + c1->rect.w) - c2->rect.x) - 1;
-
-				}
-				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
-
-					velocity.x = 0;
-					//position.x = c1->rect.x - ((c1->rect.x + c1->rect.w) - c2->rect.x); //Put this when colliders rotated
-					position.x = c1->rect.x + ((c2->rect.x + c2->rect.w) - c1->rect.x) + 1;
-
-				}
-				collide = false;
 			}
-			else if (direction.y == -1) {
-
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
+				jump = false;
+				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
-				velocity.y = 0;
+			}
+		}
+		if (direction.x != 0) {
 
-				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
+			//Checking X Axis Collisions
+			if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
 
-					velocity.x = 0;
-					position.x = c1->rect.x - ((c1->rect.x + c1->rect.w) - c2->rect.x) - 1;
-					
-				}
-				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
+				velocity.x = 0;
+				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 7;
+			}
+			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
 
-					velocity.x = 0;
-					//position.x = c1->rect.x - ((c1->rect.x + c1->rect.w) - c2->rect.x); //Put this when colliders rotated
-					position.x = c1->rect.x + ((c2->rect.x + c2->rect.w) - c1->rect.x) + 1;
-					
-				}
-
-				collide = false;
+				velocity.x = 0;
+				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 7;
 			}
 
-		/*else {
-
-			if (direction.x == 1) {
-
-				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) {
-
-					velocity.x = 0;
-					position.x = c2->rect.x - c1->rect.w - 2;
-				}
-
-			}
-			else if (direction.x == -1) {
-				if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) {
-
-					velocity.x = 0;
-					position.x = c2->rect.x + c2->rect.w + 2;
-				}
-			}
-		}*/
+		}
 	}
 
+
 	//Checking if falling
-	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //When the player's saving/load works, uncomment this as a way of dying --> This mechanic is cool so we force the player to save before each decision
+	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
 		App->LoadGame("save_game.xml");
 
-	} //OJU ALS CORCHETES AQUI
 }
+
 
 void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 
@@ -267,61 +275,4 @@ void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 		animation.PushBack({ rect });
 	}
 
-} //OJU AQUI TAMBE
-
-}
-
-
-
-
-
-
-//if (c1->type == COLLIDER_STATIC) {
-//
-//	if (direction.y != 0) {
-//
-//		if (direction.y == 1)
-//			return;
-//		else if (direction.y == -1 && direction.x == 0) {
-//			velocity.y = 0;
-//			position.y = c1->rect.y - c2->rect.h - 1;
-//			collide = true;
-//		}
-//		else if (direction.y == -1 && direction.x != 0) {
-//
-//			velocity.y = 0;
-//			position.y = c1->rect.y - c2->rect.h - 1;
-//			collide = true;
-//
-//			if (c2->rect.x + c2->rect.w >= c1->rect.x && c2->rect.x + c2->rect.w <= c1->rect.x + velocity.x) {
-//
-//				velocity.x = 0;
-//				position.x = c1->rect.x - c2->rect.w - 2;
-//			}
-//			else if (c2->rect.x <= c1->rect.x + c1->rect.w && c2->rect.x >= c1->rect.x + c1->rect.w - velocity.x) {
-//
-//				velocity.x = 0;
-//				position.x = c1->rect.x + c1->rect.w + 2;
-//			}
-//		}
-//	}
-//	else {
-//
-//		if (direction.x == 1) {
-//
-//			if (c2->rect.x + c2->rect.w >= c1->rect.x && c2->rect.x + c2->rect.w <= c1->rect.x + velocity.x) {
-//
-//				velocity.x = 0;
-//				position.x = c1->rect.x - c2->rect.w - 2;
-//			}
-//
-//		}
-//		else if (direction.x == -1) {
-//			if (c2->rect.x <= c1->rect.x + c1->rect.w && c2->rect.x >= c1->rect.x + c1->rect.w - velocity.x) {
-//
-//				velocity.x = 0;
-//				position.x = c1->rect.x + c1->rect.w + 2;
-//			}
-//		}
-//	}
-//}
+} 

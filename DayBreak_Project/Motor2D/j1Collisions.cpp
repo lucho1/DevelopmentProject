@@ -198,13 +198,16 @@ void j1Collisions::DebugDraw() {
 			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, 40);
 			break;
 		case COLLIDER_BLINKING:
-			App->render->DrawQuad(colliders[i]->rect, 0, 200, 200, 20);
+			App->render->DrawQuad(colliders[i]->rect, 0, 200, 200, 40);
 			break;
 		case TRIGGER_PUSH:
-			App->render->DrawQuad(colliders[i]->rect, 200, 0, 200, 20);
+			App->render->DrawQuad(colliders[i]->rect, 200, 0, 200, 40);
 			break;
 		case TRIGGER_PUSHOFF:
-			App->render->DrawQuad(colliders[i]->rect, 0, 0, 200, 20);
+			App->render->DrawQuad(colliders[i]->rect, 0, 0, 200, 40);
+			break;
+		case TRIGGER_WIN:
+			App->render->DrawQuad(colliders[i]->rect, 200 ,100, 255, 40);
 			break;
 		default:
 			break;
@@ -286,6 +289,9 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 			}
 			if (strcmp(collidertype, "PushOff_Triggers") == 0) {
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSHOFF);
+			}
+			if (strcmp(collidertype, "Win_Trigger") == 0) {
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_WIN);
 			}
 		}
 	}

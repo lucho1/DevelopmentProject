@@ -8,10 +8,10 @@
 	<map />
 	<scene />
 	<player>
-		<player x="1150" y="1427" />
+		<player x="580" y="1408" />
 	</player>
 	<:anonymous />
 	<renderer>
-		<camera x="-455" y="-1043" />
+		<camera x="0" y="-868" />
 	</renderer>
 </game_state>

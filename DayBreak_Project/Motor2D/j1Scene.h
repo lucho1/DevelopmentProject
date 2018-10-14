@@ -42,6 +42,10 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	//Used to iterate between Levels
+	void IterateLevel();
+
+	//Used to change the actual level
 	void ChangeLevel();
 
 	bool Level1 = false;

@@ -41,6 +41,7 @@ bool j1Scene::Start()
 		App->render->ResetCamera();
 	}
 	if (Level1 == true) {
+
 		App->map->Load("Level1.tmx");
 		currentLevel = LEVEL1;
 		App->render->ResetCamera();
@@ -68,33 +69,31 @@ bool j1Scene::Update(float dt)
 {
 	
 
-	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		App->LoadGame("save_level1.xml");
-
-	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->render->camera.y += 1;
-
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		App->render->camera.y -= 1;
-
-	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->render->camera.x += 1;
-
-	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->render->camera.x -= 1;
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+		//App->LoadGame("save_level1.xml");
+		App->map->TriggerActive = false;
 		ChangeLevel();
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
 		App->collisions->CleanUp();
 		App->player->CleanUp();
 		App->map->CleanUp();
 		Start();
 	}
+
+	if (currentLevel == MAIN_MENU) {
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+			ChangeLevel();
+		}
+	}
+	
+
 
 	App->map->Draw();
 
@@ -132,6 +131,14 @@ bool j1Scene::CleanUp()
 }
 
 void j1Scene::ChangeLevel() {
+	IterateLevel();
+	App->collisions->CleanUp();
+	App->player->CleanUp();
+	App->map->CleanUp();
+	Start();
+}
+
+void j1Scene::IterateLevel() {
 
 	LevelIterator++;
 	if (LevelIterator > 2) {

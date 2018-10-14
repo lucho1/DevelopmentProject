@@ -223,6 +223,7 @@ bool j1Player::Save(pugi::xml_node& data) const
 
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
+	
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
@@ -261,8 +262,15 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Check if touched button
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
 		App->map->TriggerActive = true;
+
 	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;
+
+	if (c1->type == TRIGGER_WIN || c2->type == TRIGGER_WIN) {
+		App->scene->ChangeLevel();
+	}
+
+
 }
 
 

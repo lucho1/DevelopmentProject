@@ -4700,7 +4700,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="11"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -4750,7 +4750,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="11"/>
    <tile gid="0"/>
    <tile gid="25"/>
    <tile gid="25"/>
@@ -5648,14 +5648,13 @@
   <object id="1" x="170" y="1359" width="1019" height="24"/>
   <object id="2" x="172" y="1529" width="1356" height="38"/>
   <object id="3" x="340" y="1566" width="847" height="291"/>
-  <object id="4" x="2040" y="1530" width="510.583" height="35"/>
+  <object id="4" x="2040" y="1530" width="510.583" height="168"/>
   <object id="5" x="2040" y="1360.33" width="511" height="24.6667"/>
   <object id="6" x="2550" y="1020" width="848" height="195"/>
   <object id="7" x="2890" y="1383.5" width="510" height="167.5"/>
   <object id="8" x="2720" y="1358.09" width="679.875" height="23.9091"/>
   <object id="9" x="2720" y="1531" width="169.75" height="20"/>
-  <object id="11" x="2507.5" y="1565" width="43" height="136"/>
-  <object id="12" x="2468" y="1697.33" width="760" height="342.667"/>
+  <object id="12" x="2040" y="1697.33" width="1188" height="342.667"/>
   <object id="13" x="3058" y="1551.33" width="42.6667" height="146.667"/>
   <object id="14" x="3740" y="1359.83" width="340" height="856.167"/>
   <object id="17" x="3225" y="633" width="173" height="385"/>
@@ -5681,7 +5680,7 @@
   <object id="58" x="3397.5" y="1189.5" width="172.5" height="25.5"/>
   <object id="65" x="4930" y="1190.5" width="169" height="29"/>
   <object id="66" x="5100" y="1019.5" width="168" height="26.5"/>
-  <object id="72" x="2209.33" y="1018" width="340.667" height="196.667"/>
+  <object id="72" x="2209.33" y="865" width="340.667" height="349.667"/>
   <object id="73" x="2379.33" y="1214" width="170.667" height="146"/>
   <object id="74" x="2040" y="1188.67" width="168.667" height="25.3333"/>
   <object id="77" x="3570.67" y="1359.91" width="169.277" height="19.4242"/>
@@ -5711,6 +5710,6 @@
   <object id="71" x="6182.83" y="703" width="47" height="146.5"/>
  </objectgroup>
  <objectgroup name="Win_Trigger">
-  <object id="76" x="7353" y="705.5" width="108" height="142.5"/>
+  <object id="76" x="7353" y="709.864" width="108" height="132.636"/>
  </objectgroup>
 </map>

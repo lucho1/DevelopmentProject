@@ -7,6 +7,7 @@
 #include <math.h>
 #include <cmath>
 #include "j1Collisions.h"
+#include "j1Scene.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -70,28 +71,40 @@ void j1Map::Draw()
 							SDL_Rect r = tileset->GetTileRect(tile_id);
 							iPoint pos = MapToWorld(x, y);
 
-
-							if (flipped_horizontally) {
-							////	/*if (layer->name != ("Background")) {
-								if (tile_id == 32) {
-									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
-										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0,90);
+							if (App->scene->currentLevel != MAIN_MENU) {
+								if (flipped_horizontally) {
+									////	/*if (layer->name != ("Background")) {
+									if (tile_id == 32) {
+										if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+											App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 90);
+									}
+									else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 0, 0, 0, SDL_FLIP_HORIZONTAL);
+									////	//}
 								}
-								else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
-										App->render->Blit(tileset->texture, pos.x, pos.y, &r,1.0,0,0,0,SDL_FLIP_HORIZONTAL);
-							////	//}
+
+								else if (layer->name != ("Background") && layer->name != ("Foreground")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+									/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
+										 //add NULL, angle after &r
+								}
+								else if (layer->name == ("Foreground")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y - 200, &r, 0.30);
+								}
+								else if (layer->name == ("Background")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+								}
 							}
-							
-							else if (layer->name != ("Background")&&layer->name!=("Foreground")) {
-								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-								/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
-									 //add NULL, angle after &r
-							}
-							else if (layer->name == ("Foreground")) {
-								App->render->Blit(tileset->texture, pos.x, pos.y-250, &r, 0.30);
-							}
-							else if (layer->name == ("Background")) {
-								App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+							else if(App->scene->currentLevel==MAIN_MENU){
+								if (layer->name == ("Foreground")) {
+									App->render->Blit(tileset->texture, pos.x, (pos.y - 250) , &r);
+								}
+								else if (layer->name == ("Background")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+								}
+								else if (layer->name == ("Title")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y, &r, false);
+								}
 							}
 							
 						}
@@ -192,6 +205,7 @@ bool j1Map::CleanUp()
 
 	while(item != NULL)
 	{
+		App->tex->UnLoad(item->data->texture);
 		RELEASE(item->data);
 		item = item->next;
 	}

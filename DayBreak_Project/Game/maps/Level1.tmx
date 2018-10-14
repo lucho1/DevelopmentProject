@@ -3160,7 +3160,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="0"/>
-   <tile gid="2147483661"/>
+   <tile gid="1610612749"/>
    <tile gid="0"/>
    <tile gid="2"/>
    <tile gid="10"/>
@@ -4481,7 +4481,7 @@
    <tile gid="0"/>
    <tile gid="1610612753"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="27"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5651,9 +5651,9 @@
   <object id="4" x="2040" y="1530" width="510.583" height="35"/>
   <object id="5" x="2040" y="1360.33" width="511" height="24.6667"/>
   <object id="6" x="2550" y="1020" width="848" height="195"/>
-  <object id="7" x="2888" y="1358" width="512" height="193"/>
-  <object id="8" x="2720" y="1358" width="167.875" height="24"/>
-  <object id="9" x="2720" y="1531" width="168" height="21"/>
+  <object id="7" x="2890" y="1383.5" width="510" height="167.5"/>
+  <object id="8" x="2720" y="1358.09" width="679.875" height="23.9091"/>
+  <object id="9" x="2720" y="1531" width="169.75" height="20"/>
   <object id="11" x="2507.5" y="1565" width="43" height="136"/>
   <object id="12" x="2468" y="1697.33" width="760" height="342.667"/>
   <object id="13" x="3058" y="1551.33" width="42.6667" height="146.667"/>
@@ -5667,10 +5667,8 @@
   <object id="29" x="4926.67" y="340" width="1532" height="190.667"/>
   <object id="30" x="4926.67" y="679.333" width="173.333" height="21.3333"/>
   <object id="32" x="4930" y="1529.34" width="338.667" height="348.666"/>
-  <object id="33" x="5268" y="850.042" width="176" height="869.958"/>
-  <object id="34" x="5444" y="850" width="1016" height="232"/>
+  <object id="33" x="5268" y="849.951" width="1189.45" height="870.049"/>
   <object id="37" x="5442" y="534" width="1016" height="168"/>
-  <object id="38" x="6290" y="1084" width="170" height="300"/>
   <object id="39" x="6460" y="1359" width="169" height="25"/>
   <object id="40" x="6969.33" y="510" width="509.333" height="24.6667"/>
   <object id="41" x="6970" y="680" width="509.333" height="24"/>
@@ -5696,7 +5694,7 @@
  </objectgroup>
  <objectgroup name="Bloc_Colliders">
   <object id="59" x="1700" y="1531" width="168.5" height="168"/>
-  <object id="60" x="2890" y="1215" width="170" height="143"/>
+  <object id="60" x="2890" y="1216.5" width="170" height="140.5"/>
   <object id="61" x="4590.67" y="1530.33" width="168.667" height="169.333"/>
   <object id="62" x="5100.33" y="1360.33" width="168" height="169"/>
   <object id="63" x="6630.5" y="1190" width="168.5" height="169.5"/>

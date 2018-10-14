@@ -32,7 +32,17 @@ j1Player::j1Player() {
 j1Player::~j1Player() {}
 
 bool j1Player::CleanUp() { 
-	
+
+
+
+	LOG("Cleaning Up Player 1 ");
+	if (player_collider != nullptr)
+		player_collider->to_delete = true;
+
+	if (current_animation != nullptr)
+		current_animation = nullptr;
+	App->tex->UnLoad(Player_texture);
+
 	return true;
 }
 
@@ -50,13 +60,16 @@ bool j1Player::Start() {
 	Player_texture = App->tex->Load(tmp.GetString());
 
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
-	if (App->scene->Level1 == true) {
+	if (App->scene->currentLevel == LEVEL1) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.x").as_int();
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.y").as_int();
 	}
-	else if (App->scene->Level2 == true) {
+	else if (App->scene->currentLevel==LEVEL2) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.x").as_int();
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.y").as_int();
+	}
+	else if (App->scene->currentLevel == MAIN_MENU) {
+		position.x = -200;
 	}
 
 	velocity.x = 8;
@@ -235,8 +248,10 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 
 	//Checking if falling
-	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
+	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL){ //This mechanic is cool so we force the player to save before each decision
 		App->LoadGame("save_game.xml");
+		App->render->ResetCamera();
+	}
 }
 
 

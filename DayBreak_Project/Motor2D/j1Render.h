@@ -42,6 +42,10 @@ public:
 
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
+	void ResetCamera(){
+		camera.x = 0;
+		camera.y = 0;
+	}
 
 public:
 

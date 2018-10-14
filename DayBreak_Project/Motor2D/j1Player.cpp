@@ -72,8 +72,8 @@ bool j1Player::Start() {
 		position.x = -200;
 	}
 
-	velocity.x = 8;
-	velocity.y = 10;
+	velocity.x = 5.5;
+	velocity.y = 8;
 	direction.x = 1;
 	direction.y = -1;
 
@@ -104,32 +104,54 @@ bool j1Player::Update(float dt) {
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		velocity.x = 8;
+		velocity.x = 5.5;
 		direction.x = 1;
 		position.x += velocity.x;
 		current_animation = &Run;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		velocity.x = 8;
+		velocity.x = 5.5;
 		direction.x = -1;
 		position.x -= velocity.x;
 		current_animation = &Run;
 	}
-
 	//Y axis Movement
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump) {
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God) {
 
 		jump = true;
 		jump_falling = false;
 		auxY = position.y;
-		velocity.y = 10;
-
+		velocity.y = 8;
 	}
 
+	//God mode
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+		God = !God;
+
+	if (God) {
+
+		LOG("GOD MODE ACTIVE");
+		jump = true;
+		fall = false;
+
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+
+			velocity.y = 8;
+			position.y -= velocity.y;
+		}
+
+		else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+			
+			velocity.y = 8;
+			position.y += velocity.y;
+		}
+
+	}
+	else
+		fall = true;
 
 	//JUMP
 	if (jump) {
-
 
 		if (velocity.y >= 0 && !jump_falling) {
 
@@ -147,6 +169,7 @@ bool j1Player::Update(float dt) {
 			fall = true;
 			
 		}
+
 	}
 	
 	//FALL
@@ -154,19 +177,11 @@ bool j1Player::Update(float dt) {
 
 		direction.y = -1;
 
-		if (velocity.y < 10)
+		if (velocity.y < 8)
 			velocity.y += 0.2;
 
 		position.y += velocity.y;
 	}
-
-	//COLLIDE
-	if (collide) {
-		velocity.y = 0;
-		fall = false;
-	}
-	else
-		fall = true;
 
 
 	//BLIT PLAYER
@@ -177,11 +192,7 @@ bool j1Player::Update(float dt) {
 	if (direction.x == -1) {
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()));
-
 	}
-
-	/*if (App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE)
-		direction.x = 0;*/
 
 	return true;
 }
@@ -213,8 +224,7 @@ bool j1Player::Save(pugi::xml_node& data) const
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	//Checking collision with walls
-
-	if (c2->type == COLLIDER_STATIC) {
+	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
 		if (direction.y != 0) {
 
@@ -228,24 +238,19 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
+
+		//Checking X Axis Collisions
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
+			velocity.x = 0;
+			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 		}
-		if (direction.x != 0) {
-
-			//Checking X Axis Collisions
-			if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
-
-				velocity.x = 0;
-				position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 7;
-			}
-			else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
-
-				velocity.x = 0;
-				position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 7;
-			}
-
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
+			velocity.x = 0;
+			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
 		}
-	}
+	
 
+	if (!God) {
 
 	//Checking if falling
 	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL){ //This mechanic is cool so we force the player to save before each decision
@@ -254,7 +259,13 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	}
 }
 
+	//Check if touched button
+	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
+		App->map->TriggerActive = true;
+	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF)
+		App->map->TriggerActive = false;
 
+}
 
 
 void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
@@ -271,5 +282,5 @@ void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 		rect.h = node.attribute("h").as_int();
 		animation.PushBack({ rect });
 	}
-} //OJU AQUI TAMBE
+}
 

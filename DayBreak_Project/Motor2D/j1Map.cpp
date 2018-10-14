@@ -37,6 +37,8 @@ bool j1Map::Start() {
 	return ret;
 
 }
+
+
 void j1Map::Draw()
 {
 	if (map_loaded == false)
@@ -75,18 +77,17 @@ void j1Map::Draw()
 								if (flipped_horizontally) {
 									////	/*if (layer->name != ("Background")) {
 									if (tile_id == 32) {
-										if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+										if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
 											App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 90);
 									}
-									else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x >(-(App->render->camera.x) - 170))
+									else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
 										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 0, 0, 0, SDL_FLIP_HORIZONTAL);
 									////	//}
 								}
 
 								else if (layer->name != ("Background") && layer->name != ("Foreground")) {
-									App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-									/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
-										 //add NULL, angle after &r
+                  if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+									  App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 								}
 								else if (layer->name == ("Foreground")) {
 									App->render->Blit(tileset->texture, pos.x, pos.y - 200, &r, 0.30);
@@ -115,7 +116,6 @@ void j1Map::Draw()
 		layer_item = layer_item->next;
 	}
 }
-
 
 TileSet* j1Map::GetTilesetFromTileId( int id) const
 {

@@ -14,6 +14,11 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_NONE][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_NONE][COLLIDER_FALL] = false;
+	matrix[COLLIDER_NONE][COLLIDER_BLOCS] = false;
+	matrix[COLLIDER_NONE][TRIGGER_PUSH] = false;
+	matrix[COLLIDER_NONE][TRIGGER_PUSHOFF] = false;
+
+
 
 	matrix[COLLIDER_STATIC][COLLIDER_NONE] = false;
 	matrix[COLLIDER_STATIC][COLLIDER_STATIC] = false;
@@ -26,6 +31,8 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_FALL] = true;
+	matrix[COLLIDER_PLAYER][TRIGGER_PUSH] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_BLOCS] = true;
 
 	matrix[COLLIDER_UNACTIVE][COLLIDER_NONE] = false;
 	matrix[COLLIDER_UNACTIVE][COLLIDER_STATIC] = false;
@@ -38,6 +45,21 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_FALL][COLLIDER_UNACTIVE] = false;
 	matrix[COLLIDER_FALL][COLLIDER_FALL] = false;
+
+	matrix[TRIGGER_PUSH][TRIGGER_PUSH] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_PLAYER] = true;
+	matrix[TRIGGER_PUSH][TRIGGER_PUSHOFF] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_STATIC] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_UNACTIVE] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_NONE] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_FALL] = false;
+	matrix[TRIGGER_PUSH][COLLIDER_BLOCS] = false;
+
+	matrix[TRIGGER_PUSHOFF][TRIGGER_PUSHOFF] = false;
+	matrix[TRIGGER_PUSHOFF][COLLIDER_PLAYER] = true;
+
+	matrix[COLLIDER_BLOCS][COLLIDER_BLOCS] = false;
+	matrix[COLLIDER_BLOCS][COLLIDER_PLAYER] = true;
 
 }
 
@@ -150,13 +172,21 @@ void j1Collisions::DebugDraw() {
 		case COLLIDER_UNACTIVE:
 			App->render->DrawQuad(colliders[i]->rect, 0, 0, 200, 20);
 			break;
+		case COLLIDER_BLOCS:
+			App->render->DrawQuad(colliders[i]->rect, 0, 200, 200, 20);
+			break;
+		case TRIGGER_PUSH:
+			App->render->DrawQuad(colliders[i]->rect, 200, 0, 200, 20);
+			break;
+		case TRIGGER_PUSHOFF:
+			App->render->DrawQuad(colliders[i]->rect, 0, 0, 200, 20);
+			break;
 		default:
 			break;
 
 		}
 	}
 }
-
 
 bool j1Collisions::CleanUp(){
 
@@ -223,6 +253,15 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 			}
 			if (strcmp(collidertype, "Death_Colliders") == 0) {
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_FALL);
+			}
+			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLOCS);
+			}
+			if (strcmp(collidertype, "Push_Triggers") == 0) {
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSH);
+			}
+			if (strcmp(collidertype, "PushOff_Triggers") == 0) {
+				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSHOFF);
 			}
 		}
 	}

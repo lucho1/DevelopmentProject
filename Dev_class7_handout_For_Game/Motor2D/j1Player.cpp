@@ -181,6 +181,7 @@ bool j1Player::Save(pugi::xml_node& data) const
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	//Checking collision with walls
+
 	if (c2->type == COLLIDER_STATIC) {
 
 		collide = true;

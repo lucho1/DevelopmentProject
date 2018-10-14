@@ -27,7 +27,15 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 	return ret;
 }
+bool j1Map::Start() {
 
+	bool ret = true;
+
+	TriggerActive = false;
+
+	return ret;
+
+}
 void j1Map::Draw()
 {
 	if (map_loaded == false)
@@ -40,7 +48,6 @@ void j1Map::Draw()
 	
 		//MapLayer* layer = this->data.layers.start->data;
 		layer = layer_item->data;
-		if (layer->name != ("Colliders")) {
 			for (int y = 0; y < data.height; ++y)
 			{
 				for (int x = 0; x < data.width; ++x)
@@ -74,19 +81,24 @@ void j1Map::Draw()
 										App->render->Blit(tileset->texture, pos.x, pos.y, &r,1.0,0,0,0,SDL_FLIP_HORIZONTAL);
 							////	//}
 							}
-
-							else if (layer->name != ("Background")) {
+							
+							else if (layer->name != ("Background")&&layer->name!=("Foreground")) {
 								App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 								/*if (pos.x < (-(App->render->camera.x) + App->render->camera.w) && pos.x > (-(App->render->camera.x) - 170))*/
 									 //add NULL, angle after &r
-							}else
-								App->render->Blit(tileset->texture, pos.x, pos.y-400, &r,0.14);
+							}
+							else if (layer->name == ("Foreground")) {
+								App->render->Blit(tileset->texture, pos.x, pos.y-250, &r, 0.30);
+							}
+							else if (layer->name == ("Background")) {
+								App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+							}
 							
 						}
 					}
 				}
 			}
-		}
+		
 		layer_item = layer_item->next;
 	}
 }

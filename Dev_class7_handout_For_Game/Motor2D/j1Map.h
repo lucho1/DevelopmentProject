@@ -98,6 +98,7 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node& conf);
 
+	bool Start();
 	// Called each loop iteration
 	void Draw();
 
@@ -119,7 +120,7 @@ private:
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
-
+	bool TriggerActive=false;
 
 public:
 

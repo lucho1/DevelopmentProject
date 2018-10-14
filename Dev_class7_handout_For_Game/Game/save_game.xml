@@ -4,10 +4,11 @@
 	<window />
 	<textures />
 	<audio />
+	<:anonymous />
 	<map />
 	<scene />
 	<player>
-		<player x="360" y="330" />
+		<player x="200" y="1088" />
 	</player>
 	<:anonymous />
 	<renderer />

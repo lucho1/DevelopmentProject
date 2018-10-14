@@ -23,7 +23,7 @@ j1Player::j1Player() {
 	LoadPushbacks(Animation_node, Run);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Jump");
 	LoadPushbacks(Animation_node, Jump);
-	PlayerSettings = PlayerDocument.child("config").child("image");
+	PlayerSettings = PlayerDocument.child("config");
 
 	//Loading textures 
 	
@@ -49,14 +49,28 @@ bool j1Player::Start() {
 	p2SString tmp = ("maps\\Character_tileset.png");
 	Player_texture = App->tex->Load(tmp.GetString());
 
-	//Starting Position & Velocity FOR VEL & POS load them at player config
- 	position.x = App->render->camera.w / 2;
-	position.y = App->render->camera.h / 2;
+	//Starting Position & Velocity FOR VEL & POS load them at player config pls
+	if (App->scene->Level1 == true) {
+		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.x").as_int();
+		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.y").as_int();
+	}
+	else if (App->scene->Level2 == true) {
+		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.x").as_int();
+		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.y").as_int();
+	}
+
 	velocity.x = 8;
 	velocity.y = 10;
 	direction.x = 1;
 	direction.y = -1;
 
+	fall = true;
+	
+	//Player Rect
+	player_rect.x = position.x;
+	player_rect.y = position.y;
+	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
+	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
 	player_collider = App->collisions->AddCollider({ position.x +50, position.y, PlayerSettings.attribute("w").as_int() -50, PlayerSettings.attribute("h").as_int() }, COLLIDER_PLAYER, this);
 
@@ -180,11 +194,12 @@ bool j1Player::Update(float dt) {
 	//BLIT PLAYER
 	if (direction.x == 1 || direction.x == 0) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL);
+		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0,0, 0, SDL_FLIP_HORIZONTAL);
 	}
 	if (direction.x == -1) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x - 46, position.y, &(current_animation->GetCurrentFrame()));
+		App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()));
+
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE)
@@ -220,6 +235,7 @@ bool j1Player::Save(pugi::xml_node& data) const
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	//Checking collision with walls
+
 	if (c2->type == COLLIDER_STATIC) {
 
 		if (direction.y != 0) {
@@ -230,7 +246,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
-				jump = false;
+				jump = false; //Be careful with this ELSE
 				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
@@ -256,8 +272,9 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking if falling
 	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
 		App->LoadGame("save_game.xml");
+} //OJU ALS CORCHETES AQUI
 
-}
+
 
 
 void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
@@ -274,5 +291,5 @@ void j1Player::LoadPushbacks(pugi::xml_node node, Animation& animation) {
 		rect.h = node.attribute("h").as_int();
 		animation.PushBack({ rect });
 	}
+} //OJU AQUI TAMBE
 
-} 

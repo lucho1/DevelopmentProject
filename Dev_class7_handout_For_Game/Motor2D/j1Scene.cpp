@@ -12,6 +12,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
+	/*Level2 = true;
+	Level2 = false;*/
 }
 
 // Destructor
@@ -30,8 +32,11 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	App->map->Load("level1_blocking_test.tmx");
-	
+	if (Level1 == true)
+		App->map->Load("Level1.tmx");
+	else if (Level2 == true)
+		App->map->Load("Level2.tmx");
+
 	return true;
 }
 
@@ -44,6 +49,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+	
 
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
@@ -65,6 +71,10 @@ bool j1Scene::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x -= 1;
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+		ChangeLevel();
+		Start();
+	}
 
 	App->map->Draw();
 
@@ -99,4 +109,18 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 
 	return true;
+}
+
+void j1Scene::ChangeLevel() {
+
+	if (Level1 == true) {
+		Level1 = false;
+		Level2 = true;
+	}
+	else if (Level2 == true) {
+		Level2 = false;
+		Level1 = true;
+	}
+
+
 }

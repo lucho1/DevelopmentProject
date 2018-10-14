@@ -30,6 +30,13 @@ public:
 	// Retrieve window scale
 	uint GetScale() const;
 
+	uint GetWindowHeight() const {
+		return height;
+	}
+	uint GetWindowWidth() const {
+		return width;
+	}
+
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;

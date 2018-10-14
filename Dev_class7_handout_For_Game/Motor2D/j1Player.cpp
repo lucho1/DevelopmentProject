@@ -23,7 +23,7 @@ j1Player::j1Player() {
 	LoadPushbacks(Animation_node, Run);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Jump");
 	LoadPushbacks(Animation_node, Jump);
-	PlayerSettings = PlayerDocument.child("config").child("image");
+	PlayerSettings = PlayerDocument.child("config");
 
 	//Loading textures 
 	
@@ -50,20 +50,27 @@ bool j1Player::Start() {
 	//Load & Start everything here // Remember that gravity is a map parameter pls
 
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
- 	position.x = App->render->camera.w / 2;
-	position.y = App->render->camera.h / 2;
+	if (App->scene->Level1 == true) {
+		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.x").as_int();
+		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.y").as_int();
+	}
+	else if (App->scene->Level2 == true) {
+		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.x").as_int();
+		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.y").as_int();
+	}
+
 	velocity.x = 8;
 	velocity.y = 8;
 	direction.x = 1;
-	direction.y = 0;
+	direction.y = -1;
 
 	fall = true;
 	
 	//Player Rect
 	player_rect.x = position.x;
 	player_rect.y = position.y;
-	player_rect.w = PlayerSettings.attribute("w").as_int();
-	player_rect.h = PlayerSettings.attribute("h").as_int();
+	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
+	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
 	player_collider = App->collisions->AddCollider({player_rect.x+50,player_rect.y,player_rect.w-50,player_rect.h}, COLLIDER_PLAYER, this);
 
@@ -148,10 +155,6 @@ bool j1Player::Update(float dt) {
 }
 
 bool j1Player::PostUpdate() {
-
-	//player_rect.x = player_collider->rect.x = position.x;
-	//player_rect.y = player_collider->rect.y = position.y;
-	//App->render->DrawQuad(player_rect, 0, 0, 255, 200);
 
 	return true;
 }

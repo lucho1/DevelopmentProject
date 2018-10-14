@@ -32,9 +32,16 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	void ChangeLevel();
+
+	bool Level1 = false;
+	bool Level2 = true;
 
 private:
 	
+
+
+
 };
 
 #endif // __j1SCENE_H__

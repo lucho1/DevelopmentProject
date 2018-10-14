@@ -2,6 +2,7 @@
 #include "j1Collisions.h"
 #include "j1Input.h"
 #include "j1Render.h"
+#include "j1Scene.h"
 #include "j1Map.h"
 
 
@@ -53,7 +54,11 @@ bool j1Collisions::Awake() {
 
 bool j1Collisions::Start() {
 
-	AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
+	if (App->scene->Level1==true)
+		AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
+
+	else if (App->scene->Level2==true)
+		AssignMapColliders("Level2.tmx");
 
 	return true;
 }

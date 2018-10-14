@@ -8,6 +8,7 @@
 
 j1Collisions::j1Collisions()
 {
+	
 	matrix[COLLIDER_NONE][COLLIDER_NONE] = false;
 	matrix[COLLIDER_NONE][COLLIDER_STATIC] = false;
 	matrix[COLLIDER_NONE][COLLIDER_PLAYER] = false;

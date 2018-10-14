@@ -4,6 +4,7 @@
 	<window />
 	<textures />
 	<audio />
+	<:anonymous />
 	<map />
 	<scene />
 	<player>

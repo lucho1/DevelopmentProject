@@ -55,12 +55,14 @@ public:
 	iPoint direction;
 	fPoint velocity;
 
-	int auxY;
+	
+
+	bool God = false;
 	
 	bool jump = false;
 	bool jump_falling = false;
+	int auxY;
 	
-	bool collide = false;
 	bool fall = true;
 
 	Animation*		current_animation = nullptr;

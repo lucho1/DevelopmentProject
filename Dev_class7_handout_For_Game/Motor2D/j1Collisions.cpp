@@ -100,6 +100,14 @@ bool j1Collisions::PreUpdate() {
 		}
 	}
 
+
+	return ret;
+}
+
+
+bool j1Collisions::Update(float dt) {
+	
+
 	Collider *c1;
 	Collider *c2;
 
@@ -126,13 +134,6 @@ bool j1Collisions::PreUpdate() {
 			}
 		}
 	}
-
-	return ret;
-}
-
-
-bool j1Collisions::Update(float dt) {
-	
 	return true;
 }
 
@@ -225,7 +226,6 @@ bool Collider::CheckCollision(const SDL_Rect &r) const {
 	if ((r.x + r.w) < rect.x || (r.y + r.h) < rect.y || r.x > (rect.x + rect.w) || r.y > (rect.y + rect.h)) { return false; }
 	return true;
 }
-
 
 void j1Collisions::AssignMapColliders(const char* file_name) { 
 

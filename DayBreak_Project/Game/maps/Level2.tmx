@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="88" height="15" tilewidth="170" tileheight="170" nextobjectid="142">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="88" height="15" tilewidth="170" tileheight="170" nextobjectid="146">
  <tileset firstgid="1" name="Background_Tileset" tilewidth="170" tileheight="170" margin="2" tilecount="36" columns="6">
   <image source="Background_Tileset.png" width="1024" height="1024"/>
  </tileset>
@@ -10727,5 +10727,8 @@
   <object id="139" x="3636" y="874" width="41.1667" height="142.5"/>
   <object id="140" x="7542.66" y="526" width="47" height="151.667"/>
   <object id="141" x="11624.3" y="1383" width="39.9167" height="146"/>
+ </objectgroup>
+ <objectgroup name="Win_Trigger">
+  <object id="145" x="14329" y="1894.5" width="107.5" height="145"/>
  </objectgroup>
 </map>

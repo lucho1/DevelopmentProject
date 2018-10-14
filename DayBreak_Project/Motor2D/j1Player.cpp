@@ -219,7 +219,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		if (direction.y != 0) {
 
 			//Checking Y Axis Collisions
-			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.y - velocity.y) { //direction.y == 1
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
 				velocity.y = 0;
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}

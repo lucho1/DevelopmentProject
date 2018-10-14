@@ -5,6 +5,16 @@
 
 struct SDL_Texture;
 
+
+enum LEVELS {
+
+	LEVEL1 = 0,
+	LEVEL2,
+	MAIN_MENU,
+	NO_LEVEL
+
+};
+
 class j1Scene : public j1Module
 {
 public:
@@ -36,6 +46,12 @@ public:
 
 	bool Level1 = false;
 	bool Level2 = true;
+	bool Main_Menu = true;
+	
+	int LevelIterator = 0;
+
+	LEVELS currentLevel = NO_LEVEL;
+
 
 private:
 	

@@ -7,6 +7,7 @@
 #include <math.h>
 #include <cmath>
 #include "j1Collisions.h"
+#include "j1Scene.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -36,6 +37,8 @@ bool j1Map::Start() {
 	return ret;
 
 }
+
+
 void j1Map::Draw()
 {
 	if (map_loaded == false)
@@ -62,44 +65,48 @@ void j1Map::Draw()
 					//// Clear the flags
 					tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 
-
 					if (tile_id > 0)
 					{
-
-						if (tile_id == 433 && TriggerActive)
-							tile_id = 434;
-
-						if (tile_id == 435 && TriggerActive)
-							tile_id = 436;
-						
 						TileSet* tileset = GetTilesetFromTileId(tile_id);
 						if (tileset != nullptr)
 						{
 							SDL_Rect r = tileset->GetTileRect(tile_id);
 							iPoint pos = MapToWorld(x, y);
 
-
-							if (flipped_horizontally) {
-							/*if (layer->name != ("Background")) { */
-								if (tile_id == 32) {
-									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0,90);
+							if (App->scene->currentLevel != MAIN_MENU) {
+								if (flipped_horizontally) {
+									////	/*if (layer->name != ("Background")) {
+									if (tile_id == 32) {
+										if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+											App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 90);
+									}
+									else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 0, 0, 0, SDL_FLIP_HORIZONTAL);
+									////	//}
 								}
-								else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-										App->render->Blit(tileset->texture, pos.x, pos.y, &r,1.0,0,0,0,SDL_FLIP_HORIZONTAL);
-							//}
-							}
-							
-							else if (layer->name != ("Background")&&layer->name!=("Foreground")) {
-								if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-									App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-							}
-							else if (layer->name == ("Foreground")) 
-									App->render->Blit(tileset->texture, pos.x, pos.y-250, &r, 0.30);
-							
-							else if (layer->name == ("Background")) 
+
+								else if (layer->name != ("Background") && layer->name != ("Foreground")) {
+                  if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+									  App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+								}
+								else if (layer->name == ("Foreground")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y - 200, &r, 0.30);
+								}
+								else if (layer->name == ("Background")) {
 									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
-							
+								}
+							}
+							else if(App->scene->currentLevel==MAIN_MENU){
+								if (layer->name == ("Foreground")) {
+									App->render->Blit(tileset->texture, pos.x, (pos.y - 250) , &r);
+								}
+								else if (layer->name == ("Background")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+								}
+								else if (layer->name == ("Title")) {
+									App->render->Blit(tileset->texture, pos.x, pos.y, &r, false);
+								}
+							}
 							
 						}
 					}
@@ -109,7 +116,6 @@ void j1Map::Draw()
 		layer_item = layer_item->next;
 	}
 }
-
 
 TileSet* j1Map::GetTilesetFromTileId( int id) const
 {
@@ -199,6 +205,7 @@ bool j1Map::CleanUp()
 
 	while(item != NULL)
 	{
+		App->tex->UnLoad(item->data->texture);
 		RELEASE(item->data);
 		item = item->next;
 	}

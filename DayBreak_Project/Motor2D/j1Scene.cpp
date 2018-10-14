@@ -8,11 +8,14 @@
 #include "j1Window.h"
 #include "j1Map.h"
 #include "j1Scene.h"
+#include "j1Player.h"
+#include "j1Collisions.h"
 
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Level1 = true;
+	Main_Menu = true;
+	Level1 = false;
 	Level2 = false;
 }
 
@@ -32,11 +35,25 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	if (Level1 == true)
+	if (Main_Menu == true) {
+		App->map->Load("Main_Menu.tmx");
+		currentLevel = MAIN_MENU;
+		App->render->ResetCamera();
+	}
+	if (Level1 == true) {
 		App->map->Load("Level1.tmx");
-	else if (Level2 == true)
+		currentLevel = LEVEL1;
+		App->render->ResetCamera();
+		App->player->Start();
+		App->collisions->Start();
+	}
+	else if (Level2 == true) {
 		App->map->Load("Level2.tmx");
-
+		currentLevel = LEVEL2;
+		App->render->ResetCamera();
+		App->player->Start();
+		App->collisions->Start();
+	}
 	return true;
 }
 
@@ -73,6 +90,9 @@ bool j1Scene::Update(float dt)
 		App->render->camera.x -= 1;
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
 		ChangeLevel();
+		App->collisions->CleanUp();
+		App->player->CleanUp();
+		App->map->CleanUp();
 		Start();
 	}
 
@@ -113,14 +133,32 @@ bool j1Scene::CleanUp()
 
 void j1Scene::ChangeLevel() {
 
-	if (Level1 == true) {
-		Level1 = false;
-		Level2 = true;
+	LevelIterator++;
+	if (LevelIterator > 2) {
+		LevelIterator = 0;
 	}
-	else if (Level2 == true) {
+
+	if (LevelIterator == 0) {
+		Main_Menu = true;
 		Level2 = false;
-		Level1 = true;
+		Level1 = false;
+		currentLevel = MAIN_MENU;
 	}
+
+	else if (LevelIterator == 1) {
+			Main_Menu = false;
+			Level2 = false;
+			Level1 = true;
+			currentLevel = LEVEL1;
+	}
+	
+	else if(LevelIterator == 2) {
+			Main_Menu = false;
+			Level1 = false;
+			Level2 = true;
+			currentLevel = LEVEL2;
+	}
+
 
 
 }

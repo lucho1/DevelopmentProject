@@ -112,6 +112,7 @@ public:
 	iPoint WorldToMap(int x, int y) const;
 
 	TileSet* GetTilesetFromTileId(int id) const;
+	
 
 private:
 

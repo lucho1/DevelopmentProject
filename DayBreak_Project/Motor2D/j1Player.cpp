@@ -32,7 +32,17 @@ j1Player::j1Player() {
 j1Player::~j1Player() {}
 
 bool j1Player::CleanUp() { 
-	
+
+
+
+	LOG("Cleaning Up Player 1 ");
+	if (player_collider != nullptr)
+		player_collider->to_delete = true;
+
+	if (current_animation != nullptr)
+		current_animation = nullptr;
+	App->tex->UnLoad(Player_texture);
+
 	return true;
 }
 
@@ -50,13 +60,16 @@ bool j1Player::Start() {
 	Player_texture = App->tex->Load(tmp.GetString());
 
 	//Starting Position & Velocity FOR VEL & POS load them at player config pls
-	if (App->scene->Level1 == true) {
+	if (App->scene->currentLevel == LEVEL1) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.x").as_int();
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.y").as_int();
 	}
-	else if (App->scene->Level2 == true) {
+	else if (App->scene->currentLevel==LEVEL2) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.x").as_int();
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.y").as_int();
+	}
+	else if (App->scene->currentLevel == MAIN_MENU) {
+		position.x = -200;
 	}
 
 	velocity.x = 5.5;
@@ -213,17 +226,18 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
-		//Checking Y Axis Collisions
-		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.y - velocity.y) { //direction.y = 1
-			velocity.y = 0;
-			position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
-		}
-		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y = -1*/
+		if (direction.y != 0) {
 
-			velocity.y = 0;
-			position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
-			jump = false;
-		}
+			//Checking Y Axis Collisions
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
+				velocity.y = 0;
+				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
+			}
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
+				jump = false;
+				velocity.y = 0;
+				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+			}
 
 		//Checking X Axis Collisions
 		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
@@ -231,18 +245,19 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
-
 			velocity.x = 0;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
 		}
-	}
+	
 
 	if (!God) {
 
-		//Checking if falling
-		if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
-			App->LoadGame("save_game.xml");
+	//Checking if falling
+	if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL){ //This mechanic is cool so we force the player to save before each decision
+		App->LoadGame("save_game.xml");
+		App->render->ResetCamera();
 	}
+}
 
 	//Check if touched button
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button

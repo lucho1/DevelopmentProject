@@ -104,10 +104,10 @@ bool j1Collisions::Awake() {
 
 bool j1Collisions::Start() {
 
-	if (App->scene->Level1==true)
+	if (App->scene->currentLevel == LEVEL1)
 		AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
 
-	else if (App->scene->Level2==true)
+	else if (App->scene->currentLevel == LEVEL2)
 		AssignMapColliders("Level2.tmx");
 
 	return true;

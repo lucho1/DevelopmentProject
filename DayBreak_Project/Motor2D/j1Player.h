@@ -9,6 +9,7 @@
 #include "Animation.h"
 
 
+
 class j1Player : public j1Module
 {
 
@@ -73,6 +74,9 @@ public:
 	SDL_Rect player_rect;
 
 	Collider *player_collider = nullptr;
+
+	
+
 private :
 
 	pugi::xml_document	PlayerDocument;

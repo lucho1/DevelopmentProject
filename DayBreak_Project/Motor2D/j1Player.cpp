@@ -12,10 +12,9 @@ j1Player::j1Player() {
 	name.create("player");
 	pugi::xml_parse_result result = PlayerDocument.load_file("PlayerSettings.xml");
 
-	if (result == NULL) {
+	if (result == NULL)
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
-	}
-
+	
 	//Loading Settings
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Idle");
 	LoadPushbacks(Animation_node, Idle);
@@ -25,17 +24,13 @@ j1Player::j1Player() {
 	LoadPushbacks(Animation_node, Jump);
 	PlayerSettings = PlayerDocument.child("config");
 
-	//Loading textures 
-	
 }
 
 j1Player::~j1Player() {}
 
 bool j1Player::CleanUp() { 
 
-
-
-	LOG("Cleaning Up Player 1 ");
+	LOG("Cleaning Up Player");
 	if (player_collider != nullptr)
 		player_collider->to_delete = true;
 
@@ -55,11 +50,14 @@ bool j1Player::Awake() {
 
 bool j1Player::Start() {
 
-	//const char* path = PlayerSettings.child("image").attribute("source").as_string();
 	p2SString tmp = ("maps\\Character_tileset.png");
 	Player_texture = App->tex->Load(tmp.GetString());
 
-	//Starting Position & Velocity FOR VEL & POS load them at player config pls
+	//Starting Position & Velocity
+	initial_vel.x = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.x").as_int();
+	initial_vel.y = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.y").as_int();
+	direction_x = RIGHT;
+
 	if (App->scene->currentLevel == LEVEL1) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.x").as_int();
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.y").as_int();
@@ -68,14 +66,8 @@ bool j1Player::Start() {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.x").as_int();
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.y").as_int();
 	}
-	else if (App->scene->currentLevel == MAIN_MENU) {
+	else if (App->scene->currentLevel == MAIN_MENU) 
 		position.x = -200;
-	}
-
-	velocity.x = 5.5;
-	velocity.y = 8;
-	direction.x = 1;
-	direction.y = -1;
 
 	fall = true;
 	
@@ -104,14 +96,16 @@ bool j1Player::Update(float dt) {
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		velocity.x = 5.5;
-		direction.x = 1;
+
+		velocity.x = initial_vel.x;
+		direction_x = RIGHT;
 		position.x += velocity.x;
 		current_animation = &Run;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		velocity.x = 5.5;
-		direction.x = -1;
+
+		velocity.x = initial_vel.x;
+		direction_x = LEFT;
 		position.x -= velocity.x;
 		current_animation = &Run;
 	}
@@ -121,34 +115,8 @@ bool j1Player::Update(float dt) {
 		jump = true;
 		jump_falling = false;
 		auxY = position.y;
-		velocity.y = 8;
+		velocity.y = initial_vel.y;
 	}
-
-	//God mode
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
-		God = !God;
-
-	if (God) {
-
-		LOG("GOD MODE ACTIVE");
-		jump = true;
-		fall = false;
-
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-
-			velocity.y = 8;
-			position.y -= velocity.y;
-		}
-
-		else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-			
-			velocity.y = 8;
-			position.y += velocity.y;
-		}
-
-	}
-	else
-		fall = true;
 
 	//JUMP
 	if (jump) {
@@ -159,7 +127,6 @@ bool j1Player::Update(float dt) {
 			fall = false;
 			position.y -= velocity.y;
 			velocity.y -= 0.2;
-			direction.y = 1;
 
 		}
 
@@ -175,21 +142,44 @@ bool j1Player::Update(float dt) {
 	//FALL
 	if (fall) {
 
-		direction.y = -1;
-
-		if (velocity.y < 8)
+		if (velocity.y < initial_vel.y)
 			velocity.y += 0.2;
 
 		position.y += velocity.y;
 	}
 
+	//God mode
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+		God = !God;
+
+	if (God) {
+
+		LOG("GOD MODE ACTIVE");
+		jump = true;
+		fall = false;
+
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+
+			velocity.y = initial_vel.y;
+			position.y -= velocity.y;
+		}
+
+		else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+
+			velocity.y = initial_vel.y;
+			position.y += velocity.y;
+		}
+
+	}
+	else
+		fall = true;
 
 	//BLIT PLAYER
-	if (direction.x == 1 || direction.x == 0) {
+	if (direction_x == RIGHT) {
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0,0, 0, SDL_FLIP_HORIZONTAL);
 	}
-	if (direction.x == -1) {
+	if (direction_x == LEFT) {
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()));
 	}

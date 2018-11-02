@@ -68,7 +68,6 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	
-
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
 
@@ -87,14 +86,9 @@ bool j1Scene::Update(float dt)
 		Start();
 	}
 
-	if (currentLevel == MAIN_MENU) {
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
-			ChangeLevel();
-		}
-	}
+	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+		ChangeLevel();
 	
-
-
 	App->map->Draw();
 
 	int x, y;

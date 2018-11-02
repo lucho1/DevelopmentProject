@@ -12,12 +12,31 @@ const unsigned FLIPPED_VERTICALLY_FLAG =	0x40000000;
 const unsigned FLIPPED_DIAGONALLY_FLAG =	0x20000000;
 
 
-// TODO 5: Create a generic structure to hold properties
-// TODO 7: Our custom properties should have one method
-// to ask for the value of a custom property
 // ----------------------------------------------------
 struct Properties
 {
+	struct Property
+	{
+		p2SString name;
+		int value;
+	};
+
+	~Properties()
+	{
+		p2List_item<Property*>* item;
+		item = list.start;
+
+		while (item != NULL)
+		{
+			RELEASE(item->data);
+			item = item->next;
+		}
+
+		list.clear();
+	}
+
+	int Get(const char* name, int default_value = 0) const;
+	p2List<Property*>	list;
 };
 
 // ----------------------------------------------------

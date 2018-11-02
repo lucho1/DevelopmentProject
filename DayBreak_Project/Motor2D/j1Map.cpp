@@ -48,75 +48,75 @@ void j1Map::Draw()
 	MapLayer* layer;
 
 	while (layer_item != nullptr) {
-	
-		//MapLayer* layer = this->data.layers.start->data;
+
 		layer = layer_item->data;
-			for (int y = 0; y < data.height; ++y) {
-				for (int x = 0; x < data.width; ++x) {
-				
-					int tile_id=layer->Get(x,y);
 
-					bool flipped_horizontally = (tile_id & FLIPPED_HORIZONTALLY_FLAG);
-					bool flipped_vertically = (tile_id & FLIPPED_VERTICALLY_FLAG);
-					bool flipped_diagonally = (tile_id & FLIPPED_DIAGONALLY_FLAG);
+		for (int y = 0; y < data.height; ++y) {
+			for (int x = 0; x < data.width; ++x) {
 
-					//// Clear the flags
-					tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
+				int tile_id = layer->Get(x, y);
 
-					if (tile_id > 0) {
+				bool flipped_horizontally = (tile_id & FLIPPED_HORIZONTALLY_FLAG);
+				bool flipped_vertically = (tile_id & FLIPPED_VERTICALLY_FLAG);
+				bool flipped_diagonally = (tile_id & FLIPPED_DIAGONALLY_FLAG);
 
-						if (tile_id == 433 && TriggerActive)
-							tile_id = 434;
-						if (tile_id == 435 && TriggerActive)
-							tile_id = 436;
+				//// Clear the flags
+				tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 
-						TileSet* tileset = GetTilesetFromTileId(tile_id);
-						if (tileset != nullptr) {
+				if (tile_id > 0) {
 
-							SDL_Rect r = tileset->GetTileRect(tile_id);
-							iPoint pos = MapToWorld(x, y);
+					if (tile_id == 433 && TriggerActive)
+						tile_id = 434;
+					if (tile_id == 435 && TriggerActive)
+						tile_id = 436;
 
-							if (App->scene->currentLevel != MAIN_MENU) {
+					TileSet* tileset = GetTilesetFromTileId(tile_id);
+					if (tileset != nullptr) {
 
-								if (flipped_horizontally) {
+						SDL_Rect r = tileset->GetTileRect(tile_id);
+						iPoint pos = MapToWorld(x, y);
 
-									if (tile_id == 32) {
-										if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-											App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 90);
-									}
-									else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 0, 0, 0, SDL_FLIP_HORIZONTAL);
-									
-								}
+						if (App->scene->currentLevel != MAIN_MENU) {
 
-								else if (layer->name != ("Background") && layer->name != ("Foreground")) {
+							if (flipped_horizontally) {
+
+								if (tile_id == 32) {
 									if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
-										App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+										App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 90);
 								}
-								else if (layer->name == ("Foreground")) 
-									App->render->Blit(tileset->texture, pos.x, pos.y - 200, &r, 0.30);
-								
-								else if (layer->name == ("Background")) 
-									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
-								
+								else if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+									App->render->Blit(tileset->texture, pos.x, pos.y, &r, 1.0, 0, 0, 0, SDL_FLIP_HORIZONTAL);
+
 							}
-							else if(App->scene->currentLevel==MAIN_MENU) {
-								if (layer->name == ("Foreground")) 
-									App->render->Blit(tileset->texture, pos.x, (pos.y - 250) , &r);
-								
-								else if (layer->name == ("Background")) 
-									App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
-								
-								else if (layer->name == ("Title"))
-									App->render->Blit(tileset->texture, pos.x, pos.y, &r, false);
-								
+
+							else if (layer->name != ("Background") && layer->name != ("Foreground")) {
+								if (pos.x < (-(App->render->camera.x) + App->render->camera.w) + spawnMargin && pos.x >(-(App->render->camera.x) - spawnMargin))
+									App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 							}
-							
+							else if (layer->name == ("Foreground"))
+								App->render->Blit(tileset->texture, pos.x, pos.y - 200, &r, 0.30);
+
+							else if (layer->name == ("Background"))
+								App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+
 						}
+						else if (App->scene->currentLevel == MAIN_MENU) {
+							if (layer->name == ("Foreground"))
+								App->render->Blit(tileset->texture, pos.x, (pos.y - 250), &r);
+
+							else if (layer->name == ("Background"))
+								App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+
+							else if (layer->name == ("Title"))
+								App->render->Blit(tileset->texture, pos.x, pos.y, &r, false);
+
+						}
+
 					}
 				}
 			}
-		
+		}
+
 		layer_item = layer_item->next;
 	}
 }
@@ -480,8 +480,22 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 {
 	bool ret = false;
 
-	// TODO 6: Fill in the method to fill the custom properties from 
-	// an xml_node
+	pugi::xml_node data = node.child("properties");
+
+	if (data != NULL)
+	{
+		pugi::xml_node prop;
+
+		for (prop = data.child("property"); prop; prop = prop.next_sibling("property"))
+		{
+			Properties::Property* p = new Properties::Property();
+
+			p->name = prop.attribute("name").as_string();
+			p->value = prop.attribute("value").as_int();
+
+			properties.list.add(p);
+		}
+	}
 
 	return ret;
 }

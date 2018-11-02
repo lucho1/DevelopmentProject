@@ -3,42 +3,45 @@
 <config>
 
     <image source="Character_tileset.png" width="512" height="512" w="102" h="102"/>
-	
-    <PlayerSettings>
-	<StartingPose>
-	<Level1 position.x="580" position.y="1400" />
-	<Level2 position.x="200" position.y="1080" />
-	</StartingPose>
 
-	<Velocity velocity.x="8" velocity.y="8"/>
-    </PlayerSettings>
+  <PlayerSettings>
+    
+    <StartingPose>
+      <Level1 position.x="580" position.y="1400" />
+      <Level2 position.x="200" position.y="1080" />
+    </StartingPose>
 
-    <AnimationCoords>
+    <Velocity velocity.x="5.5" velocity.y="8"/>
+    
+  </PlayerSettings>
 
-	 <Idle loop="true" speed="0.17">
-		<Pushback x="1" y="1" w="102" h="102"/>
-		<Pushback x="103" y="1" w="102" h="102"/>
-		<Pushback x="205" y="1" w="102" h="102"/>
-		<Pushback x="307" y="1" w="102" h="102"/>
-		<Pushback x="409" y="1" w="102" h="102"/>
-		<Pushback x="1" y="103" w="102" h="102"/>
-		<Pushback x="103" y="103" w="102" h="102"/>
-	</Idle>
-	
-	<Run loop="true" speed="0.15">
-		<Pushback x="205" y="103" w="102" h="102"/>
-		<Pushback x="307" y="103" w="102" h="102"/>
-		<Pushback x="409" y="103" w="102" h="102"/>
-		<Pushback x="1" y="205" w="102" h="102"/>
-		<Pushback x="103" y="205" w="102" h="102"/>
-		<Pushback x="205" y="205" w="102" h="102"/>
-	</Run>
+<!--ANIMATIONS-->
+  <AnimationCoords>
 
-	<Jump loop="false"speed=0.15">
-		<Pushback x="307" y="205" w="102" h="102"/>
-		<Pushback x="409" y="205" w="102" h="102"/>
-		<Pushback x="1" y="307" w="102" h="102"/>
-	</Jump
+    <Idle loop="true" speed="0.17">
+      <Pushback x="1" y="1" w="102" h="102"/>
+      <Pushback x="103" y="1" w="102" h="102"/>
+      <Pushback x="205" y="1" w="102" h="102"/>
+      <Pushback x="307" y="1" w="102" h="102"/>
+      <Pushback x="409" y="1" w="102" h="102"/>
+      <Pushback x="1" y="103" w="102" h="102"/>
+      <Pushback x="103" y="103" w="102" h="102"/>
+    </Idle>
 
-     </AnimationCoords>
+    <Run loop="true" speed="0.15">
+      <Pushback x="205" y="103" w="102" h="102"/>
+      <Pushback x="307" y="103" w="102" h="102"/>
+      <Pushback x="409" y="103" w="102" h="102"/>
+      <Pushback x="1" y="205" w="102" h="102"/>
+      <Pushback x="103" y="205" w="102" h="102"/>
+      <Pushback x="205" y="205" w="102" h="102"/>
+    </Run>
+
+    <Jump loop="false" speed="0.15">
+      <Pushback x="307" y="205" w="102" h="102"/>
+      <Pushback x="409" y="205" w="102" h="102"/>
+      <Pushback x="1" y="307" w="102" h="102"/>
+    </Jump>
+
+  </AnimationCoords>
 </config>

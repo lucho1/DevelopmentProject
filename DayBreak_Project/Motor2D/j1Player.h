@@ -8,6 +8,11 @@
 #include "j1App.h"
 #include "Animation.h"
 
+enum direction {
+
+	RIGHT,
+	LEFT
+};
 
 
 class j1Player : public j1Module
@@ -53,11 +58,10 @@ public:
 public:
 
 	iPoint position;
-	iPoint direction;
+	int direction_x;
 	fPoint velocity;
-
+	fPoint initial_vel;
 	
-
 	bool God = false;
 	
 	bool jump = false;

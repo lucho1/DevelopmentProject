@@ -11,6 +11,8 @@ DayBreak is done with Tiled program, has 2 levels and save/load support. Also, t
 
 The game is licensed under an MIT License.
 
+_[Add some cute photo of the game]_
+
 ### Download the game [here](https://github.com/lucho1/DevelopmentProject/releases)
 #### Github Repo: [DayBreak](https://github.com/lucho1/DevelopmentProject)
 
@@ -58,12 +60,17 @@ Those platforms can be also obstacles that must be deactivate by passing through
 
 From main menu, start with Enter. Quit the game with ESC key.
 
-_Settings for Debug purposes_
+*_Settings for Debug purposes_*
 F1 - Iterate between screens/levels
+
 F2 - Start from beginning of current level
+
 F5 - Save the Current state
+
 F6 - Load previous state
+
 F9 - View Colliders/Logic
+
 F10- God Mode
 
 ## License

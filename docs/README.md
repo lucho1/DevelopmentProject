@@ -61,6 +61,7 @@ Those platforms can be also obstacles that must be deactivate by passing through
 From main menu, start with Enter. Quit the game with ESC key.
 
 * _Settings for Debug purposes_
+
 F1 - Iterate between screens/levels
 
 F2 - Start from beginning of current level

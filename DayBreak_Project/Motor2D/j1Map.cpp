@@ -518,6 +518,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 	return ret;
 }
 
+//Basically here we fullfill a map array with 0s and 1s (same than we did with the map[X][Y] but better
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
 	bool ret = false;
@@ -540,12 +541,20 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 			{
 				int i = (y*layer->width) + x;
 
-				int tile_id = layer->Get(x, y);
-				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
-
+				//condition ? result1 : result2 
+				//condition is true, the expression evaluates to result1, otherwise to result2.
+				//EXAMPLE:
+				/*  a=2;
+					b=7;
+					c = (a>b) ? a : b;
+					WILL GIVE c = b
+				*/
+				int tile_id = layer->Get(x, y); //So here, first we check for tile id
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL; //If tile id > 0, tileset = tileset from a tile id. Else, tileset = NULL
+				
 				if (tileset != NULL)
 				{
-					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1; //Here, if (tile id - tileset 1stGID) > 0, map[i] = 0. Else is 1
 					/*TileType* ts = tileset->GetTileType(tile_id);
 					if(ts != NULL)
 					{

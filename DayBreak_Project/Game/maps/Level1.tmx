@@ -5645,6 +5645,9 @@
   </data>
  </layer>
  <objectgroup name="Colliders">
+  <properties>
+   <property name="Navigation" type="int" value="1"/>
+  </properties>
   <object id="1" x="170" y="1359" width="1019" height="24"/>
   <object id="2" x="172" y="1529" width="1356" height="38"/>
   <object id="3" x="340" y="1566" width="847" height="291"/>

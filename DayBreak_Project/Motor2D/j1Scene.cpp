@@ -10,6 +10,7 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 #include "j1Collisions.h"
+#include "j1PathFinding.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -55,12 +56,56 @@ bool j1Scene::Start()
 		App->player->Start();
 		App->collisions->Start();
 	}
+
+	if (App->map->Load("Level1.tmx") == true)
+	{
+		int w, h;
+		uchar* data = NULL;
+		if (App->map->CreateWalkabilityMap(w, h, &data))
+			App->pathfinding->SetMap(w, h, data);
+
+		RELEASE_ARRAY(data);
+	}
+
+	pugi::xml_parse_result result = SceneDocument.load_file("config.xml");
+	music_node = SceneDocument.child("config").child("music");
+
+	if (result == NULL)
+		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
+
+	//Need to play more than one track (or merge them). Just comment/uncomment to change music
+	App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
+	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
+
+	debug_tex = App->tex->Load("maps/path2.png");
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
+	// debug pathfing ------------------
+	static iPoint origin;
+	static bool origin_selected = false;
+
+	int x, y;
+	App->input->GetMousePosition(x, y);
+	iPoint p = App->render->ScreenToWorld(x, y);
+	p = App->map->WorldToMap(p.x, p.y);
+
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		if (origin_selected == true)
+		{
+			App->pathfinding->CreatePath(origin, p);
+			origin_selected = false;
+		}
+		else
+		{
+			origin = p;
+			origin_selected = true;
+		}
+	}
 	return true;
 }
 
@@ -102,6 +147,23 @@ bool j1Scene::Update(float dt)
 					map_coordinates.x, map_coordinates.y);
 
 	App->win->SetTitle(title.GetString());
+
+	// Debug pathfinding ------------------------------
+	App->input->GetMousePosition(x, y);
+	iPoint p = App->render->ScreenToWorld(x, y);
+	p = App->map->WorldToMap(p.x, p.y);
+	p = App->map->MapToWorld(p.x, p.y);
+
+	App->render->Blit(debug_tex, p.x, p.y);
+
+	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
+
+	for (uint i = 0; i < path->Count(); ++i)
+	{
+		iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
+		App->render->Blit(debug_tex, pos.x, pos.y);
+	}
+
 	return true;
 }
 

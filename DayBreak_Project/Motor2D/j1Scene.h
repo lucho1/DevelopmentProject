@@ -59,8 +59,10 @@ public:
 
 private:
 	
+	SDL_Texture* debug_tex;
 
-
+	pugi::xml_document	SceneDocument;
+	pugi::xml_node		music_node;
 
 };
 

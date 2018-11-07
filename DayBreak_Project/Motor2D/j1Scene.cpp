@@ -74,7 +74,7 @@ bool j1Scene::Start()
 		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
 
 	//Need to play more than one track (or merge them). Just comment/uncomment to change music
-	App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
+	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
 
 	debug_tex = App->tex->Load("maps/path2.png");
@@ -146,7 +146,7 @@ bool j1Scene::Update(float dt)
 					App->map->data.tilesets.count(),
 					map_coordinates.x, map_coordinates.y);
 
-	App->win->SetTitle(title.GetString());
+	//App->win->SetTitle(title.GetString());
 
 	// Debug pathfinding ------------------------------
 	App->input->GetMousePosition(x, y);

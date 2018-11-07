@@ -3,6 +3,9 @@
 
 #include "p2List.h"
 #include "j1Module.h"
+#include "j1PerfTimer.h"
+#include "j1Timer.h"
+
 #include "PugiXml\src\pugixml.hpp"
 #include "SDL/include/SDL.h"
 
@@ -108,6 +111,16 @@ private:
 	bool				want_to_load;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+
+	//Time stabilization
+	j1PerfTimer			app_perf_timer;
+	j1Timer				app_np_timer;
+	j1Timer				frame_timer;
+	j1Timer				sec_counter;
+	double				last_frame_time;
+	uint64				frame_count;
+	uint32				frames_on_last_update = 0;
+	uint32				frames_showed = 0;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

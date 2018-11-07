@@ -76,6 +76,10 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
+	app_np_timer.Start();
+	app_perf_timer.Start();
+	frame_count = 0;
+
 	pugi::xml_document	config_file;
 	pugi::xml_node		config;
 	pugi::xml_node		app_config;
@@ -164,6 +168,10 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	frame_timer.Start();
+	last_frame_time = app_perf_timer.ReadMs();
+	frames_showed++;
+	frame_count++;
 }
 
 // ---------------------------------------------
@@ -174,6 +182,25 @@ void j1App::FinishUpdate()
 
 	if(want_to_load == true)
 		LoadGameNow();
+
+	//TITLE STUFF
+	float seconds_since_startup = app_np_timer.ReadSec();
+	float avg_fps = float(frame_count) / seconds_since_startup;
+	float dt = 0.0f;
+	uint32 last_frame_ms = frame_timer.Read();
+
+	if (sec_counter.Read() > 1000) {
+
+		sec_counter.Start();
+		frames_on_last_update = frames_showed;
+		frames_showed = 0;
+	}
+
+	static char title[256];
+	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
+		avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
+
+	App->win->SetTitle(title);
 }
 
 // Call modules before each loop iteration

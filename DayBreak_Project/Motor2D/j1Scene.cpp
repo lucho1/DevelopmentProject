@@ -120,11 +120,11 @@ bool j1Scene::Update(float dt)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-		//App->LoadGame("save_level1.xml");
 		App->map->TriggerActive = false;
-		ChangeLevel();
+		ChangeLevel(LEVEL1);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
+
 		App->collisions->CleanUp();
 		App->player->CleanUp();
 		App->map->CleanUp();
@@ -132,7 +132,7 @@ bool j1Scene::Update(float dt)
 	}
 
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-		ChangeLevel();
+		ChangeLevel(LEVEL1);
 	
 	App->map->Draw();
 
@@ -186,17 +186,36 @@ bool j1Scene::CleanUp()
 	return true;
 }
 
-void j1Scene::ChangeLevel() {
-	IterateLevel();
+bool j1Scene::Load(pugi::xml_node& data)
+{
+	int level_to_load = 0;
+	level_to_load = data.child("scene").attribute("currentlevel").as_int();
+	ChangeLevel(level_to_load);
+	return true;
+}
+
+// Save Game State
+bool j1Scene::Save(pugi::xml_node& data) const
+{
+	pugi::xml_node scn = data.append_child("scene");
+	scn.append_attribute("currentlevel") = LevelIterator;
+
+	return true;
+}
+
+void j1Scene::ChangeLevel(int level) {
+
+	IterateLevel(level);
+
 	App->collisions->CleanUp();
 	App->player->CleanUp();
 	App->map->CleanUp();
 	Start();
 }
 
-void j1Scene::IterateLevel() {
+void j1Scene::IterateLevel(int level) {
 
-	LevelIterator++;
+	LevelIterator = level;
 	if (LevelIterator > 2) {
 		LevelIterator = 0;
 	}
@@ -221,7 +240,4 @@ void j1Scene::IterateLevel() {
 			Level2 = true;
 			currentLevel = LEVEL2;
 	}
-
-
-
 }

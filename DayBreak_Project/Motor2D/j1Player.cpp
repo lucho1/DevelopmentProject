@@ -79,8 +79,8 @@ bool j1Player::Start() {
 
 	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, player_rect.w - 50, player_rect.h }, COLLIDER_PLAYER, this);
 
-	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
-	App->SaveGame("save_game.xml");
+	//Once player is created (at each level) we could save
+	//App->SaveGame("save_game.xml");
 
 	return true;
 }
@@ -149,12 +149,14 @@ bool j1Player::Update(float dt) {
 	}
 
 	//God mode
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN) {
 		God = !God;
+		LOG("GOD MODE ACTIVE");
+	}
 
 	if (God) {
 
-		LOG("GOD MODE ACTIVE");
+		
 		jump = true;
 		fall = false;
 
@@ -219,22 +221,22 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 
 		//Checking Y Axis Collisions
-		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
+		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Jumping (colliding from Down)
 			velocity.y = 0;
 			position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 		}
-		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
+		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //falling (colliding from Up)
 			jump = false;
 			velocity.y = 0;
 			position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 		}
 
 		//Checking X Axis Collisions
-		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = RIGHT (colliding from left)
 			velocity.x = 0;
 			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 		}
-		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = LEFT (colliding from right)
 			velocity.x = 0;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
 		}
@@ -256,11 +258,12 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;
 
+	//Check if collision with a end-level door
 	if (c1->type == TRIGGER_WIN || c2->type == TRIGGER_WIN) {
-		App->scene->ChangeLevel();
+
+		int level_switch = App->scene->currentLevel + 1;
+		App->scene->ChangeLevel(level_switch);
 	}
-
-
 }
 
 

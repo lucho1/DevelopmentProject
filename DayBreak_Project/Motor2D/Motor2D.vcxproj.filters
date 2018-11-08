@@ -46,8 +46,12 @@
     <ClCompile Include="j1Pathfinding.cpp">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClCompile>
-    <ClCompile Include="j1Timer.cpp" />
-    <ClCompile Include="j1PerfTimer.cpp" />
+    <ClCompile Include="j1PerfTimer.cpp">
+      <Filter>Core\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Timer.cpp">
+      <Filter>Core\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1App.h">
@@ -116,8 +120,12 @@
     <ClInclude Include="j1Pathfinding.h">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClInclude>
-    <ClInclude Include="j1Timer.h" />
-    <ClInclude Include="j1PerfTimer.h" />
+    <ClInclude Include="j1Timer.h">
+      <Filter>Core\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="j1PerfTimer.h">
+      <Filter>Core\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

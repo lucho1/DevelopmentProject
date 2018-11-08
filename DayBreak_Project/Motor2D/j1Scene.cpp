@@ -57,7 +57,7 @@ bool j1Scene::Start()
 		App->collisions->Start();
 	}
 
-	if (App->map->Load("Level1.tmx") == true)
+	if (Level1==true)
 	{
 		int w, h;
 		uchar* data = NULL;

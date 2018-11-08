@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="88" height="15" tilewidth="170" tileheight="170" nextobjectid="148">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="88" height="15" tilewidth="170" tileheight="170" nextobjectid="149">
  <tileset firstgid="1" name="Background_Tileset" tilewidth="170" tileheight="170" margin="2" tilecount="36" columns="6">
   <image source="Background_Tileset.png" width="1024" height="1024"/>
  </tileset>
@@ -5991,7 +5991,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="1610612749"/>
    <tile gid="1610612749"/>
    <tile gid="1"/>
    <tile gid="3"/>
@@ -10692,6 +10692,7 @@
   <object id="119" x="2210.5" y="849.5" width="169.5" height="18.5"/>
   <object id="120" x="3572.67" y="850" width="335.333" height="24"/>
   <object id="147" x="6503.5" y="851" width="84" height="41"/>
+  <object id="148" x="10540.3" y="1360.33" width="169.667" height="22.3333"/>
  </objectgroup>
  <objectgroup name="Death_Colliders">
   <object id="80" x="850" y="1440" width="175" height="110"/>

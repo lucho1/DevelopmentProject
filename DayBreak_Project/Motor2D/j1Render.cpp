@@ -57,6 +57,8 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
+	SDL_RenderSetLogicalSize(renderer, App->win->GetWindowWidth()*App->win->GetScale(), App->win->GetWindowHeight()*App->win->GetScale()/1.25);
+
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
 }
@@ -84,12 +86,12 @@ bool j1Render::PostUpdate()
 		else if (App->player->position.x >= -(camera.x - camera.w + App->map->data.tile_width + 500)) {
 			camera.x -= App->player->velocity.x;
 		}
-
-
-		//}
+		//camera.x = -App->player->position.x+300;
 
 		//}
-		camera.y = -((App->player->position.y - (App->win->screen_surface->h / 2)));
+
+		//}
+		camera.y = -((App->player->position.y - (App->win->screen_surface->h/3)));
 	}
 	else if (App->scene->currentLevel == MAIN_MENU) {
 		camera.x-=2;

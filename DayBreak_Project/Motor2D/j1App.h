@@ -99,8 +99,6 @@ public:
 private:
 
 	p2List<j1Module*>	modules;
-	uint				frames;
-	float				dt;
 	int					argc;
 	char**				args;
 
@@ -114,13 +112,19 @@ private:
 
 	//Time stabilization
 	j1PerfTimer			app_perf_timer;
+
 	j1Timer				app_np_timer;
-	j1Timer				frame_timer;
-	j1Timer				sec_counter;
-	double				last_frame_time;
-	uint64				frame_count;
-	uint32				frames_on_last_update = 0;
+	j1Timer				frame_timer; //To count time for each frame
+	j1Timer				sec_counter; //To count frames in last second
+
+	uint64				frame_count = 0;
 	uint32				frames_showed = 0;
+	uint32				frames_on_last_update = 0;
+
+	uint32				frame_cap;
+	uint32				cap_ms;
+	uint				frames;
+	float				dt;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

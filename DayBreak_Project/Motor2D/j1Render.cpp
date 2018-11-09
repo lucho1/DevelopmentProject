@@ -80,10 +80,10 @@ bool j1Render::PostUpdate()
 	//if (camera.x <= 0) {
 	//if (camera.x >= 0 && (camera.x + camera.w) <= App->map->data.width*App->map->data.tile_width) {
 	if (App->scene->currentLevel != MAIN_MENU){
-		if (App->player->position.x <= -(camera.x - 500) && camera.x < 0) {
-			camera.x += App->player->velocity.x;
+		if (App->player->position.x <= -(camera.x - camera.w / 4) && camera.x < 0) {
+			camera.x += App->player->velocity.x ;
 		}
-		else if (App->player->position.x >= -(camera.x - camera.w + App->map->data.tile_width + 500)) {
+		else if (App->player->position.x >= -(camera.x - camera.w + camera.w / 2.5f)) {
 			camera.x -= App->player->velocity.x;
 		}
 		//camera.x = -App->player->position.x+300;
@@ -156,14 +156,14 @@ iPoint j1Render::ScreenToWorld(int x, int y) const
 }
 
 // Blit to screen
-bool j1Render::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y, SDL_RendererFlip flip) const
+bool j1Render::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y, SDL_RendererFlip flip, float scale_) const
 {
 	bool ret = true;
-	uint scale = App->win->GetScale();
+	float scale = scale_;
 
 	SDL_Rect rect;
-	rect.x = (int)(camera.x * speed) + x * scale;
-	rect.y = (int)(camera.y * speed) + y * scale;
+	rect.x = (int)(camera.x * speed) + x ;
+	rect.y = (int)(camera.y * speed) + y ;
 
 	if(section != NULL)
 	{

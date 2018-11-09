@@ -77,7 +77,8 @@ bool j1Player::Start() {
 	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
 	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
-	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, player_rect.w - 50, player_rect.h }, COLLIDER_PLAYER, this);
+
+	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y,(player_rect.w - 65), (player_rect.h)-28 }, COLLIDER_PLAYER, this);
 
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	App->SaveGame("save_game.xml");
@@ -177,11 +178,13 @@ bool j1Player::Update(float dt) {
 	//BLIT PLAYER
 	if (direction_x == RIGHT) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0,0, 0, SDL_FLIP_HORIZONTAL);
+		App->render->Blit(Player_texture, position.x , position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4);
+		//App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1,0,0, 0, SDL_FLIP_HORIZONTAL,0.5);
 	}
 	if (direction_x == LEFT) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()));
+		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4);
+		//App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()),1,0,0,0,SDL_FLIP_NONE,0.5);
 	}
 
 	return true;

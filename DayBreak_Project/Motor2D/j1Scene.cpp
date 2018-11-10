@@ -15,8 +15,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Main_Menu = true;
-	Level1 = false;
+	Main_Menu = false;
+	Level1 = true;
 	Level2 = false;
 }
 
@@ -57,12 +57,22 @@ bool j1Scene::Start()
 		App->collisions->Start();
 	}
 
-	if (App->map->Load("Level1.tmx") == true)
+	if (Level1 == true)
 	{
+
+		/*pugi::xml_document coll_map;
+		pugi::xml_node layer_node;
+
+		pugi::xml_parse_result result = coll_map.load_file("maps\\Level1_WalkabilityMap.tmx");
+		pugi::xml_node mapchild = coll_map.child("map");
+		layer_node = coll_map.child("map").child("layer");*/
+
+		App->map->Load("Level1_WalkabilityMap.tmx");
+
 		int w, h;
 		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
+		/*if (App->map->CreateWalkabilityMap(w, h, &data, layer_node))
+			App->pathfinding->SetMap(w, h, data);*/
 
 		RELEASE_ARRAY(data);
 	}
@@ -125,6 +135,7 @@ bool j1Scene::Update(float dt)
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
 
+		App->map->TriggerActive = false;
 		App->collisions->CleanUp();
 		App->player->CleanUp();
 		App->map->CleanUp();
@@ -154,7 +165,8 @@ bool j1Scene::Update(float dt)
 	p = App->map->WorldToMap(p.x, p.y);
 	p = App->map->MapToWorld(p.x, p.y);
 
-	App->render->Blit(debug_tex, p.x, p.y);
+	if(Level1 == true)
+		App->render->Blit(debug_tex, p.x, p.y);
 
 	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 

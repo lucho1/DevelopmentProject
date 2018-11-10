@@ -181,7 +181,7 @@ void j1App::PrepareUpdate()
 {
 
 	dt = (float)frame_timer.ReadSec();
-	LOG("DT: %f ms CURRENT FRAME TIME: %i", dt, frame_timer.Read());
+	//LOG("DT: %f ms CURRENT FRAME TIME: %i", dt, frame_timer.Read());
 
 	frames_on_last_update++;
 	frame_count++;
@@ -220,7 +220,7 @@ void j1App::FinishUpdate()
 	if (last_frame_ms < cap_ms)
 		SDL_Delay(cap_ms - last_frame_ms);
 
-	LOG("Waited for %i and got back in %f", cap_ms - last_frame_ms, app_perf_timer.ReadMs() - delay_time);
+	//LOG("Waited for %i and got back in %f", cap_ms - last_frame_ms, app_perf_timer.ReadMs() - delay_time);
 }
 
 // Call modules before each loop iteration

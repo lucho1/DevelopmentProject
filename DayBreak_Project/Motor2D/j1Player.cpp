@@ -217,16 +217,27 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
+		//Calculating an error margin of collision to avoid problems with colliders corners
+		int error_margin;
 
-		//Checking Y Axis Collisions
-		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
-			velocity.y = 0;
-			position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
-		}
-		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
-			jump = false;
-			velocity.y = 0;
-			position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+		if (direction_x == RIGHT)
+			error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
+		else if (direction_x == LEFT)
+			error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
+
+		//If the player falls less than a pixel over a collider, it falls (and it looks ok)
+		if (error_margin > 1) {
+
+			//Checking Y Axis Collisions
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
+				velocity.y = 0;
+				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
+			}
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
+				jump = false;
+				velocity.y = 0;
+				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+			}
 		}
 
 		//Checking X Axis Collisions

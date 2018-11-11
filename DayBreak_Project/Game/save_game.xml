@@ -4,14 +4,14 @@
 	<window />
 	<textures />
 	<audio />
-	<:anonymous />
 	<map />
 	<pathfinding />
-	<scene />
+	<scene>
+		<scene currentlevel="1" />
+	</scene>
 	<player>
 		<player x="580" y="1403" />
 	</player>
-	<:anonymous />
 	<renderer>
 		<camera x="0" y="-1190" />
 	</renderer>

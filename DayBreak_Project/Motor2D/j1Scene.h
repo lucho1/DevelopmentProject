@@ -8,9 +8,9 @@ struct SDL_Texture;
 
 enum LEVELS {
 
-	LEVEL1 = 0,
+	MAIN_MENU = 0,
+	LEVEL1,
 	LEVEL2,
-	MAIN_MENU,
 	NO_LEVEL
 
 };
@@ -42,17 +42,23 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	//Load & Save
+	bool Load(pugi::xml_node& data);
+
+	//Save Game State
+	bool Save(pugi::xml_node& data) const;
+
 	//Used to iterate between Levels
-	void IterateLevel();
+	void IterateLevel(int level);
 
 	//Used to change the actual level
-	void ChangeLevel();
+	void ChangeLevel(int level);
 
 	bool Level1 = false;
 	bool Level2 = true;
 	bool Main_Menu = true;
 	
-	int LevelIterator = 0;
+	int LevelIterator = 2;
 
 	LEVELS currentLevel = NO_LEVEL;
 

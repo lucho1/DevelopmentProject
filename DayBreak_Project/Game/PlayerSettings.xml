@@ -12,6 +12,7 @@
     </StartingPose>
 
     <Velocity velocity.x="5.5" velocity.y="8"/>
+    <Acceleration a.x="0.0" a.y="0.2"/>
     
   </PlayerSettings>
 

@@ -53,7 +53,10 @@ bool j1Player::Start() {
 	p2SString tmp = ("maps\\Character_tileset.png");
 	Player_texture = App->tex->Load(tmp.GetString());
 
-	//Starting Position & Velocity
+	//Starting Position acceleration & Velocity
+	acceleration.x = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.x").as_float();
+	acceleration.y = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.y").as_float();
+
 	initial_vel.x = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.x").as_int();
 	initial_vel.y = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.y").as_int();
 	direction_x = RIGHT;
@@ -125,7 +128,7 @@ bool j1Player::Update(float dt) {
 			
 			fall = false;
 			position.y -= velocity.y;
-			velocity.y -= 0.2;
+			velocity.y -= acceleration.y;
 		}
 
 		else if (velocity.y < 0) {
@@ -139,7 +142,7 @@ bool j1Player::Update(float dt) {
 	if (fall) {
 
 		if (velocity.y < initial_vel.y)
-			velocity.y += 0.2;
+			velocity.y += acceleration.y;
 
 		position.y += velocity.y;
 	}
@@ -216,7 +219,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
 		//Calculating an error margin of collision to avoid problems with colliders corners
-		int error_margin;
+		int error_margin = 0;
 
 		if (direction_x == RIGHT)
 			error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
@@ -228,10 +231,12 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 			//Checking Y Axis Collisions
 			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
+				
 				velocity.y = 0;
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
+				
 				jump = false;
 				velocity.y = 0;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
@@ -240,12 +245,16 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 		//Checking X Axis Collisions
 		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
+			
 			velocity.x = 0;
 			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
+			
 			velocity.x = 0;
-			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
+			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+
 		}
 	}
 
@@ -254,7 +263,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		//Checking if falling
 		if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
 			App->LoadGame("save_game.xml");
-			
 	}
 
 	//Check if touched button or end level door
@@ -269,10 +277,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		int level_switch = App->scene->currentLevel + 1;
 		App->scene->ChangeLevel(level_switch);
 	}
-
-
 }
-
 
 void j1Player::LoadPushbacks(pugi::xml_node node, Animation &animation) {
 

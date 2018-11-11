@@ -61,6 +61,7 @@ public:
 	int direction_x;
 	fPoint velocity;
 	fPoint initial_vel;
+	fPoint acceleration;
 	
 	bool God = false;
 	

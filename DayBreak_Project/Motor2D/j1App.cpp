@@ -213,7 +213,7 @@ void j1App::FinishUpdate()
 	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
 		avg_fps, last_frame_ms, frames_showed, dt, seconds_since_startup, frame_count);
 
-	App->win->SetTitle(title);
+//	App->win->SetTitle(title);
 
 	double delay_time = app_perf_timer.ReadMs();
 

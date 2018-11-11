@@ -2,6 +2,10 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1PathFinding.h"
+#include "j1Map.h"
+#include "j1Render.h"
+#include "j1Input.h"
+#include "j1Textures.h"
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(DEFAULT_PATH_LENGTH), width(0), height(0)
 {
@@ -42,11 +46,18 @@ bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 		pos.y >= 0 && pos.y <= (int)height);
 }
 
-// Utility: returns true is the tile is walkable
+// Utility: returns true if the tile is walkable
 bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
 	uchar t = GetTileAt(pos);
-	return t != INVALID_WALK_CODE && t > 0;
+
+	if (t > 0 && t != INVALID_WALK_CODE)
+		return false;
+	else
+		return true;
+
+	//return t != INVALID_WALK_CODE && t > 0 && t != 1;
+
 }
 
 // Utility: return the walkability value of a tile
@@ -140,25 +151,25 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) const
 		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
 	//DIAGONAL
-	//// north-east
-	//cell.create(pos.x + 1, pos.y + 1);
-	//if (App->pathfinding->IsWalkable(cell))
-	//	list_to_fill.list.add(PathNode(-1, -1, cell, this));
+	// north-east
+	cell.create(pos.x + 1, pos.y + 1);
+	if (App->pathfinding->IsWalkable(cell))
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
-	//// south-east
-	//cell.create(pos.x + 1, pos.y - 1);
-	//if (App->pathfinding->IsWalkable(cell))
-	//	list_to_fill.list.add(PathNode(-1, -1, cell, this));
+	// south-east
+	cell.create(pos.x + 1, pos.y - 1);
+	if (App->pathfinding->IsWalkable(cell))
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
-	////north-west
-	//cell.create(pos.x - 1, pos.y + 1);
-	//if (App->pathfinding->IsWalkable(cell))
-	//	list_to_fill.list.add(PathNode(-1, -1, cell, this));
+	//north-west
+	cell.create(pos.x - 1, pos.y + 1);
+	if (App->pathfinding->IsWalkable(cell))
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
-	////south-west
-	//cell.create(pos.x - 1, pos.y - 1);
-	//if (App->pathfinding->IsWalkable(cell))
-	//	list_to_fill.list.add(PathNode(-1, -1, cell, this));
+	//south-west
+	cell.create(pos.x - 1, pos.y - 1);
+	if (App->pathfinding->IsWalkable(cell))
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
 	return list_to_fill.list.count();
 }
@@ -177,7 +188,7 @@ int PathNode::Score() const
 int PathNode::CalculateF(const iPoint& destination)
 {
 	g = parent->g + 1;
-	h = pos.DistanceTo(destination); //For diagonal use DiagonalDistance
+	h = pos.DistanceNoSqrt(destination); //For diagonal use DiagonalDistance
 
 	return g + h;
 }
@@ -189,8 +200,8 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination) {
 
 	int ret = -1;
 
-	//if (!IsWalkable(origin) || !IsWalkable(destination))
-	//	return ret;
+	if (!IsWalkable(origin) || !IsWalkable(destination))
+		return ret;
 
 	PathList open;
 	PathList close;

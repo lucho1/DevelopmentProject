@@ -15,8 +15,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Main_Menu = true;
-	Level1 = false;
+	Main_Menu = false;
+	Level1 = true;
 	Level2 = false;
 }
 
@@ -127,18 +127,13 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		//App->LoadGame("save_level1.xml");
 		App->map->TriggerActive = false;
-		ChangeLevel();
+		ChangeLevel(LEVELS::LEVEL1);
 	}
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
-		App->collisions->CleanUp();
-		App->player->CleanUp();
-		App->map->CleanUp(current_map);
-		App->map->CleanUp(current_pathfinding_map);
-		Start();
-	}
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+		ChangeLevel(currentLevel);
 
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-		ChangeLevel();
+		ChangeLevel(LEVELS::LEVEL1);
 	
 	App->map->Draw(current_map);
 	App->map->Draw(current_pathfinding_map);
@@ -195,8 +190,9 @@ bool j1Scene::CleanUp()
 	return true;
 }
 
-void j1Scene::ChangeLevel() {
-	IterateLevel();
+void j1Scene::ChangeLevel(int level_change) {
+
+	IterateLevel(level_change);
 	App->collisions->CleanUp();
 	App->player->CleanUp();
 	App->map->CleanUp(current_map);
@@ -204,9 +200,9 @@ void j1Scene::ChangeLevel() {
 	Start();
 }
 
-void j1Scene::IterateLevel() {
+void j1Scene::IterateLevel(int level_change) {
 
-	LevelIterator = level;
+	LevelIterator = level_change;
 
 	if (LevelIterator > 2)
 		LevelIterator = 0;

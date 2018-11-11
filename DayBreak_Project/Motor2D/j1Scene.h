@@ -44,10 +44,10 @@ public:
 	bool CleanUp();
 
 	//Used to iterate between Levels
-	void IterateLevel();
+	void IterateLevel(int level_change);
 
 	//Used to change the actual level
-	void ChangeLevel();
+	void ChangeLevel(int level_change);
 
 	bool Level1 = false;
 	bool Level2 = true;

@@ -252,7 +252,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		
 	}
 
-	//Check if touched button
+	//Check if touched button or end level door
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
 		App->map->TriggerActive = true;
 
@@ -260,7 +260,9 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		App->map->TriggerActive = false;
 
 	if (c1->type == TRIGGER_WIN || c2->type == TRIGGER_WIN) {
-		App->scene->ChangeLevel();
+
+		int level_switch = App->scene->currentLevel + 1;
+		App->scene->ChangeLevel(level_switch);
 	}
 
 

@@ -99,8 +99,6 @@ public:
 private:
 
 	p2List<j1Module*>	modules;
-	uint				frames;
-	float				dt;
 	int					argc;
 	char**				args;
 
@@ -113,14 +111,19 @@ private:
 	mutable p2SString	save_game;
 
 	//Time stabilization
-	j1PerfTimer			app_perf_timer;
-	j1Timer				app_np_timer;
-	j1Timer				frame_timer;
-	j1Timer				sec_counter;
-	double				last_frame_time;
-	uint64				frame_count;
-	uint32				frames_on_last_update = 0;
-	uint32				frames_showed = 0;
+	j1PerfTimer			ptimer;
+
+	j1Timer				startup_time;
+	j1Timer				frame_time;
+	j1Timer				last_sec_frame_time;
+
+	uint64				frame_count = 0;
+	uint32				last_sec_frame_count = 0;
+	uint32				prev_last_sec_frame_count = 0;
+
+	uint32				frame_cap;
+	uint32				capped_ms;
+	float				dt;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

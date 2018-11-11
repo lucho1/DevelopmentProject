@@ -34,6 +34,7 @@ public:
 public:
 
 	p2List<SDL_Texture*>	textures;
+
 };
 
 

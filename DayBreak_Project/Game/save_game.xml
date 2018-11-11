@@ -9,10 +9,10 @@
 	<pathfinding />
 	<scene />
 	<player>
-		<player x="580" y="1408" />
+		<player x="580" y="1400" />
 	</player>
 	<:anonymous />
 	<renderer>
-		<camera x="0" y="-1088" />
+		<camera x="0" y="-1187" />
 	</renderer>
 </game_state>

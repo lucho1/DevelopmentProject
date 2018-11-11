@@ -37,31 +37,50 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 	if (Main_Menu == true) {
-		App->map->Load("Main_Menu.tmx");
+
+		App->map->Load("Main_Menu.tmx", Intro_map);
+		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
-		App->render->ResetCamera();
+
+		pathfinding = false;
 	}
+
 	if (Level1 == true) {
 
-		App->map->Load("Level1.tmx");
+		App->map->Load("Level1.tmx", Level1_map);
+		App->map->Load("Level1_WalkabilityMap.tmx", Level1_pathfinding_map);
+
+		current_pathfinding_map = Level1_pathfinding_map;
+		current_map = Level1_map;
 		currentLevel = LEVEL1;
-		App->render->ResetCamera();
-		App->player->Start();
-		App->collisions->Start();
-	}
-	else if (Level2 == true) {
-		App->map->Load("Level2.tmx");
-		currentLevel = LEVEL2;
-		App->render->ResetCamera();
+
+		pathfinding = true;
+
 		App->player->Start();
 		App->collisions->Start();
 	}
 
-	if (App->map->Load("Level1.tmx") == true)
-	{
+	else if (Level2 == true) {
+
+		App->map->Load("Level2.tmx", Level2_map);
+		//App->map->Load("Level2_WalkabilityMap.tmx", Level2_pathfinding_map);
+
+		current_map = Level2_map;
+		//current_pathfinding_map = Level2_pathfinding_map;
+		currentLevel = LEVEL2;
+
+		App->player->Start();
+		App->collisions->Start();
+
+		pathfinding = false;
+	}
+  
+	App->render->ResetCamera();
+
+	if (pathfinding) {
 		int w, h;
 		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
+		if (App->map->CreateWalkabilityMap(w, h, &data, current_pathfinding_map))
 			App->pathfinding->SetMap(w, h, data);
 
 		RELEASE_ARRAY(data);
@@ -73,25 +92,27 @@ bool j1Scene::Start()
 	if (result == NULL)
 		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
 
+
 	//Need to play more than one track (or merge them). Just comment/uncomment to change music
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
 
 	debug_tex = App->tex->Load("maps/path2.png");
+
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	// debug pathfing ------------------
+	// debug pathfind ------------------
 	static iPoint origin;
 	static bool origin_selected = false;
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
-	p = App->map->WorldToMap(p.x, p.y);
+	p = App->map->WorldToMap(p.x, p.y, Level1_pathfinding_map);
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
@@ -120,39 +141,41 @@ bool j1Scene::Update(float dt)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-		//App->LoadGame("save_level1.xml");
+
 		App->map->TriggerActive = false;
-		ChangeLevel();
+		ChangeLevel(LEVEL1);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
-		App->collisions->CleanUp();
-		App->player->CleanUp();
-		App->map->CleanUp();
-		Start();
+
+		App->map->TriggerActive = false;
+		ChangeLevel(currentLevel);
 	}
 
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-		ChangeLevel();
+		ChangeLevel(LEVEL1);
 	
-	App->map->Draw();
+	App->map->Draw(current_map);
+	App->map->Draw(current_pathfinding_map);
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 
-	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
-	p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
-					App->map->data.width, App->map->data.height,
-					App->map->data.tile_width, App->map->data.tile_height,
-					App->map->data.tilesets.count(),
-					map_coordinates.x, map_coordinates.y);
+	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
 
-	//App->win->SetTitle(title.GetString());
+	p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
+		current_pathfinding_map.width, current_pathfinding_map.height,
+		current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
+		current_pathfinding_map.tilesets.count(),
+		map_coordinates.x, map_coordinates.y);
+
+	App->win->SetTitle(title.GetString());
 
 	// Debug pathfinding ------------------------------
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
-	p = App->map->WorldToMap(p.x, p.y);
-	p = App->map->MapToWorld(p.x, p.y);
+	p = App->map->WorldToMap(p.x, p.y, Level1_pathfinding_map);
+	p = App->map->MapToWorld(p.x, p.y, Level1_pathfinding_map);
+
 
 	App->render->Blit(debug_tex, p.x, p.y);
 
@@ -160,7 +183,7 @@ bool j1Scene::Update(float dt)
 
 	for (uint i = 0; i < path->Count(); ++i)
 	{
-		iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
+		iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y, Level1_pathfinding_map);
 		App->render->Blit(debug_tex, pos.x, pos.y);
 	}
 
@@ -186,22 +209,26 @@ bool j1Scene::CleanUp()
 	return true;
 }
 
-void j1Scene::ChangeLevel() {
-	IterateLevel();
+void j1Scene::ChangeLevel(int level_change) {
+
+	IterateLevel(level_change);
 	App->collisions->CleanUp();
 	App->player->CleanUp();
-	App->map->CleanUp();
+	App->map->CleanUp(current_map);
+	App->map->CleanUp(current_pathfinding_map);
 	Start();
 }
 
-void j1Scene::IterateLevel() {
+void j1Scene::IterateLevel(int level_change) {
 
-	LevelIterator++;
-	if (LevelIterator > 2) {
+	LevelIterator = level_change;
+
+	if (LevelIterator > 2)
 		LevelIterator = 0;
-	}
+	
 
 	if (LevelIterator == 0) {
+
 		Main_Menu = true;
 		Level2 = false;
 		Level1 = false;
@@ -209,6 +236,7 @@ void j1Scene::IterateLevel() {
 	}
 
 	else if (LevelIterator == 1) {
+
 			Main_Menu = false;
 			Level2 = false;
 			Level1 = true;
@@ -216,12 +244,10 @@ void j1Scene::IterateLevel() {
 	}
 	
 	else if(LevelIterator == 2) {
+
 			Main_Menu = false;
 			Level1 = false;
 			Level2 = true;
 			currentLevel = LEVEL2;
 	}
-
-
-
 }

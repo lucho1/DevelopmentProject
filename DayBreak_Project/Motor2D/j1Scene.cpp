@@ -15,8 +15,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Main_Menu = false;
-	Level1 = true;
+	Main_Menu = true;
+	Level1 = false;
 	Level2 = false;
 }
 
@@ -41,41 +41,57 @@ bool j1Scene::Start()
 		App->map->Load("Main_Menu.tmx", Intro_map);
 		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
-		App->render->ResetCamera();
+
+		pathfinding = false;
 	}
+
 	if (Level1 == true) {
 
 		App->map->Load("Level1.tmx", Level1_map);
 		App->map->Load("Level1_WalkabilityMap.tmx", Level1_pathfinding_map);
+
+		current_pathfinding_map = Level1_pathfinding_map;
 		current_map = Level1_map;
 		currentLevel = LEVEL1;
-		App->render->ResetCamera();
-		current_pathfinding_map = Level1_pathfinding_map;
+
+		pathfinding = true;
+
+		App->player->Start();
+		App->collisions->Start();
+	}
+
+	else if (Level2 == true) {
+
+		App->map->Load("Level2.tmx", Level2_map);
+		//App->map->Load("Level2_WalkabilityMap.tmx", Level2_pathfinding_map);
+
+		current_map = Level2_map;
+		//current_pathfinding_map = Level2_pathfinding_map;
+		currentLevel = LEVEL2;
+
 		App->player->Start();
 		App->collisions->Start();
 
+		pathfinding = false;
+	}
+  
+	App->render->ResetCamera();
+
+	if (pathfinding) {
 		int w, h;
 		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data, Level1_pathfinding_map))
+		if (App->map->CreateWalkabilityMap(w, h, &data, current_pathfinding_map))
 			App->pathfinding->SetMap(w, h, data);
 
 		RELEASE_ARRAY(data);
 	}
-	else if (Level2 == true) {
 
-		App->map->Load("Level2.tmx", Level2_map);
-		current_map = Level2_map;
-		currentLevel = LEVEL2;
-		App->render->ResetCamera();
-		App->player->Start();
-		App->collisions->Start();
-	}
-  
 	pugi::xml_parse_result result = SceneDocument.load_file("config.xml");
 	music_node = SceneDocument.child("config").child("music");
 
 	if (result == NULL)
 		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
+
 
 	//Need to play more than one track (or merge them). Just comment/uncomment to change music
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());

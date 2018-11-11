@@ -316,6 +316,7 @@ bool j1Map::Load(const char* file_name, MapData &data)
 		while(item != NULL)
 		{
 			TileSet* s = item->data;
+
 			LOG("Tileset ----");
 			LOG("name: %s firstgid: %d", s->name.GetString(), s->firstgid);
 			LOG("tile width: %d tile height: %d", s->tile_width, s->tile_height);

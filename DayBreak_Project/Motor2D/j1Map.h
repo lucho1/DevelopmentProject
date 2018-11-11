@@ -94,6 +94,7 @@ enum MapTypes
 // ----------------------------------------------------
 struct MapData
 {
+	const char*			name;
 	int					width;
 	int					height;
 	int					tile_width;
@@ -102,6 +103,8 @@ struct MapData
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
+
+	const char* GetName() const { return name; }
 };
 
 // ----------------------------------------------------
@@ -119,33 +122,34 @@ public:
 
 	bool Start();
 	// Called each loop iteration
-	void Draw();
+	void Draw(MapData &data);
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp(MapData &data);
 
 	// Load new map
-	bool Load(const char* path);
+	bool Load(const char* path, MapData &data);
+	iPoint MapToWorld(int x, int y, MapData &data);
+	iPoint WorldToMap(int x, int y, MapData &data);
+	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer, MapData &data);
 
-	iPoint MapToWorld(int x, int y) const;
-	iPoint WorldToMap(int x, int y) const;
-	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
-
-	TileSet* GetTilesetFromTileId(int id) const;
+	TileSet* GetTilesetFromTileId(int id, MapData &data);
 	
 
 private:
 
-	bool LoadMap();
+	bool LoadMap(MapData &data);
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
-	
+
+	//MapData data;
 
 public:
+	
+	p2List<MapData> Map_List;
 
-	MapData data;
 	p2SString			folder;
 	pugi::xml_document	map_file;
 

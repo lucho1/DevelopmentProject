@@ -25,7 +25,6 @@ bool j1Map::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	folder.create(config.child("folder").child_value());
-
 	return ret;
 }
 bool j1Map::Start() {
@@ -39,8 +38,9 @@ bool j1Map::Start() {
 }
 
 
-void j1Map::Draw()
+void j1Map::Draw(MapData &data)
 {
+
 	if (map_loaded == false)
 		return;
 
@@ -70,11 +70,11 @@ void j1Map::Draw()
 					if (tile_id == 435 && TriggerActive)
 						tile_id = 436;
 
-					TileSet* tileset = GetTilesetFromTileId(tile_id);
+					TileSet* tileset = GetTilesetFromTileId(tile_id, data);
 					if (tileset != nullptr) {
 
 						SDL_Rect r = tileset->GetTileRect(tile_id);
-						iPoint pos = MapToWorld(x, y);
+						iPoint pos = MapToWorld(x, y, data);
 
 						if (App->scene->currentLevel != MAIN_MENU) {
 
@@ -135,7 +135,8 @@ int Properties::Get(const char* value, int default_value) const
 	return default_value;
 }
 
-TileSet* j1Map::GetTilesetFromTileId( int id) const
+
+TileSet* j1Map::GetTilesetFromTileId(int id, MapData &data)
 {
 
 	p2List_item<TileSet*>* item = data.tilesets.start;
@@ -156,8 +157,9 @@ TileSet* j1Map::GetTilesetFromTileId( int id) const
 
 }
 
-iPoint j1Map::MapToWorld(int x, int y) const
+iPoint j1Map::MapToWorld(int x, int y, MapData &data)
 {
+
 	iPoint ret;
 
 	if(data.type == MAPTYPE_ORTHOGONAL)
@@ -179,8 +181,9 @@ iPoint j1Map::MapToWorld(int x, int y) const
 	return ret;
 }
 
-iPoint j1Map::WorldToMap(int x, int y) const
+iPoint j1Map::WorldToMap(int x, int y, MapData &data)
 {
+
 	iPoint ret(0,0);
 
 	if(data.type == MAPTYPE_ORTHOGONAL)
@@ -217,8 +220,9 @@ SDL_Rect TileSet::GetTileRect(int id) const
 }
 
 // Called before quitting
-bool j1Map::CleanUp()
+bool j1Map::CleanUp(MapData &data)
 {
+
 	LOG("Unloading map");
 
 	// Remove all tilesets
@@ -251,8 +255,9 @@ bool j1Map::CleanUp()
 }
 
 // Load new map
-bool j1Map::Load(const char* file_name)
+bool j1Map::Load(const char* file_name, MapData &data)
 {
+
 	bool ret = true;
 	p2SString tmp("maps\\%s", file_name);
 
@@ -267,7 +272,7 @@ bool j1Map::Load(const char* file_name)
 	// Load general info ----------------------------------------------
 	if(ret == true)
 	{
-		ret = LoadMap();
+		ret = LoadMap(data);
 	}
 
 	// Load all tilesets info ----------------------------------------------
@@ -331,11 +336,13 @@ bool j1Map::Load(const char* file_name)
 
 	map_loaded = ret;
 
+	//Map_List.add(data);
+
 	return ret;
 }
 
 // Load map general properties
-bool j1Map::LoadMap()
+bool j1Map::LoadMap(MapData &data)
 {
 	bool ret = true;
 	pugi::xml_node map = map_file.child("map");
@@ -519,13 +526,14 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 }
 
 //Basically here we fullfill a map array with 0s and 1s (same than we did with the map[X][Y] but better
-bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer, MapData &data)
 {
+
 	bool ret = false;
 	p2List_item<MapLayer*>* item;
 	item = data.layers.start;
+	for (; item != NULL; item = item->next)
 
-	for (item = data.layers.start; item != NULL; item = item->next)
 	{
 		MapLayer* layer = item->data;
 
@@ -543,14 +551,8 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 				//condition ? result1 : result2 
 				//condition is true, the expression evaluates to result1, otherwise to result2.
-				//EXAMPLE:
-				/*  a=2;
-					b=7;
-					c = (a>b) ? a : b;
-					WILL GIVE c = b
-				*/
 				int tile_id = layer->Get(x, y); //So here, first we check for tile id
-				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL; //If tile id > 0, tileset = tileset from a tile id. Else, tileset = NULL
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id, data) : NULL; //If tile id > 0, tileset = tileset from a tile id. Else, tileset = NULL
 				
 				if (tileset != NULL)
 				{

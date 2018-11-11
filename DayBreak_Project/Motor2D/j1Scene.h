@@ -2,15 +2,16 @@
 #define __j1SCENE_H__
 
 #include "j1Module.h"
+#include "j1Map.h"
 
 struct SDL_Texture;
-
+struct MapData;
 
 enum LEVELS {
 
-	LEVEL1 = 0,
+	MAIN_MENU = 0,
+	LEVEL1,
 	LEVEL2,
-	MAIN_MENU,
 	NO_LEVEL
 
 };
@@ -43,10 +44,10 @@ public:
 	bool CleanUp();
 
 	//Used to iterate between Levels
-	void IterateLevel();
+	void IterateLevel(int level_change);
 
 	//Used to change the actual level
-	void ChangeLevel();
+	void ChangeLevel(int level_change);
 
 	bool Level1 = false;
 	bool Level2 = true;
@@ -56,10 +57,18 @@ public:
 
 	LEVELS currentLevel = NO_LEVEL;
 
+	MapData current_map;
+	MapData current_pathfinding_map;
 
 private:
-	
-	SDL_Texture* debug_tex;
+
+	MapData Intro_map;
+	MapData Level1_map;
+	MapData Level2_map;
+
+	MapData Level1_pathfinding_map;
+
+	SDL_Texture *debug_tex;
 
 	pugi::xml_document	SceneDocument;
 	pugi::xml_node		music_node;

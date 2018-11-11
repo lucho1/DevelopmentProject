@@ -519,27 +519,18 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 }
 
 //Basically here we fullfill a map array with 0s and 1s (same than we did with the map[X][Y] but better
-bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer, pugi::xml_node layer_node) {
-
+bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+{
 	bool ret = false;
 	p2List_item<MapLayer*>* item;
+	item = data.layers.start;
 
-	//item = data.layers.start;
-
-	//for (; item != NULL; item = item->next)
-	//{
-		//MapLayer* layer = item->data;
-	pugi::xml_node node = layer_node;
-	MapLayer* layer = new MapLayer();
-
-	ret = LoadLayer(node, layer);
+	for (item = data.layers.start; item != NULL; item = item->next)
+	{
+		MapLayer* layer = item->data;
 
 		if (layer->properties.Get("Navigation", 0) == 0)
-			return false;/*continue;*/
-
-		LOG("Layer ----");
-		LOG("name: %s", layer->name.GetString());
-		LOG("tile width: %d tile height: %d", layer->width, layer->height);
+			continue;
 
 		uchar* map = new uchar[layer->width*layer->height];
 		memset(map, 1, layer->width*layer->height);
@@ -578,8 +569,8 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer, pugi::
 		height = data.height;
 		ret = true;
 
-		//break;
-	//}
+		break;
+	}
 
 	return ret;
 }

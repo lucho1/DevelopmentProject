@@ -20,6 +20,7 @@
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
+	frames = 0;
 	want_to_save = want_to_load = false;
 
 	input = new j1Input();
@@ -75,7 +76,9 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
-	PERF_START(app_perf_timer);
+	app_np_timer.Start();
+	app_perf_timer.Start();
+	frame_count = 0;
 
 	pugi::xml_document	config_file;
 	pugi::xml_node		config;
@@ -92,12 +95,6 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
-		
-		frame_cap = app_config.attribute("framerate_cap").as_uint();
-
-		if (frame_cap > 0)
-			cap_ms = 1000 / frame_cap;
-	
 	}
 
 	if(ret == true)
@@ -112,16 +109,12 @@ bool j1App::Awake()
 		}
 	}
 
-	PERF_PEEK(app_perf_timer);
 	return ret;
 }
 
 // Called before the first frame
 bool j1App::Start()
 {
-
-	PERF_START(app_perf_timer);
-
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
@@ -133,10 +126,6 @@ bool j1App::Start()
 		item = item->next;
 	}
 
-	app_np_timer.Start();
-	app_perf_timer.Start();
-	
-	PERF_PEEK(app_perf_timer);
 	return ret;
 }
 
@@ -179,13 +168,10 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
-
-	dt = (float)frame_timer.ReadSec();
-	//LOG("DT: %f ms CURRENT FRAME TIME: %i", dt, frame_timer.Read());
-
-	frames_on_last_update++;
-	frame_count++;
 	frame_timer.Start();
+	last_frame_time = app_perf_timer.ReadMs();
+	frames_showed++;
+	frame_count++;
 }
 
 // ---------------------------------------------
@@ -197,30 +183,24 @@ void j1App::FinishUpdate()
 	if(want_to_load == true)
 		LoadGameNow();
 
+	//TITLE STUFF
+	float seconds_since_startup = app_np_timer.ReadSec();
+	float avg_fps = float(frame_count) / seconds_since_startup;
+	float dt = 0.0f;
+	uint32 last_frame_ms = frame_timer.Read();
+
 	if (sec_counter.Read() > 1000) {
 
 		sec_counter.Start();
-		frames_showed = frames_on_last_update;
-		frames_on_last_update = 0;
+		frames_on_last_update = frames_showed;
+		frames_showed = 0;
 	}
-
-	//TITLE STUFF
-	float avg_fps = float(frame_count) / app_np_timer.ReadSec();
-	float seconds_since_startup = app_np_timer.ReadSec();
-	uint32 last_frame_ms = frame_timer.Read();
 
 	static char title[256];
 	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
-		avg_fps, last_frame_ms, frames_showed, dt, seconds_since_startup, frame_count);
+		avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
 
 	App->win->SetTitle(title);
-
-	double delay_time = app_perf_timer.ReadMs();
-
-	if (last_frame_ms < cap_ms)
-		SDL_Delay(cap_ms - last_frame_ms);
-
-	//LOG("Waited for %i and got back in %f", cap_ms - last_frame_ms, app_perf_timer.ReadMs() - delay_time);
 }
 
 // Call modules before each loop iteration

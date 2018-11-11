@@ -2,7 +2,7 @@
 
 <config>
 
-    <image source="Character_tileset.png" width="512" height="512" w="102" h="102"/>
+    <image source="Character_tileset.png" width="1024" height="1024" w="102" h="102" />
 
   <PlayerSettings>
     
@@ -19,29 +19,68 @@
   <AnimationCoords>
 
     <Idle loop="true" speed="0.17">
-      <Pushback x="1" y="1" w="102" h="102"/>
-      <Pushback x="103" y="1" w="102" h="102"/>
-      <Pushback x="205" y="1" w="102" h="102"/>
-      <Pushback x="307" y="1" w="102" h="102"/>
-      <Pushback x="409" y="1" w="102" h="102"/>
-      <Pushback x="1" y="103" w="102" h="102"/>
-      <Pushback x="103" y="103" w="102" h="102"/>
+      <Pushback x="0" y="0" w="106" h="203"/>
+      <Pushback x="106" y="0" w="106" h="203"/>
+      <Pushback x="212" y="0" w="106" h="203"/>
+      <Pushback x="318" y="0" w="106" h="203"/>
+      <Pushback x="424" y="0" w="106" h="203"/>
+      <Pushback x="530" y="0" w="106" h="203"/>
+      <Pushback x="636" y="0" w="106" h="203"/>
+      <Pushback x="743" y="0" w="106" h="203"/>
+      <Pushback x="0" y="203" w="106" h="203"/>
     </Idle>
 
     <Run loop="true" speed="0.15">
-      <Pushback x="205" y="103" w="102" h="102"/>
-      <Pushback x="307" y="103" w="102" h="102"/>
-      <Pushback x="409" y="103" w="102" h="102"/>
-      <Pushback x="1" y="205" w="102" h="102"/>
-      <Pushback x="103" y="205" w="102" h="102"/>
-      <Pushback x="205" y="205" w="102" h="102"/>
+      <Pushback x="106" y="203" w="106" h="203"/>
+      <Pushback x="212" y="203" w="106" h="203"/>
+      <Pushback x="318" y="203" w="106" h="203"/>
+      <Pushback x="424" y="203" w="106" h="203"/>
+      <Pushback x="530" y="203" w="106" h="203"/>
     </Run>
 
     <Jump loop="false" speed="0.15">
-      <Pushback x="307" y="205" w="102" h="102"/>
-      <Pushback x="409" y="205" w="102" h="102"/>
-      <Pushback x="1" y="307" w="102" h="102"/>
+      <Pushback x="636" y="203" w="106" h="203"/>
+      <Pushback x="473" y="203" w="106" h="203"/>
     </Jump>
+    <Dead loop="false speed="0.15">
+      <Pushback x="0" y="406" w="214" h="203"/>
+      <Pushback x="214" y="406" w="214" h="203"/>
+      <Pushback x="428" y="406" w="214" h="203"/>
+      <Pushback x="642" y="406" w="214" h="203"/>
+      <Pushback x="0" y="609" w="214" h="203"/>
+    </Dead>
 
+    <Gun>
+       <Idle loop="true" speed="0.17">
+         <Pushback x="0" y="811" w="182" h="64"/>
+         <Pushback x="0" y="875" w="182" h="64"/>
+         <Pushback x="0" y="939" w="182" h="64"/>
+         <Pushback x="214" y="609" w="182" h="64"/>
+         <Pushback x="214" y="673" w="182" h="64"/>
+         <Pushback x="214" y="737" w="182" h="64"/>
+         <Pushback x="214" y="801" w="182" h="64"/>
+         <Pushback x="214" y="865" w="182" h="64"/>
+         <Pushback x="214" y="929" w="182" h="64"/>
+       </Idle>
+
+       <Run loop="true" speed="0.15">
+         <Pushback x="397" y="610" w="200" h="88"/>
+         <Pushback x="397" y="698" w="200" h="88"/>
+         <Pushback x="397" y="786" w="200" h="88"/>
+         <Pushback x="397" y="874" w="200" h="88"/>
+         <Pushback x="597" y="610" w="200" h="88"/>
+         <Pushback x="597" y="698" w="200" h="88"/>
+      </Run>
+
+      <Shoot loop="true" speed="0.15">
+         <Pushback x="597" y="786" w="199" h="76"/>
+         <Pushback x="597" y="862" w="199" h="76"/>
+         <Pushback x="597" y="938" w="199" h="76"/>
+         <Pushback x="797" y="610" w="199" h="76"/>
+         <Pushback x="797" y="686" w="199" h="76"/>
+         <Pushback x="797" y="762" w="199" h="76"/>
+	 <Pushback x="797" y="838" w="199" h="76"/>
+      </Shoot>
+    </Gun>	
   </AnimationCoords>
 </config>

@@ -531,9 +531,9 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer, MapDat
 
 	bool ret = false;
 	p2List_item<MapLayer*>* item;
-
 	item = data.layers.start;
 	for (; item != NULL; item = item->next)
+
 	{
 		MapLayer* layer = item->data;
 

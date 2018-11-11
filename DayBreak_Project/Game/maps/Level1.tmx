@@ -5645,6 +5645,10 @@
   </data>
  </layer>
  <objectgroup name="Colliders">
+  <properties>
+   <property name="Navigation" type="int" value="1"/>
+   <property name="objects_number" type="int" value="38"/>
+  </properties>
   <object id="1" x="170" y="1359" width="1019" height="24"/>
   <object id="2" x="172" y="1529" width="1356" height="38"/>
   <object id="3" x="340" y="1566" width="847" height="291"/>
@@ -5686,6 +5690,10 @@
   <object id="77" x="3570.67" y="1359.91" width="509.975" height="19.4242"/>
  </objectgroup>
  <objectgroup name="Death_Colliders">
+  <properties>
+   <property name="Navigation" type="int" value="1"/>
+   <property name="objects_number" type="int" value="5"/>
+  </properties>
   <object id="50" x="-521.333" y="1892" width="2955.33" height="174"/>
   <object id="51" x="3252" y="1888" width="480" height="140"/>
   <object id="52" x="4424" y="1920" width="761.333" height="126"/>

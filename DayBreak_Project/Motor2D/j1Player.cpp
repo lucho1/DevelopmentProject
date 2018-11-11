@@ -77,10 +77,11 @@ bool j1Player::Start() {
 	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
 	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
-	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, player_rect.w - 50, player_rect.h }, COLLIDER_PLAYER, this);
 
-	//Once player is created (at each level) we could save
-	//App->SaveGame("save_game.xml");
+	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y,(player_rect.w - 65), (player_rect.h)-28 }, COLLIDER_PLAYER, this);
+
+	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
+	App->SaveGame("save_game.xml");
 
 	return true;
 }
@@ -149,14 +150,12 @@ bool j1Player::Update(float dt) {
 	}
 
 	//God mode
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
 		God = !God;
-		LOG("GOD MODE ACTIVE");
-	}
 
 	if (God) {
 
-		
+		LOG("GOD MODE ACTIVE");
 		jump = true;
 		fall = false;
 
@@ -179,11 +178,13 @@ bool j1Player::Update(float dt) {
 	//BLIT PLAYER
 	if (direction_x == RIGHT) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0,0, 0, SDL_FLIP_HORIZONTAL);
+		App->render->Blit(Player_texture, position.x , position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4);
+		//App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1,0,0, 0, SDL_FLIP_HORIZONTAL,0.5);
 	}
 	if (direction_x == LEFT) {
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()));
+		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4);
+		//App->render->Blit(Player_texture, position.x-46, position.y, &(current_animation->GetCurrentFrame()),1,0,0,0,SDL_FLIP_NONE,0.5);
 	}
 
 	return true;
@@ -221,22 +222,22 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 
 		//Checking Y Axis Collisions
-		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Jumping (colliding from Down)
+		if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //direction.y == 1
 			velocity.y = 0;
 			position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 		}
-		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //falling (colliding from Up)
+		else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { /*direction.y == -1*/
 			jump = false;
 			velocity.y = 0;
 			position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 		}
 
 		//Checking X Axis Collisions
-		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = RIGHT (colliding from left)
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Direction.x = 1
 			velocity.x = 0;
 			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 		}
-		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = LEFT (colliding from right)
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Direction.x = -1
 			velocity.x = 0;
 			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 5;
 		}
@@ -258,12 +259,11 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;
 
-	//Check if collision with a end-level door
 	if (c1->type == TRIGGER_WIN || c2->type == TRIGGER_WIN) {
-
-		int level_switch = App->scene->currentLevel + 1;
-		App->scene->ChangeLevel(level_switch);
+		App->scene->ChangeLevel();
 	}
+
+
 }
 
 

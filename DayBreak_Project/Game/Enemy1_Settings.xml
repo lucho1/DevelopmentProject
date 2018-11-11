@@ -13,7 +13,7 @@
 
     <Velocity velocity.x="5.5" velocity.y="8"/>
     
-  </PlayerSettings>
+  </EnemySettings>
 
 <!--ANIMATIONS-->
   <AnimationCoords>

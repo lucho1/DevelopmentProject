@@ -200,7 +200,15 @@ void j1App::FinishUpdate()
 	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
 		avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
 
-	App->win->SetTitle(title);
+//	App->win->SetTitle(title);
+
+	double delay_time = app_perf_timer.ReadMs();
+
+	if (last_frame_ms < cap_ms)
+		SDL_Delay(cap_ms - last_frame_ms);
+
+	//LOG("Waited for %i and got back in %f", cap_ms - last_frame_ms, app_perf_timer.ReadMs() - delay_time);
+
 }
 
 // Call modules before each loop iteration

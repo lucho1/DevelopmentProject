@@ -53,6 +53,7 @@ private:
 	uchar* map;
 	// we store the created path here
 	p2DynArray<iPoint> last_path;
+
 };
 
 // forward declaration

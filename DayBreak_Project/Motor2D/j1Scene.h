@@ -9,9 +9,9 @@ struct MapData;
 
 enum LEVELS {
 
-	LEVEL1 = 0,
+	MAIN_MENU = 0,
+	LEVEL1,
 	LEVEL2,
-	MAIN_MENU,
 	NO_LEVEL
 
 };

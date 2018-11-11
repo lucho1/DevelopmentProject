@@ -125,15 +125,18 @@ bool j1Scene::Update(float dt)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-		//App->LoadGame("save_level1.xml");
+
 		App->map->TriggerActive = false;
-		ChangeLevel(LEVELS::LEVEL1);
+		ChangeLevel(LEVEL1);
 	}
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
+
+		App->map->TriggerActive = false;
 		ChangeLevel(currentLevel);
+	}
 
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-		ChangeLevel(LEVELS::LEVEL1);
+		ChangeLevel(LEVEL1);
 	
 	App->map->Draw(current_map);
 	App->map->Draw(current_pathfinding_map);

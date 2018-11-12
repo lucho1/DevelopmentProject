@@ -80,8 +80,11 @@ bool j1Player::Start() {
 	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
 	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
-	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y,(player_rect.w - 65), (player_rect.h)-28 }, COLLIDER_PLAYER, this);
+	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, (player_rect.w - 65), (player_rect.h)-28 }, COLLIDER_PLAYER, this);
 
+	//Rect Pathfinding test
+	Enemy = { position.x + player_rect.w + 10, position.y,  (player_rect.w - 65), (player_rect.h) - 28 };
+	
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	//App->SaveGame("save_game.xml");
 
@@ -92,6 +95,26 @@ bool j1Player::PreUpdate() {
 
 	return true;
 }
+
+void j1Player::RectPathfindingTest() {
+
+	App->render->DrawQuad(Enemy, 0, 0, 255, 255);
+
+	bool move = true;
+
+	if (move) {
+
+		iPoint initial_pos = iPoint(Enemy.x, Enemy.y + Enemy.h);
+		iPoint final_pos = iPoint(position.x, position.y + player_rect.h);
+
+
+
+		move = false;
+	}
+
+}
+
+
 
 bool j1Player::Update(float dt) {
 
@@ -184,6 +207,9 @@ bool j1Player::Update(float dt) {
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4);
 	}
+
+	//Testing pathfinding
+	RectPathfindingTest();
 
 	return true;
 }

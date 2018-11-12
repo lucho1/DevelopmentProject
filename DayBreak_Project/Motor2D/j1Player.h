@@ -51,6 +51,9 @@ public:
 	//Save Game State
 	bool Save(pugi::xml_node& data) const;
 
+	void RectPathfindingTest();
+	SDL_Rect Enemy; //Rect to test
+
 public:
 
 	void OnCollision(Collider *c1, Collider *c2/* bool collX, bool collY*/);

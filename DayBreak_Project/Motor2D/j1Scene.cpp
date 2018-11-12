@@ -15,8 +15,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Main_Menu = true;
-	Level1 = false;
+	Main_Menu = false;
+	Level1 = true;
 	Level2 = false;
 }
 
@@ -155,18 +155,35 @@ bool j1Scene::Update(float dt)
 		ChangeLevel(LEVEL1);
 	
 	App->map->Draw(current_map);
-	App->map->Draw(current_pathfinding_map);
+//	App->map->Draw(current_pathfinding_map);
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 
-	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
+	iPoint Mp = App->map->WorldToMap(x, y, current_map);
 
-	p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
+
+	iPoint mc2 = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_map);
+	
+	iPoint pl_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, current_map);
+
+	iPoint mapatW = App->map->MapToWorld(mc2.x, mc2.y, current_map);
+
+	/*p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
 		current_pathfinding_map.width, current_pathfinding_map.height,
 		current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
 		current_pathfinding_map.tilesets.count(),
-		map_coordinates.x, map_coordinates.y);
+		map_coordinates.x, map_coordinates.y);*/
+
+	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
+
+	iPoint pathtoworld = App->map->MapToWorld(map_coordinates.x, map_coordinates.y, current_pathfinding_map);
+	iPoint pathtomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
+
+	iPoint pathftomap = App->map->MapToWorld(pathtomap.x, pathtomap.y, current_map);
+
+	p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) MousePos: %i,%i PlayerPos: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathftomap.x, pathftomap.y,
+		mc2.x, mc2.y, mapatW.x, mapatW.y, Mp.x, Mp.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y);
 
 	App->win->SetTitle(title.GetString());
 

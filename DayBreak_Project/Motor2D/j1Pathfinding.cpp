@@ -224,7 +224,6 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination) {
 
 				last_path.PushBack(new_node->pos);
 				new_node = new_node->parent;
-				LOG("STEPS: %i", last_path.Count());
 			}
 
 			last_path.Flip();

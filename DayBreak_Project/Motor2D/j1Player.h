@@ -69,9 +69,10 @@ public:
 	iPoint position;
 	int direction_x;
 	fPoint velocity;
+	fPoint MaxVelocity;
 	fPoint initial_vel;
 	fPoint acceleration;
-	
+	bool desaccelerating;
 	bool God = false;
 	
 	bool jump = false;
@@ -89,7 +90,7 @@ public:
 
 	Collider *player_collider = nullptr;
 
-	
+	j1Timer desac;
 
 private :
 

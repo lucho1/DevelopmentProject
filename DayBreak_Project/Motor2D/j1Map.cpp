@@ -233,6 +233,7 @@ bool j1Map::CleanUp(MapData &data)
 	{
 		App->tex->UnLoad(item->data->texture);
 		RELEASE(item->data);
+
 		item = item->next;
 	}
 	data.tilesets.clear();

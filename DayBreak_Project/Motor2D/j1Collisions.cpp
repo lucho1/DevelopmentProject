@@ -46,6 +46,8 @@ bool j1Collisions::Awake() {
 }
 
 bool j1Collisions::Start() {
+	
+	Init();
 
 	if (App->scene->currentLevel == LEVEL1)
 		AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
@@ -169,6 +171,7 @@ bool j1Collisions::CleanUp(){
 			colliders[i] = nullptr;
 		}
 	}
+	active = false;
 
 	return true;
 }

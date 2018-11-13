@@ -46,7 +46,6 @@ bool j1Scene::Start()
 	}
 
 	if (Level1 == true) {
-
 		App->map->Load("Level1.tmx", Level1_map);
 		App->map->Load("Level1_WalkabilityMap.tmx", Level1_pathfinding_map);
 
@@ -192,8 +191,13 @@ void j1Scene::ChangeLevel(int level_change) {
 	IterateLevel(level_change);
 	App->collisions->CleanUp();
 	App->player->CleanUp();
-	App->map->CleanUp(current_map);
-	App->map->CleanUp(current_pathfinding_map);
+	if (currentLevel == LEVEL1) {
+		App->map->CleanUp(Level1_map);
+		App->map->CleanUp(Level1_pathfinding_map);
+	}
+	if (currentLevel == LEVEL2)
+		App->map->CleanUp(Level1_map);
+
 	Start();
 }
 

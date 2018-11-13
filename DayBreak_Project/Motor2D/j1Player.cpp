@@ -39,18 +39,21 @@ bool j1Player::CleanUp() {
 	if (current_animation != nullptr)
 		current_animation = nullptr;
 	App->tex->UnLoad(Player_texture);
-
+	active = false;
 	return true;
 }
 
 bool j1Player::Awake() {
-
+	
 	LOG("Player Module Loading");
+	
 	bool ret = true;
 	return ret;
 }
 
 bool j1Player::Start() {
+
+	Init();
 
 	p2SString tmp = ("maps\\Character_tileset.png");
 	Player_texture = App->tex->Load(tmp.GetString());
@@ -59,6 +62,7 @@ bool j1Player::Start() {
 	acceleration.x = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.x").as_float();
 	acceleration.y = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.y").as_float();
 
+	MaxVelocity.x = initial_vel.x = PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.x").as_int();
 	initial_vel.x = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.x").as_int();
 	initial_vel.y = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.y").as_int();
 	direction_x = RIGHT;
@@ -107,18 +111,31 @@ bool j1Player::Update(float dt) {
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-
-		velocity.x = initial_vel.x;
+		desaccelerating = false;
+		velocity.x = velocity.x;
 		direction_x = RIGHT;
-		position.x += velocity.x;
+		position.x += velocity.x+acceleration.x;
+		if (acceleration.x < MaxVelocity.x) {
+			acceleration.x += 0.2;
+		}
+		
 		current_animation = &Run;
 	}
+	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP&&!jump&&!desaccelerating) {
+		desaccelerating = true;
+	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-
-		velocity.x = initial_vel.x;
+		desaccelerating = false;
+		velocity.x = velocity.x;
 		direction_x = LEFT;
-		position.x -= velocity.x;
+		position.x -= velocity.x+acceleration.x;
+		if (acceleration.x < MaxVelocity.x) {
+			acceleration.x += 0.2;
+		}
 		current_animation = &Run;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP&&!jump&&!desaccelerating) {
+		desaccelerating = true;
 	}
 	//Y axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God) {
@@ -128,6 +145,17 @@ bool j1Player::Update(float dt) {
 		auxY = position.y;
 		velocity.y = initial_vel.y;
 	}
+	if (desaccelerating==true) {
+		if(acceleration.x>0){
+			acceleration.x -= 0.2;
+			if (direction_x ==  RIGHT)
+				position.x+=acceleration.x;
+			else if (direction_x==LEFT)
+				position.x-= acceleration.x;
+		}
+		else
+			desaccelerating = false;
+	}
 
 	//JUMP
 	if (jump) {
@@ -136,7 +164,7 @@ bool j1Player::Update(float dt) {
 			
 			fall = false;
 			position.y -= velocity.y;
-			velocity.y -= acceleration.y;
+			velocity.y -= 0.5;
 		}
 
 		else if (velocity.y < 0) {
@@ -317,16 +345,18 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		}
 
 		//Checking X Axis Collisions
-		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
-			
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x + acceleration.x) { //Colliding Left (going right)
+			desaccelerating = false;
 			velocity.x = 0;
-			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+			acceleration.x /=1.1;
+			position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x+1;
 
 		}
-		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
-			
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x-acceleration.x) { //Colliding Right (going left)
+			desaccelerating = false;
 			velocity.x = 0;
-			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+			acceleration.x /=1.1;
+			position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 1;
 
 		}
 	}

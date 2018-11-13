@@ -81,11 +81,11 @@ bool j1Render::PostUpdate()
 	//if (camera.x >= 0 && (camera.x + camera.w) <= App->map->data.width*App->map->data.tile_width) {
 	if (App->scene->currentLevel != MAIN_MENU){
 		if (App->player->position.x <= -(camera.x - camera.w / 4) && camera.x < 0) {
-			camera.x += App->player->velocity.x ;
+			camera.x += App->player->velocity.x + App->player->acceleration.x;
 		}
     
 		else if (App->player->position.x >= -(camera.x - camera.w + camera.w / 2.5f)) 
-			camera.x -= App->player->velocity.x;
+			camera.x -= App->player->velocity.x+App->player->acceleration.x;
 		
 		//camera.x = -App->player->position.x+300;
 

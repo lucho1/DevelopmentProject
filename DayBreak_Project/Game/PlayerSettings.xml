@@ -11,7 +11,8 @@
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
 
-    <Velocity velocity.x="5.5" velocity.y="8"/>
+    <Velocity velocity.x="2" velocity.y="8"/>
+    <MaxVelocity velocity.x="5.5" velocity.y="8"/>
     <Acceleration a.x="0.0" a.y="0.2"/>
     
   </PlayerSettings>

@@ -7,6 +7,7 @@
 #include "Animation.h"
 #include "j1Textures.h"
 #include "j1Pathfinding.h"
+#include "j1Timer.h"
 
 j1Player::j1Player() {
   
@@ -99,64 +100,49 @@ bool j1Player::PreUpdate() {
 
 void j1Player::RectPathfindingTest() {
 
-	App->render->DrawQuad(Enemy, 0, 0, 255, 255);
+	int x, y;
 
-	bool move = true;
+	j1Timer time;
+	PERF_START(time);
 
-	if (move) {
+	iPoint enemypos = iPoint(Enemy.x, Enemy.y/* + Enemy.h*/);
+	iPoint finalpos = iPoint(position.x, position.y/* + player_rect.h*/);
 
-		int x, y;
+	iPoint posWtoM = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
+	iPoint posWtoM2 = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
 
+	iPoint initial_pos = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
+	iPoint final_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
 
-		iPoint enemypos = iPoint(Enemy.x, Enemy.y/* + Enemy.h*/);
-		iPoint finalpos = iPoint(position.x, position.y/* + player_rect.h*/);
+	App->pathfinding->CreatePath(initial_pos, final_pos);
+	const p2DynArray<iPoint> *EnemyPath = App->pathfinding->GetLastPath();
 
-		iPoint posWtoM = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
-		iPoint posWtoM2 = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
+	for (uint i = 0; i < EnemyPath->Count(); ++i) {
 
-		iPoint initial_pos = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
-		iPoint final_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
+		x = EnemyPath->At(i)->x;
+		y = EnemyPath->At(i)->y;
 
-		App->pathfinding->CreatePath(initial_pos, final_pos);
-		const p2DynArray<iPoint>* EnemyPath = App->pathfinding->GetLastPath();
+		iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
+		iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
 
-		for (uint i = 0; i < EnemyPath->Count(); ++i) {
+		iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
 
-			/*x = App->pathfinding->GetLastPath()->At(i)->x;
-			y = App->pathfinding->GetLastPath()->At(i)->y;*/
-			x = EnemyPath->At(i)->x;
-			y = EnemyPath->At(i)->y;
+		//while (Enemy.x != path_coord_to_curr_map.x/* && Enemy.y != path_coord_to_curr_map.y*/) {
 
-			iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
-			iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
+		//	if (Enemy.x < path_coord_to_curr_map.x)
+		//		Enemy.x += 0.1f;
+		//	else if (Enemy.x > path_coord_to_curr_map.x)
+		//		Enemy.x -= 0.1f;
 
-			iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
+		//	/*if (Enemy.y < path_coord_to_curr_map.y)
+		//		Enemy.y++;
+		//	else if (Enemy.y > path_coord_to_curr_map.y)
+		//		Enemy.y--;*/
 
-			while (Enemy.x != path_coord_to_curr_map.x/* && Enemy.y != path_coord_to_curr_map.y*/) {
-
-				if (Enemy.x < path_coord_to_curr_map.x)
-					Enemy.x += 0.1f;
-				else if (Enemy.x > path_coord_to_curr_map.x)
-					Enemy.x -= 0.1f;
-
-				/*if (Enemy.y < path_coord_to_curr_map.y)
-					Enemy.y++;
-				else if (Enemy.y > path_coord_to_curr_map.y)
-					Enemy.y--;*/
-
-			}
-		}
-
-		//iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
-		//iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
-
-		//iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
-
-		move = false;
+		//}
 	}
 
 }
-
 
 
 bool j1Player::Update(float dt) {
@@ -252,7 +238,19 @@ bool j1Player::Update(float dt) {
 	}
 
 	//Testing pathfinding
-	RectPathfindingTest();
+	if(App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
+		RectPathfindingTest();
+	
+	App->render->DrawQuad(Enemy, 0, 0, 255, 255);
+
+	/*if (EnemyPath != nullptr) {
+
+		for (uint i = 0; i < path->Count(); ++i)
+		{
+			iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y, Level1_pathfinding_map);
+			App->render->Blit(debug_tex, pos.x, pos.y);
+		}
+	}*/
 
 	return true;
 }

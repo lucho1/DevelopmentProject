@@ -53,6 +53,8 @@ public:
 
 	void RectPathfindingTest();
 	SDL_Rect Enemy; //Rect to test
+//	const p2DynArray<iPoint>* EnemyPath = nullptr;
+
 
 public:
 

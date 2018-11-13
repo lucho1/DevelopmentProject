@@ -113,9 +113,9 @@ void j1Player::RectPathfindingTest() {
 
 	iPoint initial_pos = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
 	iPoint final_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
-
+	 
 	App->pathfinding->CreatePath(initial_pos, final_pos);
-	const p2DynArray<iPoint> *EnemyPath = App->pathfinding->GetLastPath();
+	p2DynArray<iPoint>* EnemyPath = App->pathfinding->GetLastPath();
 
 	for (uint i = 0; i < EnemyPath->Count(); ++i) {
 

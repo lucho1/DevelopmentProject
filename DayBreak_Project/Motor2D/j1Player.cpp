@@ -6,6 +6,7 @@
 #include "j1Map.h"
 #include "Animation.h"
 #include "j1Textures.h"
+#include "j1Pathfinding.h"
 
 j1Player::j1Player() {
   
@@ -83,7 +84,7 @@ bool j1Player::Start() {
 	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, (player_rect.w - 65), (player_rect.h)-28 }, COLLIDER_PLAYER, this);
 
 	//Rect Pathfinding test
-	Enemy = { position.x + player_rect.w + 10, position.y,  (player_rect.w - 65), (player_rect.h) - 28 };
+	Enemy = { (position.x + player_rect.w + 400), (position.y + 55),  (player_rect.w - 65), (player_rect.h) - 28 };
 	
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	//App->SaveGame("save_game.xml");
@@ -104,10 +105,52 @@ void j1Player::RectPathfindingTest() {
 
 	if (move) {
 
-		iPoint initial_pos = iPoint(Enemy.x, Enemy.y + Enemy.h);
-		iPoint final_pos = iPoint(position.x, position.y + player_rect.h);
+		int x, y;
 
 
+		iPoint enemypos = iPoint(Enemy.x, Enemy.y/* + Enemy.h*/);
+		iPoint finalpos = iPoint(position.x, position.y/* + player_rect.h*/);
+
+		iPoint posWtoM = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
+		iPoint posWtoM2 = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
+
+		iPoint initial_pos = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
+		iPoint final_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
+
+		App->pathfinding->CreatePath(initial_pos, final_pos);
+		const p2DynArray<iPoint>* EnemyPath = App->pathfinding->GetLastPath();
+
+		for (uint i = 0; i < EnemyPath->Count(); ++i) {
+
+			/*x = App->pathfinding->GetLastPath()->At(i)->x;
+			y = App->pathfinding->GetLastPath()->At(i)->y;*/
+			x = EnemyPath->At(i)->x;
+			y = EnemyPath->At(i)->y;
+
+			iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
+			iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
+
+			iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
+
+			while (Enemy.x != path_coord_to_curr_map.x/* && Enemy.y != path_coord_to_curr_map.y*/) {
+
+				if (Enemy.x < path_coord_to_curr_map.x)
+					Enemy.x += 0.1f;
+				else if (Enemy.x > path_coord_to_curr_map.x)
+					Enemy.x -= 0.1f;
+
+				/*if (Enemy.y < path_coord_to_curr_map.y)
+					Enemy.y++;
+				else if (Enemy.y > path_coord_to_curr_map.y)
+					Enemy.y--;*/
+
+			}
+		}
+
+		//iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
+		//iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
+
+		//iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
 
 		move = false;
 	}

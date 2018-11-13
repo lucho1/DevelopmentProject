@@ -56,8 +56,11 @@ bool j1Scene::Start()
 
 		pathfinding = true;
 
-		App->player->Start();
-		App->collisions->Start();
+		if(!App->player->active)
+			App->player->Start();
+
+		if(!App->collisions->active)
+			App->collisions->Start();
 	}
 
 	else if (Level2 == true) {
@@ -69,10 +72,13 @@ bool j1Scene::Start()
 		//current_pathfinding_map = Level2_pathfinding_map;
 		currentLevel = LEVEL2;
 
-		App->player->Start();
-		App->collisions->Start();
-
 		pathfinding = false;
+
+		if (!App->player->active)
+			App->player->Start();
+
+		if (!App->collisions->active)
+			App->collisions->Start();
 	}
   
 	App->render->ResetCamera();
@@ -160,30 +166,28 @@ bool j1Scene::Update(float dt)
 	int x, y;
 	App->input->GetMousePosition(x, y);
 
-	iPoint Mp = App->map->WorldToMap(x, y, current_map);
-
-
+	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
 	iPoint mc2 = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_map);
-	
-	iPoint pl_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, current_map);
 
 	iPoint mapatW = App->map->MapToWorld(mc2.x, mc2.y, current_map);
+	iPoint pl_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, current_map);
+	iPoint en_pos = App->map->WorldToMap(App->player->Enemy.x, App->player->Enemy.y, current_map);
+
+	
+	iPoint pathtoworld = App->map->MapToWorld(map_coordinates.x, map_coordinates.y, current_pathfinding_map);
+	//iPoint pathtomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
+	//iPoint pathftomap = App->map->MapToWorld(pathtomap.x, pathtomap.y, current_map);
+	//iPoint pathftomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
+
+	p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) PlayerPos: %d,%d (%d,%d) Enemy: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathtoworld.x, pathtoworld.y,
+		mc2.x, mc2.y, mapatW.x, mapatW.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y, App->player->Enemy.x, App->player->Enemy.y, en_pos.x, en_pos.y);
+
 
 	/*p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
 		current_pathfinding_map.width, current_pathfinding_map.height,
 		current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
 		current_pathfinding_map.tilesets.count(),
 		map_coordinates.x, map_coordinates.y);*/
-
-	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
-
-	iPoint pathtoworld = App->map->MapToWorld(map_coordinates.x, map_coordinates.y, current_pathfinding_map);
-	iPoint pathtomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
-
-	iPoint pathftomap = App->map->MapToWorld(pathtomap.x, pathtomap.y, current_map);
-
-	p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) MousePos: %i,%i PlayerPos: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathftomap.x, pathftomap.y,
-		mc2.x, mc2.y, mapatW.x, mapatW.y, Mp.x, Mp.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y);
 
 	App->win->SetTitle(title.GetString());
 

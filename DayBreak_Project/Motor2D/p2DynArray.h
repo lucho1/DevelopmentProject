@@ -31,7 +31,9 @@ public:
 		Alloc(capacity);
 	}
 
-	p2DynArray(const p2DynArray* dArray){}
+	p2DynArray(const p2DynArray* dArray) : num_elements(dArray->num_elements), mem_capacity(dArray->mem_capacity), data(dArray->data) {}
+
+
 	// Destructor
 	~p2DynArray()
 	{

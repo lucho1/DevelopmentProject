@@ -69,7 +69,7 @@ private:
 	MapData Level1_pathfinding_map;
 	//MapData Level2_pathfinding_map;
 
-	SDL_Texture *debug_tex;
+
 
 	bool pathfinding = false;
 

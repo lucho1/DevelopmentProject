@@ -85,7 +85,9 @@ bool j1Player::Start() {
 	player_collider = App->collisions->AddCollider({ player_rect.x + 50, player_rect.y, (player_rect.w - 65), (player_rect.h)-28 }, COLLIDER_PLAYER, this);
 
 	//Rect Pathfinding test
-	Enemy = { (position.x + player_rect.w + 400), (position.y + 55),  (player_rect.w - 65), (player_rect.h) - 28 };
+	//Enemy = { (position.x + player_rect.w + 400), (position.y + 55),  (player_rect.w - 65), (player_rect.h) - 28 };
+	//PERF_START(recalc_path);
+	//debug_tex = App->tex->Load("maps/path2.png");
 	
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	//App->SaveGame("save_game.xml");
@@ -96,52 +98,6 @@ bool j1Player::Start() {
 bool j1Player::PreUpdate() {
 
 	return true;
-}
-
-void j1Player::RectPathfindingTest() {
-
-	int x, y;
-
-	j1Timer time;
-	PERF_START(time);
-
-	iPoint enemypos = iPoint(Enemy.x, Enemy.y/* + Enemy.h*/);
-	iPoint finalpos = iPoint(position.x, position.y/* + player_rect.h*/);
-
-	iPoint posWtoM = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
-	iPoint posWtoM2 = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
-
-	iPoint initial_pos = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
-	iPoint final_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
-	 
-	App->pathfinding->CreatePath(initial_pos, final_pos);
-	p2DynArray<iPoint>* EnemyPath = App->pathfinding->GetLastPath();
-
-	for (uint i = 0; i < EnemyPath->Count(); ++i) {
-
-		x = EnemyPath->At(i)->x;
-		y = EnemyPath->At(i)->y;
-
-		iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
-		iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
-
-		iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
-
-		//while (Enemy.x != path_coord_to_curr_map.x/* && Enemy.y != path_coord_to_curr_map.y*/) {
-
-		//	if (Enemy.x < path_coord_to_curr_map.x)
-		//		Enemy.x += 0.1f;
-		//	else if (Enemy.x > path_coord_to_curr_map.x)
-		//		Enemy.x -= 0.1f;
-
-		//	/*if (Enemy.y < path_coord_to_curr_map.y)
-		//		Enemy.y++;
-		//	else if (Enemy.y > path_coord_to_curr_map.y)
-		//		Enemy.y--;*/
-
-		//}
-	}
-
 }
 
 
@@ -225,11 +181,29 @@ bool j1Player::Update(float dt) {
 	else
 		fall = true;
 
+	//Testing pathfinding
+	//if (recalc_path.ReadSec() > 3) {
+
+	//	RectPathfindingTest();
+	//	PERF_START(recalc_path);
+	//}
+
+	//if (EnemyPath != nullptr) {
+
+	//	for (uint i = 0; i < EnemyPath->Count(); ++i)
+	//	{
+	//		iPoint pos = App->map->MapToWorld(EnemyPath->At(i)->x, EnemyPath->At(i)->y, App->scene->current_pathfinding_map);
+	//		App->render->Blit(debug_tex, pos.x, pos.y);
+	//	}
+	//}
+
+	//App->render->DrawQuad(Enemy, 0, 0, 255, 255);
+
 	//BLIT PLAYER
 	if (direction_x == RIGHT) {
 
 		player_collider->SetPos(position.x, position.y);
-		App->render->Blit(Player_texture, position.x , position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4);
+		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4);
 	}
 	if (direction_x == LEFT) {
 
@@ -237,23 +211,55 @@ bool j1Player::Update(float dt) {
 		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4);
 	}
 
-	//Testing pathfinding
-	if(App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
-		RectPathfindingTest();
-	
-	App->render->DrawQuad(Enemy, 0, 0, 255, 255);
-
-	/*if (EnemyPath != nullptr) {
-
-		for (uint i = 0; i < path->Count(); ++i)
-		{
-			iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y, Level1_pathfinding_map);
-			App->render->Blit(debug_tex, pos.x, pos.y);
-		}
-	}*/
-
 	return true;
 }
+
+void j1Player::RectPathfindingTest() {
+
+	int x, y;
+
+	j1Timer time;
+	PERF_START(time);
+
+	iPoint enemypos = iPoint(Enemy.x, Enemy.y/* + Enemy.h*/);
+	iPoint finalpos = iPoint(position.x, position.y/* + player_rect.h*/);
+
+	iPoint posWtoM = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
+	iPoint posWtoM2 = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
+
+	iPoint initial_pos = App->map->WorldToMap(Enemy.x, Enemy.y, App->scene->current_pathfinding_map);
+	iPoint final_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
+
+	App->pathfinding->CreatePath(initial_pos, final_pos);
+	EnemyPath = new p2DynArray<iPoint>(App->pathfinding->GetLastPath());
+
+	//for (uint i = 0; i < EnemyPath->Count(); ++i) {
+
+	//	x = EnemyPath->At(i)->x;
+	//	y = EnemyPath->At(i)->y;
+
+	//	iPoint path_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.x, App->scene->current_pathfinding_map);
+	//	iPoint path_coord_to_world = App->map->MapToWorld(path_coordinates.x, path_coordinates.y, App->scene->current_pathfinding_map);
+
+	//	iPoint path_coord_to_curr_map = App->map->WorldToMap(path_coord_to_world.x, path_coord_to_world.y, App->scene->current_map);
+
+	//	while (Enemy.x != path_coord_to_curr_map.x/* && Enemy.y != path_coord_to_curr_map.y*/) {
+
+	//		if (Enemy.x < path_coord_to_curr_map.x)
+	//			Enemy.x += 0.1f;
+	//		else if (Enemy.x > path_coord_to_curr_map.x)
+	//			Enemy.x -= 0.1f;
+
+	//		/*if (Enemy.y < path_coord_to_curr_map.y)
+	//			Enemy.y++;
+	//		else if (Enemy.y > path_coord_to_curr_map.y)
+	//			Enemy.y--;*/
+
+	//	}
+	//}
+
+}
+
 
 bool j1Player::PostUpdate() {
 

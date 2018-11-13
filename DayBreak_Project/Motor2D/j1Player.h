@@ -7,6 +7,8 @@
 #include "j1Module.h"
 #include "j1App.h"
 #include "Animation.h"
+#include "p2DynArray.h"
+
 
 enum direction {
 
@@ -53,7 +55,9 @@ public:
 
 	void RectPathfindingTest();
 	SDL_Rect Enemy; //Rect to test
-	//p2DynArray<iPoint>* EnemyPath = nullptr;
+	p2DynArray<iPoint>* EnemyPath = nullptr;
+	j1Timer recalc_path;
+	SDL_Texture *debug_tex;
 
 
 public:

@@ -98,12 +98,9 @@ bool j1Scene::Start()
 	if (result == NULL)
 		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
 
-
 	//Need to play more than one track (or merge them). Just comment/uncomment to change music
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
-
-	debug_tex = App->tex->Load("maps/path2.png");
 
 	return true;
 }
@@ -111,28 +108,6 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	// debug pathfind ------------------
-	static iPoint origin;
-	static bool origin_selected = false;
-
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint p = App->render->ScreenToWorld(x, y);
-	p = App->map->WorldToMap(p.x, p.y, Level1_pathfinding_map);
-
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		if (origin_selected == true)
-		{
-			App->pathfinding->CreatePath(origin, p);
-			origin_selected = false;
-		}
-		else
-		{
-			origin = p;
-			origin_selected = true;
-		}
-	}
 	return true;
 }
 
@@ -182,7 +157,6 @@ bool j1Scene::Update(float dt)
 	p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) PlayerPos: %d,%d (%d,%d) Enemy: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathtoworld.x, pathtoworld.y,
 		mc2.x, mc2.y, mapatW.x, mapatW.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y, App->player->Enemy.x, App->player->Enemy.y, en_pos.x, en_pos.y);
 
-
 	/*p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
 		current_pathfinding_map.width, current_pathfinding_map.height,
 		current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
@@ -190,23 +164,6 @@ bool j1Scene::Update(float dt)
 		map_coordinates.x, map_coordinates.y);*/
 
 	App->win->SetTitle(title.GetString());
-
-	// Debug pathfinding ------------------------------
-	App->input->GetMousePosition(x, y);
-	iPoint p = App->render->ScreenToWorld(x, y);
-	p = App->map->WorldToMap(p.x, p.y, Level1_pathfinding_map);
-	p = App->map->MapToWorld(p.x, p.y, Level1_pathfinding_map);
-
-
-	App->render->Blit(debug_tex, p.x, p.y);
-
-	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
-
-	for (uint i = 0; i < path->Count(); ++i)
-	{
-		iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y, Level1_pathfinding_map);
-		App->render->Blit(debug_tex, pos.x, pos.y);
-	}
 
 	return true;
 }

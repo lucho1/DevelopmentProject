@@ -13,7 +13,8 @@
 enum direction {
 
 	RIGHT,
-	LEFT
+	LEFT,
+	JUMPING
 };
 
 
@@ -76,6 +77,7 @@ public:
 	bool God = false;
 	
 	bool jump = false;
+	bool doublejump=true;
 	bool jump_falling = false;
 	int auxY;
 	

@@ -138,13 +138,24 @@ bool j1Player::Update(float dt) {
 		desaccelerating = true;
 	}
 	//Y axis Movement
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God) {
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump&& doublejump && !God) {
 
 		jump = true;
+		jump_falling = false;
+		
+		auxY = position.y;
+		velocity.y = initial_vel.y;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
+		
+		doublejump = false;
 		jump_falling = false;
 		auxY = position.y;
 		velocity.y = initial_vel.y;
 	}
+
+
 	if (desaccelerating==true) {
 		if(acceleration.x>0){
 			acceleration.x -= 0.2;
@@ -158,29 +169,33 @@ bool j1Player::Update(float dt) {
 	}
 
 	//JUMP
-	if (jump) {
+	if (jump||doublejump) {
 
 		if (velocity.y >= 0 && !jump_falling) {
-			
 			fall = false;
 			position.y -= velocity.y;
-			velocity.y -= 0.5;
+			velocity.y -= 0.43;
 		}
 
 		else if (velocity.y < 0) {
-		
 			jump_falling = true;
 			fall = true;
 		}
+	}
+	if (!jump) {
+		doublejump = true;
 	}
 	
 	//FALL
 	if (fall) {
 
-		if (velocity.y < initial_vel.y)
+		if (velocity.y < initial_vel.y) {
 			velocity.y += acceleration.y;
+			acceleration.y += 0.1;
+		}
 
 		position.y += velocity.y;
+		
 	}
 
 	//God mode

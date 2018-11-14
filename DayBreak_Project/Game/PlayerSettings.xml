@@ -82,7 +82,7 @@
          <Pushback x="597" y="698" w="200" h="88"/>
       </Run>
 
-      <Shoot loop="true" speed="0.15">
+      <Shoot loop="true" speed="0.23">
          <Pushback x="597" y="786" w="199" h="76"/>
          <Pushback x="597" y="862" w="199" h="76"/>
          <Pushback x="597" y="938" w="199" h="76"/>

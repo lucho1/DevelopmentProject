@@ -11,6 +11,7 @@
 #include "j1Player.h"
 #include "j1Collisions.h"
 #include "j1PathFinding.h"
+#include "j1Fade.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -46,6 +47,7 @@ bool j1Scene::Start()
 	}
 
 	if (Level1 == true) {
+	
 		App->map->Load("Level1.tmx", Level1_map);
 		App->map->Load("Level1_WalkabilityMap.tmx", Level1_pathfinding_map);
 
@@ -121,7 +123,7 @@ bool j1Scene::Update(float dt)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-
+		
 		App->map->TriggerActive = false;
 		ChangeLevel(LEVEL1);
 	}
@@ -197,7 +199,9 @@ void j1Scene::ChangeLevel(int level_change) {
 	}
 	if (currentLevel == LEVEL2)
 		App->map->CleanUp(Level1_map);
-
+	float temporizer = 0.0f;;
+	App->fade->Fade(2.0f);
+	
 	Start();
 }
 

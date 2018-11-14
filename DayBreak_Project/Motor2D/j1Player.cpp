@@ -8,6 +8,7 @@
 #include "j1Textures.h"
 #include "j1Pathfinding.h"
 #include "j1Timer.h"
+#include "j1Fade.h"
 
 j1Player::j1Player() {
   
@@ -148,6 +149,9 @@ bool j1Player::Update(float dt) {
 		//GUN ADJUST
 		Adjusting_Gun_position.x = 0;
 		Adjusting_Gun_position.y = player_rect.h / 3.5;
+		if (!jump) {
+			angle = 0;
+		}
 		
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP&&!jump&&!desaccelerating) {
@@ -156,6 +160,7 @@ bool j1Player::Update(float dt) {
 	else
 		state = IDLE;
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
+
 		state = RUN;
 		desaccelerating = false;
 		velocity.x = velocity.x;
@@ -170,6 +175,9 @@ bool j1Player::Update(float dt) {
 		//GUN ADJUST
 		Adjusting_Gun_position.x = -5;
 		Adjusting_Gun_position.y = player_rect.h / 3.5;
+		if (!jump) {
+			angle = 0;
+		}
 	
 
 	}
@@ -179,7 +187,7 @@ bool j1Player::Update(float dt) {
 	//Y axis Movement
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
-
+		
 		jump = true;
 		jump_falling = false;
 		acceleration.y = 0.2;
@@ -187,7 +195,6 @@ bool j1Player::Update(float dt) {
 		velocity.y = initial_vel.y;
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
-
 		doublejump = false;
 		jump_falling = false;
 		acceleration.y = 0.2;
@@ -195,7 +202,6 @@ bool j1Player::Update(float dt) {
 		velocity.y = initial_vel.y;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN&&!Shooting) {
-		
 		Shooting = true;
 	}
 		

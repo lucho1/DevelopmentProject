@@ -16,9 +16,9 @@ public:
 	~j1Fade();
 
 	bool Start();
-	bool Update();
-	//bool Fade(Module* module_off, Module* module_on, float time = 2.0f);
-
+	bool Update(float dt);
+	bool Fade(float time = 2.0f);
+	void getMiddle_Time();
 
 private:
 

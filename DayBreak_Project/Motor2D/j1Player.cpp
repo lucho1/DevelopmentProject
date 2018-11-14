@@ -24,7 +24,14 @@ j1Player::j1Player() {
 	LoadPushbacks(Animation_node, Run);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Jump");
 	LoadPushbacks(Animation_node, Jump);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Idle");
+	LoadPushbacks(Animation_node, Gun_Idle);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Run");
+	LoadPushbacks(Animation_node, Gun_Run);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Shoot");
+	LoadPushbacks(Animation_node, Gun_Shot);
 	PlayerSettings = PlayerDocument.child("config");
+
 
 }
 
@@ -69,7 +76,9 @@ bool j1Player::Start() {
 
 	if (App->scene->currentLevel == LEVEL1) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.x").as_int();
+
 		position.y = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level1").attribute("position.y").as_int();
+		Gun_position = position;
 	}
 	else if (App->scene->currentLevel==LEVEL2) {
 		position.x = PlayerSettings.child("PlayerSettings").child("StartingPose").child("Level2").attribute("position.x").as_int();
@@ -95,7 +104,7 @@ bool j1Player::Start() {
 	
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	//App->SaveGame("save_game.xml");
-
+	state = IDLE;
 	return true;
 }
 
@@ -106,11 +115,25 @@ bool j1Player::PreUpdate() {
 
 
 bool j1Player::Update(float dt) {
+	
+	if ((!jump || !fall )&&state !=RUN) {
+		Gun_Run.Reset();
+		current_animation = &Idle;
+		Gun_current_animation = &Gun_Idle;
+		
+		//GUN ADJUST
+	
+		Adjusting_Gun_position.x = 0;
+		Adjusting_Gun_position.y = player_rect.h / 3;
 
-	current_animation = &Idle;
+		
+	}
+	
+		
 
 	//X axis Movement
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
+		state = RUN;
 		desaccelerating = false;
 		velocity.x = velocity.x;
 		direction_x = RIGHT;
@@ -119,40 +142,71 @@ bool j1Player::Update(float dt) {
 			acceleration.x += 0.2;
 		}
 		
+		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
+
+		//GUN ADJUST
+		Adjusting_Gun_position.x = 0;
+		Adjusting_Gun_position.y = player_rect.h / 3.5;
+		
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP&&!jump&&!desaccelerating) {
 		desaccelerating = true;
 	}
+	else
+		state = IDLE;
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
+		state = RUN;
 		desaccelerating = false;
 		velocity.x = velocity.x;
 		direction_x = LEFT;
 		position.x -= velocity.x+acceleration.x;
+
 		if (acceleration.x < MaxVelocity.x) {
 			acceleration.x += 0.2;
 		}
+		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
+		//GUN ADJUST
+		Adjusting_Gun_position.x = -5;
+		Adjusting_Gun_position.y = player_rect.h / 3.5;
+	
+
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP&&!jump&&!desaccelerating) {
 		desaccelerating = true;
 	}
 	//Y axis Movement
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump&& doublejump && !God) {
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
 
 		jump = true;
 		jump_falling = false;
-		
+		acceleration.y = 0.2;
 		auxY = position.y;
 		velocity.y = initial_vel.y;
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
-		
+
 		doublejump = false;
 		jump_falling = false;
+		acceleration.y = 0.2;
 		auxY = position.y;
 		velocity.y = initial_vel.y;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN&&!Shooting) {
+		
+		Shooting = true;
+	}
+		
+	if (Shooting) {
+		Gun_current_animation = &Gun_Shot;
+		if (Gun_Shot.Finished()) {
+			Shooting = false;
+			Gun_Shot.Reset();
+		}
+		Adjusting_Gun_position.x = 2;
+		Adjusting_Gun_position.y = player_rect.h / 3.5;
 	}
 
 
@@ -170,14 +224,30 @@ bool j1Player::Update(float dt) {
 
 	//JUMP
 	if (jump||doublejump) {
-
+		if(jump)
+			current_animation = &Jump;
 		if (velocity.y >= 0 && !jump_falling) {
+			if (direction_x == RIGHT) {
+				if (angle < 0) {
+					angle *= (-1);
+				}
+				if (angle < 20)
+					angle += 1;
+			}
+			else if (direction_x == LEFT) {
+				if (angle > 0) {
+					angle *= (-1);
+				}
+					if(angle>-20)
+						angle -= 1;
+			}
 			fall = false;
 			position.y -= velocity.y;
 			velocity.y -= 0.43;
 		}
 
 		else if (velocity.y < 0) {
+			
 			jump_falling = true;
 			fall = true;
 		}
@@ -185,13 +255,31 @@ bool j1Player::Update(float dt) {
 	if (!jump) {
 		doublejump = true;
 	}
-	
+	LOG(" Angle %d", angle);
 	//FALL
 	if (fall) {
-
+		Jump.Reset();
 		if (velocity.y < initial_vel.y) {
+			if (direction_x == RIGHT) {
+				if (angle < 0) {
+					angle *= (-1);
+				}
+				if (angle > 0) {
+					angle -= 1;
+				
+				}
+			}
+			else if (direction_x == LEFT) {
+				if (angle > 0) {
+					angle *= (-1);
+				}
+				if (angle < 0) {
+					angle += 1;
+					
+				}
+			}
 			velocity.y += acceleration.y;
-			acceleration.y += 0.1;
+			acceleration.y += 0.02;
 		}
 
 		position.y += velocity.y;
@@ -247,11 +335,13 @@ bool j1Player::Update(float dt) {
 
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4);
+		App->render->Blit(Player_texture, position.x + Adjusting_Gun_position.x, position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1,angle, 0, 0, SDL_FLIP_NONE, 0.4);
 	}
 	if (direction_x == LEFT) {
 
 		player_collider->SetPos(position.x, position.y);
 		App->render->Blit(Player_texture, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4);
+		App->render->Blit(Player_texture, position.x+Adjusting_Gun_position.x-30, position.y+Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1, angle,60, 0, SDL_FLIP_HORIZONTAL, 0.4);
 	}
 
 	return true;
@@ -346,15 +436,19 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		if (error_margin > 1) {
 
 			//Checking Y Axis Collisions
-			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) { //Colliding down (jumping)
-				
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y-acceleration.y) { //Colliding down (jumping)
+				fall = false;
+				doublejump = false;
 				velocity.y = 0;
+				acceleration.y = 0.2;
 				position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
-			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) { //Colliding Up (falling)
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y+acceleration.y) { //Colliding Up (falling)
+				fall = false;
 				
 				jump = false;
 				velocity.y = 0;
+				acceleration.y = 0.2;
 				position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
 		}

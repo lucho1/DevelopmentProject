@@ -14,7 +14,12 @@ enum direction {
 
 	RIGHT,
 	LEFT,
-	JUMPING
+};
+enum State {
+	IDLE,
+	RUN,
+	JUMP,
+	FALL
 };
 
 
@@ -67,7 +72,11 @@ public:
 
 public:
 
+	int angle;
+	State state;
 	iPoint position;
+	iPoint Gun_position;
+	iPoint Adjusting_Gun_position;
 	int direction_x;
 	fPoint velocity;
 	fPoint MaxVelocity;
@@ -76,6 +85,7 @@ public:
 	bool desaccelerating;
 	bool God = false;
 	
+	bool Shooting;
 	bool jump = false;
 	bool doublejump=true;
 	bool jump_falling = false;
@@ -84,11 +94,20 @@ public:
 	bool fall = true;
 
 	Animation*		current_animation = nullptr;
+	Animation*		Gun_current_animation = nullptr;
 	Animation		Idle;
 	Animation		Run;
 	Animation		Jump;
+	Animation		Fall;
+	Animation		Gun_Idle;
+	Animation		Gun_Run;
+	Animation		Gun_Shot;
+
 	SDL_Texture*	Player_texture = nullptr;
+	SDL_Texture*	Gun_Texture = nullptr;
+	
 	SDL_Rect player_rect;
+	SDL_Rect Gun_Rect;
 
 	Collider *player_collider = nullptr;
 

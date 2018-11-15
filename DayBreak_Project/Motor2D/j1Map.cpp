@@ -274,6 +274,8 @@ bool j1Map::Load(const char* file_name, MapData &data)
 	if(ret == true)
 	{
 		ret = LoadMap(data);
+		data.Filename = file_name;
+		
 	}
 
 	// Load all tilesets info ----------------------------------------------

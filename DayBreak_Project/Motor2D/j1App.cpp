@@ -15,6 +15,7 @@
 #include "j1Collisions.h"
 #include "j1Fade.h"
 #include "j1Pathfinding.h"
+#include "j1Particles.h"
 #include "j1App.h"
 
 // Constructor
@@ -33,6 +34,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathfinding = new j1PathFinding();
 	player = new j1Player();
 	collisions = new j1Collisions();
+	particles = new j1Particles();
 	fade = new j1Fade();
 
 	// Ordered for awake / Start / Update
@@ -45,6 +47,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(map);
 	AddModule(pathfinding);
 	AddModule(scene);
+	AddModule(particles);
 	AddModule(player);
 	AddModule(collisions);
 	AddModule(fade);
@@ -336,9 +339,7 @@ void j1App::LoadGame(const char* file)
 // ---------------------------------------
 void j1App::SaveGame(const char* file) const
 {
-	// we should be checking if that file actually exist
-	// from the "GetSaveGames" list ... should we overwrite ?
-
+	
 	want_to_save = true;
 	save_game.create(file);
 }

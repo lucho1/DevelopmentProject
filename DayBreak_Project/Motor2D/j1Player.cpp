@@ -8,6 +8,7 @@
 #include "j1Textures.h"
 #include "j1Pathfinding.h"
 #include "j1Timer.h"
+#include "j1Particles.h"
 #include "j1Fade.h"
 
 j1Player::j1Player() {
@@ -202,6 +203,11 @@ bool j1Player::Update(float dt) {
 		velocity.y = initial_vel.y;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN&&!Shooting) {
+		angle = 0;
+		if(direction_x==RIGHT)
+			App->particles->AddParticle(App->particles->Shoot, position.x+Adjusting_Gun_position.x+20, position.y + Adjusting_Gun_position.y-20, COLLIDER_NONE,iPoint(16,0));
+		else if (direction_x==LEFT)
+			App->particles->AddParticle(App->particles->Shoot, position.x + Adjusting_Gun_position.x-80, position.y + Adjusting_Gun_position.y - 20, COLLIDER_NONE, iPoint(-16, 0),SDL_FLIP_HORIZONTAL);
 		Shooting = true;
 	}
 		
@@ -261,7 +267,7 @@ bool j1Player::Update(float dt) {
 	if (!jump) {
 		doublejump = true;
 	}
-	LOG(" Angle %d", angle);
+
 	//FALL
 	if (fall) {
 		Jump.Reset();

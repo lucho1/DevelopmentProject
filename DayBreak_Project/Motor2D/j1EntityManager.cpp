@@ -34,9 +34,9 @@ bool j1EntityManager::Update(float dt) {
 
 	if (do_logic == true) {*/
 		p2List_item<j1Entity*>*item = entities_list.start;
-		for (; item != nullptr; item = item->next)
+		for (; item != nullptr; item = item->next) 
 			item->data->Update(dt);
-
+	
 		accumulated_time = 0.0f;
 	//}
 	

@@ -87,7 +87,7 @@ bool j1Player::Start() {
 	//Rect Pathfinding test
 	//Enemy = { (position.x + player_rect.w + 400), (position.y + 55),  (player_rect.w - 65), (player_rect.h) - 28 };
 	//PERF_START(recalc_path);
-	//debug_tex = App->tex->Load("maps/path2.png");
+	debug_tex = App->tex->Load("maps/path2.png");
 	
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	//App->SaveGame("save_game.xml");

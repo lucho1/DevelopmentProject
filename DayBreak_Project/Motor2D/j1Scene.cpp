@@ -122,11 +122,11 @@ bool j1Scene::Start()
 	Enemy1->CreateEnemy(iPoint(800, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
 	Enemy2->CreateEnemy(iPoint(300, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
 
-	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+	/*pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
 	if (result4 == NULL)
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
-	Enemy3->CreateEnemy(iPoint(600, 1400), WALKER, "maps/Enemy1_Tileset.png", EnemiesDocument);
+	Enemy3->CreateEnemy(iPoint(600, 1350), WALKER, "maps/Enemy1_Tileset.png", EnemiesDocument);*/
 
 	return true;
 }

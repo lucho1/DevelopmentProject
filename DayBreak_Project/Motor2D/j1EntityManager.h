@@ -23,13 +23,15 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
+
+public:
+
+	j1Entity *CreateEntity(ENTITY_TYPE eType);
 	void DestroyEntity(j1Entity *Entity);
 
 public:
 
 	p2List<j1Entity*> entities_list;
-
-	j1Entity *CreateEntity(ENTITY_TYPE eType);
 
 	float accumulated_time;
 	float update_ms_cycle;

@@ -15,19 +15,17 @@ j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT
 {
 }
 
-j1Enemy* j1Enemy::CreateEnemy(iPoint position, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
+j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
 
 	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
-
-	j1Enemy* Enemy = (j1Enemy*) App->entity_manager->CreateEntity(ENTITY_TYPE::ENEMY_ENT);
-
+	j1Enemy* Enemy = nullptr;
 	switch (enemyType) {
 
 	case ENEMY_TYPE::FLYER:
-		Enemy = new j1EnemyFlyer(path, EnemiesDocument);
+		Enemy = new j1EnemyFlyer(pos,path, EnemiesDocument);
 		break;
 	case ENEMY_TYPE::WALKER:
-		Enemy = new j1EnemyWalker(path, EnemiesDocument);
+		Enemy = new j1EnemyWalker(pos,path, EnemiesDocument);
 		break;
 	default:
 		break;
@@ -59,22 +57,6 @@ bool j1Enemy::LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocumen
 	Enemy_tex = App->tex->Load(file_name);
 
 	return true;
-}
-
-
-p2DynArray<iPoint>* j1Enemy::FindPath(iPoint f_pos, p2DynArray<iPoint>*path) {
-
-	iPoint Enemy_WorldtoPFMap = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
-	iPoint Dest_WorldtoPFMap = App->map->WorldToMap(f_pos.x, f_pos.y, App->scene->current_pathfinding_map);
-
-	iPoint initial_pos = App->map->WorldToMap(position.x, position.y, App->scene->current_pathfinding_map);
-	iPoint final_pos = App->map->WorldToMap(f_pos.x, f_pos.y, App->scene->current_pathfinding_map);
-
-	App->pathfinding->CreatePath(initial_pos, final_pos);
-
-	path = new p2DynArray<iPoint>(App->pathfinding->GetLastPath());
-
-	return path;
 }
 
 void j1Enemy::LoadPushbacks(pugi::xml_node node, Animation &animation) {

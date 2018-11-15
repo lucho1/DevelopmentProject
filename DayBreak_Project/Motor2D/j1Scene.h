@@ -73,6 +73,7 @@ private:
 
 	bool pathfinding = false;
 
+	pugi::xml_document	EnemiesDocument;
 	pugi::xml_document	SceneDocument;
 	pugi::xml_node		music_node;
 

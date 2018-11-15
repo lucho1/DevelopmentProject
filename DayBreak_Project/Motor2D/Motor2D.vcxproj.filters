@@ -61,6 +61,9 @@
     <ClCompile Include="j1EnemyFlyer.cpp">
       <Filter>Modules\Entities\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="j1EnemyWalker.cpp">
+      <Filter>Modules\Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1App.h">
@@ -145,6 +148,9 @@
       <Filter>Modules\Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="j1EnemyFlyer.h">
+      <Filter>Modules\Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="j1EnemyWalker.h">
       <Filter>Modules\Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>

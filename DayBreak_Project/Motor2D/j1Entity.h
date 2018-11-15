@@ -41,12 +41,23 @@ public:
 	// Called before quitting
 	virtual void CleanUp() {}
 
-	virtual void OnCollision(Collider* c1, Collider* c2) {}
 
+	virtual bool Load(pugi::xml_node&)
+	{
+		return true;
+	}
+
+	virtual bool Save(pugi::xml_node&) const
+	{
+		return true;
+	}
+
+	virtual void OnCollision(Collider* c1, Collider* c2) {}
 
 public:
 
 	ENTITY_TYPE type;
+	Collider* entity_collider;
 
 };
 

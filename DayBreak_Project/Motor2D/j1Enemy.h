@@ -4,6 +4,7 @@
 #include "j1Entity.h"
 #include "p2DynArray.h"
 #include "Animation.h"
+#include "p2List.h"
 
 
 enum ENEMY_TYPE {
@@ -25,17 +26,19 @@ class j1Enemy : public j1Entity
 
 public:
 
-	j1Enemy(ENEMY_TYPE type_);
+	j1Enemy(iPoint pos, ENEMY_TYPE type_);
 	~j1Enemy() {}
 
-	virtual void CleanUp();
-
-	virtual void Update(float dt) {}
 	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
 	bool LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument);
 
+	j1Enemy* CreateEnemy(iPoint position, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument); //Remember to put maps/ at path
+	void j1Enemy::DestroyEnemy(j1Enemy *Enemy);
+
 	//Pushbacks loading
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
+
+	//Pathfinding
 	p2DynArray<iPoint>* FindPath(iPoint f_pos, p2DynArray<iPoint>*path);
 
 public:
@@ -52,8 +55,6 @@ public:
 	iPoint position;
 	fPoint velocity;
 	iPoint initial_velocity;
-
-	Collider* enemy_collider;
 
 	SDL_Texture *Enemy_tex = nullptr;
 	SDL_Rect enemy_rect;

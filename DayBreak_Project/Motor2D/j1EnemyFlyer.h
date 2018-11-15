@@ -9,7 +9,7 @@ class j1EnemyFlyer : public j1Enemy
 
 public:
 
-	j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument);
+	j1EnemyFlyer(const char* path, pugi::xml_document &EnemiesDocument);
 	~j1EnemyFlyer();
 
 	void Update(float dt) override;

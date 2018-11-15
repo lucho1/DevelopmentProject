@@ -28,12 +28,8 @@ public:
 public:
 
 	p2List<j1Entity*> entities_list;
-	p2List<j1Enemy*> enemies_list;
 
-	pugi::xml_document	EnemiesDocument;
-
-	j1Entity *CreateEntity(ENTITY_TYPE eType, ENEMY_TYPE enemyType);
-	j1Enemy* CreateEnemy(iPoint ePos, ENEMY_TYPE enemyType, const char* path, const char* document_path); //Remember to put maps/ at path
+	j1Entity *CreateEntity(ENTITY_TYPE eType);
 
 	float accumulated_time;
 	float update_ms_cycle;

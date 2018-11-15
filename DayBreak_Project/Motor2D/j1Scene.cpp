@@ -13,6 +13,7 @@
 #include "j1PathFinding.h"
 #include "j1EntityManager.h"
 #include "j1Enemy.h"
+#include "Brofiler/Brofiler.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -107,8 +108,25 @@ bool j1Scene::Start()
 	/*j1Enemy* Enemy = (j1Enemy*)App->entity_manager->CreateEntity(iPoint(950, 1455), ENTITY_TYPE::ENEMY_ENT);
 	Enemy->CreateEnemy(iPoint(950, 1455), ENEMY_TYPE::FLYER);*/
 
-	j1Enemy *Enemy_Entity = (j1Enemy*)App->entity_manager->CreateEnemy(iPoint(800, 1400), ENEMY_TYPE::FLYER, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
-	j1Enemy *Enemy_Entity2 = (j1Enemy*)App->entity_manager->CreateEnemy(iPoint(400, 1400), ENEMY_TYPE::FLYER, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
+	//	j1Entity *Enemy_Entity = (j1Entity*)App->entity_manager->CreateEntity(iPoint(800, 1400), ENTITY_TYPE::ENEMY_ENT, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
+
+	pugi::xml_parse_result result3 = EnemiesDocument.load_file("Enemy2_Settings.xml");
+
+	if (result3 == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+	j1Enemy *Enemy1 = nullptr;
+	j1Enemy *Enemy2 = nullptr;
+	j1Enemy *Enemy3 = nullptr;
+
+	Enemy1->CreateEnemy(iPoint(800, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
+	Enemy2->CreateEnemy(iPoint(300, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
+
+	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+	if (result4 == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+	Enemy3->CreateEnemy(iPoint(600, 1400), WALKER, "maps/Enemy1_Tileset.png", EnemiesDocument);
 
 	return true;
 }
@@ -122,6 +140,8 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+
+	BROFILER_CATEGORY("SCENE UPDATE", Profiler::Color::Blue);
 	
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
@@ -196,6 +216,8 @@ bool j1Scene::CleanUp()
 }
 
 void j1Scene::ChangeLevel(int level_change) {
+
+	BROFILER_CATEGORY("CHANGE LEVEL AT SCENE", Profiler::Color::PaleVioletRed);
 
 	IterateLevel(level_change);
 	App->collisions->CleanUp();

@@ -10,13 +10,13 @@ j1Collisions::j1Collisions()
 {
 
 	//Set all matrix positions to false
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) 
+	for (int i = 0; i < COLLIDER_MAX; i++) {
+		for (int j = 0; j < COLLIDER_MAX; j++)
 			matrix[i][j] = false;
 	}
 
-	//Set all matrix positions of "PLAYER" type to true except PLAYER-NONE & PLAYER-PLAYER (which remain false)
-	for (int p = 0; p < 8; p++) {
+	//Set all matrix positions of "PLAYER" to true except PLAYER-NONE & PLAYER-PLAYER (which remain false)
+	for (int p = 0; p < 9; p++) {
 
 		if (p != COLLIDER_NONE || p != COLLIDER_PLAYER)
 			matrix[COLLIDER_PLAYER][p] = true;
@@ -30,6 +30,12 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_FALL][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_STATIC][TRIGGER_PUSHOFF] = true;
 	matrix[COLLIDER_STATIC][COLLIDER_PLAYER] = true;
+
+	//Set enemy matrix
+	matrix[COLLIDER_ENEMY][COLLIDER_STATIC] = true;
+	matrix[COLLIDER_ENEMY][COLLIDER_FALL] = true;
+	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_ENEMY][COLLIDER_BLINKING] = true;
 
 }
 
@@ -101,6 +107,11 @@ bool j1Collisions::Update(float dt) {
 					c1->callback->OnCollision(c1, c2);
 				if (matrix[c2->type][c1->type] && c2->callback)
 					c2->callback->OnCollision(c2, c1);
+
+				if (matrix[c1->type][c2->type] && c1->callback2)
+					c1->callback2->OnCollision(c1, c2);
+				if (matrix[c2->type][c1->type] && c2->callback2)
+					c2->callback2->OnCollision(c2, c1);
 			}
 		}
 	}
@@ -152,6 +163,9 @@ void j1Collisions::DebugDraw() {
 		case TRIGGER_WIN:
 			App->render->DrawQuad(colliders[i]->rect, 200 ,100, 255, 40);
 			break;
+		case COLLIDER_ENEMY:
+			App->render->DrawQuad(colliders[i]->rect, 200, 200, 200, 40);
+			break;
 		default:
 			break;
 
@@ -189,6 +203,20 @@ Collider* j1Collisions::AddCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Module 
 	return ret;
 }
 
+Collider* j1Collisions::AddColliderEntity(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *callback) {
+
+	Collider *ret = nullptr;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+
+		if (colliders[i] == nullptr) {
+
+			ret = colliders[i] = new Collider(rect, type, callback);
+			break;
+		}
+	}
+	return ret;
+}
 
 
 bool Collider::CheckCollision(const SDL_Rect &r) const {

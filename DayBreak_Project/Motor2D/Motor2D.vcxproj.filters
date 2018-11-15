@@ -37,17 +37,30 @@
     <ClCompile Include="j1Textures.cpp">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClCompile>
-    <ClCompile Include="j1Player.cpp">
-      <Filter>Modules\Player</Filter>
-    </ClCompile>
     <ClCompile Include="j1Collisions.cpp">
       <Filter>Modules\Physics</Filter>
     </ClCompile>
     <ClCompile Include="j1Pathfinding.cpp">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClCompile>
-    <ClCompile Include="j1Timer.cpp" />
-    <ClCompile Include="j1PerfTimer.cpp" />
+    <ClCompile Include="j1PerfTimer.cpp">
+      <Filter>Core\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Timer.cpp">
+      <Filter>Core\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="j1EntityManager.cpp">
+      <Filter>Modules\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Player.cpp">
+      <Filter>Modules\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Enemy.cpp">
+      <Filter>Modules\Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="j1EnemyFlyer.cpp">
+      <Filter>Modules\Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1App.h">
@@ -116,8 +129,24 @@
     <ClInclude Include="j1Pathfinding.h">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClInclude>
-    <ClInclude Include="j1Timer.h" />
-    <ClInclude Include="j1PerfTimer.h" />
+    <ClInclude Include="j1PerfTimer.h">
+      <Filter>Core\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Timer.h">
+      <Filter>Core\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="j1EntityManager.h">
+      <Filter>Modules\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Entity.h">
+      <Filter>Modules\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Enemy.h">
+      <Filter>Modules\Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="j1EnemyFlyer.h">
+      <Filter>Modules\Entities\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -152,6 +181,12 @@
     </Filter>
     <Filter Include="Modules\Scenes">
       <UniqueIdentifier>{e07660eb-d36f-4cc9-af59-324d31c2f2f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities">
+      <UniqueIdentifier>{2b1e65e7-d48f-41f7-bd79-a4b616082056}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\Enemies">
+      <UniqueIdentifier>{88e4635f-66b4-4b67-b1ab-7812cf6f0f63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

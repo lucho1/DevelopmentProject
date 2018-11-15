@@ -16,6 +16,7 @@
 #include "j1Fade.h"
 #include "j1Pathfinding.h"
 #include "j1App.h"
+#include "j1EntityManager.h"
 
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
@@ -34,6 +35,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	player = new j1Player();
 	collisions = new j1Collisions();
 	fade = new j1Fade();
+	entity_manager = new j1EntityManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -44,9 +46,12 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(fade);
 	AddModule(map);
 	AddModule(pathfinding);
+	
 	AddModule(scene);
 	AddModule(player);
+	AddModule(entity_manager);
 	AddModule(collisions);
+
 
 	// render last to swap buffer
 	AddModule(render);

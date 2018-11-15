@@ -11,6 +11,8 @@
 #include "j1Player.h"
 #include "j1Collisions.h"
 #include "j1PathFinding.h"
+#include "j1EntityManager.h"
+#include "j1Enemy.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -102,6 +104,11 @@ bool j1Scene::Start()
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
 
+	/*j1Enemy* Enemy = (j1Enemy*)App->entity_manager->CreateEntity(iPoint(950, 1455), ENTITY_TYPE::ENEMY_ENT);
+	Enemy->CreateEnemy(iPoint(950, 1455), ENEMY_TYPE::FLYER);*/
+
+	j1Enemy *Enemy_Entity = (j1Enemy*)App->entity_manager->CreateEnemy(iPoint(800, 1455), ENEMY_TYPE::FLYER, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
+
 	return true;
 }
 
@@ -135,7 +142,7 @@ bool j1Scene::Update(float dt)
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		ChangeLevel(LEVEL1);
 	
-	App->map->Draw(current_map);
+	//App->map->Draw(current_map);
 //	App->map->Draw(current_pathfinding_map);
 
 	int x, y;

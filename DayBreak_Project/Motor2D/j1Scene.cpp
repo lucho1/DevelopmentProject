@@ -142,7 +142,7 @@ bool j1Scene::Update(float dt)
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		ChangeLevel(LEVEL1);
 	
-	//App->map->Draw(current_map);
+	App->map->Draw(current_map);
 //	App->map->Draw(current_pathfinding_map);
 
 	int x, y;

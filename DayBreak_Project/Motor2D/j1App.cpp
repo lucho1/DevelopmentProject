@@ -18,6 +18,8 @@
 #include "j1App.h"
 #include "j1EntityManager.h"
 
+#include "Brofiler/Brofiler.h"
+
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
@@ -184,6 +186,8 @@ void j1App::PrepareUpdate()
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
+
+	BROFILER_CATEGORY("FINISH_Updates", Profiler::Color::Green);
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -222,6 +226,7 @@ void j1App::FinishUpdate()
 // Call modules before each loop iteration
 bool j1App::PreUpdate()
 {
+	BROFILER_CATEGORY("PRE_Updates", Profiler::Color::Green);
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
@@ -244,6 +249,7 @@ bool j1App::PreUpdate()
 // Call modules on each loop iteration
 bool j1App::DoUpdate()
 {
+	BROFILER_CATEGORY("Updates", Profiler::Color::Red);
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
@@ -266,6 +272,7 @@ bool j1App::DoUpdate()
 // Call modules after each loop iteration
 bool j1App::PostUpdate()
 {
+	BROFILER_CATEGORY("POST_Updates", Profiler::Color::Yellow);
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	j1Module* pModule = NULL;

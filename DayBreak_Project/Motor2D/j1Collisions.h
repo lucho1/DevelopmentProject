@@ -45,7 +45,7 @@ struct Collider {
 
 };
 
-class j1Collisions : public j1Module {
+class j1Collisions : public j1Module{
 
 
 public:

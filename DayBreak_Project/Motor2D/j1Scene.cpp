@@ -107,7 +107,8 @@ bool j1Scene::Start()
 	/*j1Enemy* Enemy = (j1Enemy*)App->entity_manager->CreateEntity(iPoint(950, 1455), ENTITY_TYPE::ENEMY_ENT);
 	Enemy->CreateEnemy(iPoint(950, 1455), ENEMY_TYPE::FLYER);*/
 
-	j1Enemy *Enemy_Entity = (j1Enemy*)App->entity_manager->CreateEnemy(iPoint(800, 1455), ENEMY_TYPE::FLYER, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
+	j1Enemy *Enemy_Entity = (j1Enemy*)App->entity_manager->CreateEnemy(iPoint(800, 1400), ENEMY_TYPE::FLYER, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
+	j1Enemy *Enemy_Entity2 = (j1Enemy*)App->entity_manager->CreateEnemy(iPoint(400, 1400), ENEMY_TYPE::FLYER, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
 
 	return true;
 }

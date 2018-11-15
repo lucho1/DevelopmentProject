@@ -14,6 +14,12 @@ enum ENEMY_TYPE {
 	UNKNOWN = 2
 };
 
+enum Enemy_direction {
+
+	EN_RIGHT,
+	EN_LEFT
+};
+
 class j1Enemy : public j1Entity
 {
 
@@ -25,6 +31,7 @@ public:
 	virtual void CleanUp();
 
 	virtual void Update(float dt) {}
+	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
 	bool LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument);
 
 	//Pushbacks loading
@@ -33,10 +40,14 @@ public:
 
 public:
 
+	bool falling = false;;
+
 	pugi::xml_node		EnemySettings;
 	pugi::xml_node		Animation_node;
 
 	ENEMY_TYPE type;
+
+	Enemy_direction Direction= EN_RIGHT;
 
 	iPoint position;
 	fPoint velocity;
@@ -46,7 +57,7 @@ public:
 
 	SDL_Texture *Enemy_tex = nullptr;
 	SDL_Rect enemy_rect;
-
+	SDL_Rect enemy_Collider_rect;
 };
 
 #endif

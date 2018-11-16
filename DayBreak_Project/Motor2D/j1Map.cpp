@@ -233,6 +233,7 @@ bool j1Map::CleanUp(MapData &data)
 	{
 		App->tex->UnLoad(item->data->texture);
 		RELEASE(item->data);
+
 		item = item->next;
 	}
 	data.tilesets.clear();
@@ -273,6 +274,8 @@ bool j1Map::Load(const char* file_name, MapData &data)
 	if(ret == true)
 	{
 		ret = LoadMap(data);
+		data.Filename = file_name;
+		
 	}
 
 	// Load all tilesets info ----------------------------------------------

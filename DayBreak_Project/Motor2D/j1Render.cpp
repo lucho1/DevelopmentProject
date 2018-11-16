@@ -6,6 +6,7 @@
 #include "j1Player.h"
 #include "j1Map.h"
 #include "j1Scene.h"
+#include "j1Player.h"
 
 j1Render::j1Render() : j1Module()
 {
@@ -25,6 +26,7 @@ bool j1Render::Awake(pugi::xml_node& config)
 {
 	LOG("Create SDL rendering context");
 	bool ret = true;
+
 	// load flags
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
@@ -57,7 +59,7 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
-	SDL_RenderSetLogicalSize(renderer, App->win->GetWindowWidth()*App->win->GetScale(), App->win->GetWindowHeight()*App->win->GetScale()/1.25);
+	SDL_RenderSetLogicalSize(renderer, 900,400);
 
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
@@ -77,26 +79,23 @@ bool j1Render::Update(float dt)
 
 bool j1Render::PostUpdate()
 {
-	//if (camera.x <= 0) {
-	//if (camera.x >= 0 && (camera.x + camera.w) <= App->map->data.width*App->map->data.tile_width) {
-	if (App->scene->currentLevel != MAIN_MENU){
-		if (App->player->position.x <= -(camera.x - camera.w / 4) && camera.x < 0) {
-			camera.x += App->player->velocity.x ;
-		}
-    
-		else if (App->player->position.x >= -(camera.x - camera.w + camera.w / 2.5f)) 
-			camera.x -= App->player->velocity.x;
+
+	if (App->scene->currentLevel != MAIN_MENU) {
+
+		if (App->scene->Player->player_position.x <= -(camera.x - camera.w / 4) && camera.x < 0)
+			camera.x += App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
 		
-		//camera.x = -App->player->position.x+300;
+		else if (App->scene->Player->player_position.x >= -(camera.x - camera.w + camera.w / 2.5f))
+			camera.x -= App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
+		
 
-		//}
-
-		//}
-		camera.y = -((App->player->position.y - (App->win->screen_surface->h/3)));
+		camera.y = -(App->scene->Player->player_position.y - (App->win->screen_surface->h/3));
 	}
-	else if (App->scene->currentLevel == MAIN_MENU) {
+
+	else if (App->scene->currentLevel == MAIN_MENU) 
 		camera.x-=2;
-	}
+	
+
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
 	return true;

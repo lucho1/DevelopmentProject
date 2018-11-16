@@ -103,6 +103,7 @@ struct MapData
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
 	p2List<MapLayer*>	layers;
+	p2SString			Filename;
 
 	const char* GetName() const { return name; }
 };

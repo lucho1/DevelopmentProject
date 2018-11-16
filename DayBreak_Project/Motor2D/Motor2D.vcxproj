@@ -77,12 +77,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="j1Collisions.cpp" />
+    <ClCompile Include="j1Enemy.cpp" />
+    <ClCompile Include="j1EnemyFlyer.cpp" />
+    <ClCompile Include="j1EnemyWalker.cpp" />
+    <ClCompile Include="j1EntityManager.cpp" />
     <ClCompile Include="j1Fade.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1App.cpp" />
     <ClCompile Include="j1Audio.cpp" />
     <ClCompile Include="j1Input.cpp" />
     <ClCompile Include="j1Map.cpp" />
+    <ClCompile Include="j1Particles.cpp" />
     <ClCompile Include="j1Pathfinding.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Player.cpp" />
@@ -97,8 +102,14 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="j1Collisions.h" />
+    <ClInclude Include="j1Enemy.h" />
+    <ClInclude Include="j1EnemyFlyer.h" />
+    <ClInclude Include="j1EnemyWalker.h" />
+    <ClInclude Include="j1Entity.h" />
+    <ClInclude Include="j1EntityManager.h" />
     <ClInclude Include="j1Fade.h" />
     <ClInclude Include="j1Map.h" />
+    <ClInclude Include="j1Particles.h" />
     <ClInclude Include="j1Pathfinding.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="j1Player.h" />

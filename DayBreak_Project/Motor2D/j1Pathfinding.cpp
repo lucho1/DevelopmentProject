@@ -2,10 +2,6 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1PathFinding.h"
-#include "j1Map.h"
-#include "j1Render.h"
-#include "j1Input.h"
-#include "j1Textures.h"
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(DEFAULT_PATH_LENGTH), width(0), height(0)
 {
@@ -52,11 +48,11 @@ bool j1PathFinding::IsWalkable(const iPoint& pos) const
 	uchar t = GetTileAt(pos);
 
 	if (t > 0 && t != INVALID_WALK_CODE)
-		return false;
-	else
 		return true;
+	else
+		return false;
 
-	//return t != INVALID_WALK_CODE && t > 0 && t != 1;
+	//return t != INVALID_WALK_CODE && t > 0;
 
 }
 
@@ -196,12 +192,10 @@ int PathNode::CalculateF(const iPoint& destination)
 // ----------------------------------------------------------------------------------
 // Actual A* algorithm: return number of steps in the creation of the path or -1 ----
 // ----------------------------------------------------------------------------------
-int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination) {
-
-	int ret = -1;
+p2DynArray<iPoint>* j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination) {
 
 	if (!IsWalkable(origin) || !IsWalkable(destination))
-		return ret;
+		return nullptr;
 
 	PathList open;
 	PathList close;
@@ -218,17 +212,20 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination) {
 		if (lower->data.pos == destination) {
 
 			last_path.Clear();
+
 			const PathNode *new_node = &lower->data;
+			int i = 0;
 
 			while (new_node) {
 
 				last_path.PushBack(new_node->pos);
 				new_node = new_node->parent;
+				LOG("    new_node: %i,%i", last_path.At(i)->x, last_path.At(i)->y);
+				i++;
 			}
 
 			last_path.Flip();
-			ret = last_path.Count();
-			break;
+			return &last_path;
 		}
 
 		PathList AdjacentNodes;
@@ -257,5 +254,5 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination) {
 		}
 	}
 
-	return ret;
+	return nullptr;
 }

@@ -11,6 +11,12 @@
 #include "j1Player.h"
 #include "j1Collisions.h"
 #include "j1PathFinding.h"
+#include "j1Fade.h"
+#include "j1EntityManager.h"
+#include "j1Enemy.h"
+#include "j1Player.h"
+
+#include "Brofiler/Brofiler.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -27,6 +33,7 @@ j1Scene::~j1Scene()
 // Called before render is available
 bool j1Scene::Awake()
 {
+
 	LOG("Loading Scene");
 	bool ret = true;
 
@@ -36,6 +43,10 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
+	
+	App->map->Load("Level1.tmx", Level1_map);
+	App->map->Load("Level2.tmx", Level2_map);
+
 	if (Main_Menu == true) {
 
 		App->map->Load("Main_Menu.tmx", Intro_map);
@@ -46,8 +57,10 @@ bool j1Scene::Start()
 	}
 
 	if (Level1 == true) {
+	
+		if (Player == nullptr)
+			Player = Player->CreatePlayer(iPoint(200, 1080));
 
-		App->map->Load("Level1.tmx", Level1_map);
 		App->map->Load("Level1_WalkabilityMap.tmx", Level1_pathfinding_map);
 
 		current_pathfinding_map = Level1_pathfinding_map;
@@ -56,8 +69,8 @@ bool j1Scene::Start()
 
 		pathfinding = true;
 
-		if(!App->player->active)
-			App->player->Start();
+		if(Player->active)
+			Player->Start();
 
 		if(!App->collisions->active)
 			App->collisions->Start();
@@ -65,7 +78,9 @@ bool j1Scene::Start()
 
 	else if (Level2 == true) {
 
-		App->map->Load("Level2.tmx", Level2_map);
+		if (Player == nullptr)
+			Player = Player->CreatePlayer(iPoint(580, 1400));
+
 		//App->map->Load("Level2_WalkabilityMap.tmx", Level2_pathfinding_map);
 
 		current_map = Level2_map;
@@ -74,8 +89,8 @@ bool j1Scene::Start()
 
 		pathfinding = false;
 
-		if (!App->player->active)
-			App->player->Start();
+		if (Player->active)
+			Player->Start();
 
 		if (!App->collisions->active)
 			App->collisions->Start();
@@ -102,6 +117,22 @@ bool j1Scene::Start()
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
 
+	
+	pugi::xml_parse_result result3 = EnemiesDocument.load_file("Enemy2_Settings.xml");
+
+	if (result3 == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+
+	Enemy1 = Enemy1->CreateEnemy(iPoint(800, 1400), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+	Enemy2 = Enemy2->CreateEnemy(iPoint(300, 1400), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+
+	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+	if (result4 == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+	Enemy3 = Enemy3->CreateEnemy(iPoint(600, 1350), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+
 	return true;
 }
 
@@ -114,56 +145,81 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	
-	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	if (Change_Level) {
+
+		App->fade->Fade(2.0f);
+
+		if (App->fade->current_step == App->fade->fade_from_black) {
+
+			ChangeLevel(currentLevel);
+			Change_Level = false;
+		}
+	}
+
+	else if (changing_same_Level) {
+
+		App->fade->Fade(2.0f);
+
+		if (App->fade->current_step == App->fade->fade_from_black) {
+
+			ChangeLevel(NO_CHANGE);
+			changing_same_Level = false;
+		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) 
 		App->LoadGame("save_game.xml");
+	
 
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN&&!changing_same_Level) {
 
+		//App->fade->Fade(2.0f);
 		App->map->TriggerActive = false;
-		ChangeLevel(LEVEL1);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
-
-		App->map->TriggerActive = false;
-		ChangeLevel(currentLevel);
+		changing_same_Level = true;
+		//ChangeLevel(currentLevel);
 	}
 
-	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-		ChangeLevel(LEVEL1);
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN&&!Change_Level) {
+
+		Change_Level = true;
+		App->map->TriggerActive = false;
+	}
+
+	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN&&!Change_Level)
+		Change_Level = true;
 	
 	App->map->Draw(current_map);
-//	App->map->Draw(current_pathfinding_map);
+	App->map->Draw(current_pathfinding_map);
 
-	int x, y;
-	App->input->GetMousePosition(x, y);
+	//int x, y;
+	//App->input->GetMousePosition(x, y);
 
-	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
-	iPoint mc2 = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_map);
+	//iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
+	//iPoint mc2 = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_map);
 
-	iPoint mapatW = App->map->MapToWorld(mc2.x, mc2.y, current_map);
-	iPoint pl_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, current_map);
-	iPoint en_pos = App->map->WorldToMap(App->player->Enemy.x, App->player->Enemy.y, current_map);
+	//iPoint mapatW = App->map->MapToWorld(mc2.x, mc2.y, current_map);
+	//iPoint pl_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, current_map);
+	//iPoint en_pos = App->map->WorldToMap(App->player->Enemy.x, App->player->Enemy.y, current_map);
 
-	
-	iPoint pathtoworld = App->map->MapToWorld(map_coordinates.x, map_coordinates.y, current_pathfinding_map);
-	//iPoint pathtomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
-	//iPoint pathftomap = App->map->MapToWorld(pathtomap.x, pathtomap.y, current_map);
-	//iPoint pathftomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
+	//
+	//iPoint pathtoworld = App->map->MapToWorld(map_coordinates.x, map_coordinates.y, current_pathfinding_map);
+	////iPoint pathtomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
+	////iPoint pathftomap = App->map->MapToWorld(pathtomap.x, pathtomap.y, current_map);
+	////iPoint pathftomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
 
-	p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) PlayerPos: %d,%d (%d,%d) Enemy: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathtoworld.x, pathtoworld.y,
-		mc2.x, mc2.y, mapatW.x, mapatW.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y, App->player->Enemy.x, App->player->Enemy.y, en_pos.x, en_pos.y);
+	//p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) PlayerPos: %d,%d (%d,%d) Enemy: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathtoworld.x, pathtoworld.y,
+	//	mc2.x, mc2.y, mapatW.x, mapatW.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y, App->player->Enemy.x, App->player->Enemy.y, en_pos.x, en_pos.y);
 
-	/*p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
-		current_pathfinding_map.width, current_pathfinding_map.height,
-		current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
-		current_pathfinding_map.tilesets.count(),
-		map_coordinates.x, map_coordinates.y);*/
+	///*p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
+	//	current_pathfinding_map.width, current_pathfinding_map.height,
+	//	current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
+	//	current_pathfinding_map.tilesets.count(),
+	//	map_coordinates.x, map_coordinates.y);*/
 
-	App->win->SetTitle(title.GetString());
+	//App->win->SetTitle(title.GetString());
 
 	return true;
 }
@@ -188,18 +244,33 @@ bool j1Scene::CleanUp()
 }
 
 void j1Scene::ChangeLevel(int level_change) {
+	
+	LEVELS aux = currentLevel;
+	if (level_change != NO_CHANGE) {
+		App->collisions->CleanUp();
+		Player->CleanUp();
+		IterateLevel(level_change);
+	}
 
-	IterateLevel(level_change);
-	App->collisions->CleanUp();
-	App->player->CleanUp();
-	App->map->CleanUp(current_map);
-	App->map->CleanUp(current_pathfinding_map);
-	Start();
+	if (currentLevel == LEVEL1) {
+		App->LoadGame("Level_1_settings.xml");
+	
+	}
+	if (currentLevel == LEVEL2) {
+		App->LoadGame("Level_2_settings.xml");
+	}
+
+	if (currentLevel!=aux) {
+		Player->Start();
+		App->collisions->AssignMapColliders(current_map.Filename.GetString());
+	}
 }
 
 void j1Scene::IterateLevel(int level_change) {
 
+	level_change++;
 	LevelIterator = level_change;
+	
 
 	if (LevelIterator > 2)
 		LevelIterator = 0;
@@ -211,6 +282,7 @@ void j1Scene::IterateLevel(int level_change) {
 		Level2 = false;
 		Level1 = false;
 		currentLevel = MAIN_MENU;
+		
 	}
 
 	else if (LevelIterator == 1) {
@@ -219,6 +291,7 @@ void j1Scene::IterateLevel(int level_change) {
 			Level2 = false;
 			Level1 = true;
 			currentLevel = LEVEL1;
+			current_map = Level1_map;
 	}
 	
 	else if(LevelIterator == 2) {
@@ -227,5 +300,6 @@ void j1Scene::IterateLevel(int level_change) {
 			Level1 = false;
 			Level2 = true;
 			currentLevel = LEVEL2;
+			current_map = Level2_map;
 	}
 }

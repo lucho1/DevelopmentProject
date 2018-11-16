@@ -16,7 +16,7 @@ j1Collisions::j1Collisions()
 	}
 
 	//Set all matrix positions of "PLAYER" to true except PLAYER-NONE & PLAYER-PLAYER (which remain false)
-	for (int p = 0; p < 9; p++) {
+	for (int p = 0; p < COLLIDER_MAX - 1; p++) {
 
 		if (p != COLLIDER_NONE || p != COLLIDER_PLAYER)
 			matrix[COLLIDER_PLAYER][p] = true;
@@ -85,7 +85,6 @@ bool j1Collisions::PreUpdate() {
 
 bool j1Collisions::Update(float dt) {
 	
-
 	Collider *c1;
 	Collider *c2;
 

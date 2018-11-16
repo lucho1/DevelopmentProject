@@ -45,8 +45,6 @@ void j1EnemyFlyer::Update(float dt) {
 	else if (falling == false)
 		velocity.y = 0;
 	
-	
-	
 
 	iPoint initial_pos = App->map->WorldToMap(position.x, (position.y + 30), App->scene->current_pathfinding_map);
 	iPoint final_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, App->scene->current_pathfinding_map);

@@ -8,7 +8,8 @@ enum OBJECT_TYPE {
 
 	PUSHOFF,
 	PUSHON,
-	WIN
+	WIN,
+	BLINK_BLOCK
 	//OBJECT_UNKNOWN = 2
 
 };

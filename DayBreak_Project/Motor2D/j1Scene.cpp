@@ -371,6 +371,17 @@ bool j1Scene::LoadObjects(const char*file_name) {
 				j1Objects* object = nullptr;
 				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::WIN);
 			}
+
+			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
+
+				int x = collider.attribute("x").as_int();
+				int y = collider.attribute("y").as_int();
+
+				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLINKING);
+				j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::BLINK_BLOCK);
+
+			}
 		}
 	}
 

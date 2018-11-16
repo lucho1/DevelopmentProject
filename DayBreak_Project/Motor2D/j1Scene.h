@@ -3,9 +3,12 @@
 
 #include "j1Module.h"
 #include "j1Map.h"
+#include "j1Player.h"
+#include "j1Enemy.h"
 
 struct SDL_Texture;
 struct MapData;
+class j1Player;
 
 enum LEVELS {
 
@@ -64,6 +67,16 @@ public:
 
 	MapData current_map;
 	MapData current_pathfinding_map;
+
+	//Player
+	j1Player *Player = nullptr;
+
+	j1Enemy *Enemy1 = nullptr;
+	j1Enemy *Enemy2 = nullptr;
+	j1Enemy *Enemy3 = nullptr;
+
+	
+	//Player->CreateEnemy(iPoint(800, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
 
 private:
 

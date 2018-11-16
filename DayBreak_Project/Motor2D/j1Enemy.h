@@ -34,7 +34,7 @@ public:
 
 	//Create/Destroy an Enemy
 	j1Enemy* CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument); //Remember to put maps/ at path
-	void j1Enemy::DestroyEnemy(j1Enemy *Enemy);
+	void DestroyEnemy(j1Enemy *Enemy);
 
 	//Load Enemy
 	bool LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument);
@@ -45,21 +45,24 @@ public:
 
 	bool falling = false;;
 
-
-	pugi::xml_node		EnemySettings;
-	pugi::xml_node		Animation_node;
-
 	ENEMY_TYPE type;
-
 	Enemy_direction Direction= EN_RIGHT;
 
-	iPoint position;
-	fPoint velocity;
+	iPoint enemy_position;
+	fPoint enemy_velocity;
 	iPoint initial_velocity;
 
 	SDL_Texture *Enemy_tex = nullptr;
 	SDL_Rect enemy_rect;
 	SDL_Rect enemy_Collider_rect;
+
+	//Path texture
+	SDL_Texture *debug_tex;
+
+public:
+
+	pugi::xml_node		EnemySettings;
+	pugi::xml_node		Animation_node;
 };
 
 #endif

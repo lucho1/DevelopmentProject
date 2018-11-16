@@ -11,7 +11,6 @@
 #include "j1Audio.h"
 #include "j1Scene.h"
 #include "j1Map.h"
-#include "j1Player.h"
 #include "j1Collisions.h"
 #include "j1Fade.h"
 #include "j1Pathfinding.h"
@@ -35,7 +34,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	scene = new j1Scene();
 	map = new j1Map();
 	pathfinding = new j1PathFinding();
-	player = new j1Player();
 	collisions = new j1Collisions();
 	particles = new j1Particles();
 	fade = new j1Fade();
@@ -53,7 +51,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	
 	AddModule(scene);
 	AddModule(particles);
-	AddModule(player);
 	AddModule(entity_manager);
 	AddModule(collisions);
 	AddModule(fade);
@@ -218,12 +215,8 @@ void j1App::FinishUpdate()
 
 //	App->win->SetTitle(title);
 
-	double ptime = ptimer.ReadMs();
-
 	if (last_frame_ms < capped_ms)
 		SDL_Delay(capped_ms - last_frame_ms);
-
-	//LOG("Waited for %i and got back in %f", capped_ms - last_frame_ms, ptimer.ReadMs() - ptime);
 
 }
 
@@ -341,11 +334,9 @@ const char* j1App::GetOrganization() const
 // Load / Save
 void j1App::LoadGame(const char* file)
 {
-	// we should be checking if that file actually exist
-	// from the "GetSaveGames" list
+
 	load_game = file;
 	want_to_load = true;
-	//load_game.create("%s%s", fs->GetSaveDirectory(), file);
 }
 
 // ---------------------------------------
@@ -370,16 +361,6 @@ bool j1App::LoadGameNow()
 	pugi::xml_node root;
 
 	pugi::xml_parse_result result = data.load_file(load_game.GetString());
-
-	//if (result == NULL) {
-
-	//	LOG("Could not parse game state xml file %s. pugi error: %s.", load_game.GetString(), result.description());
-	//	load_game.create(load_game.GetString());
-	//	LOG("Creating a new savefile");
-
-	//	root = data.append_child("game_state");
-	//	result = data.load_file(load_game.GetString());
-	//}
 
 
 	if(result != NULL) {
@@ -434,8 +415,6 @@ bool j1App::SavegameNow() const
 	{
 	
 		data.save_file(save_game.GetString());
-		// we are done, so write data to disk
-		//fs->Save(save_game.GetString(), stream.str().c_str(), stream.str().length());
 		LOG("... finished saving ", save_game.GetString());
 	}
 	else

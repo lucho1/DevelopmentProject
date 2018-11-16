@@ -25,31 +25,35 @@ enum TYPE {
 
 struct Particle {
 
-	Collider* collider = nullptr;
-	Animation Anim;
-	uint fx = 0;
-	iPoint Position;
-	iPoint Speed;
-	Uint32 Born = 0;
-	Uint32 Life = 0;
-	bool fx_played = false;
-	TYPE Particle_Type = NO_PARTICLE;
-	uint TimesCollided = 0;
-	SDL_RendererFlip Flip = SDL_FLIP_NONE;
-
-
-	SDL_Texture *Sprites = nullptr;
-
 	Particle();
 	Particle(const Particle &p);
 	~Particle();
 	bool Update();
+
+
+	Collider* collider = nullptr;
+	SDL_Texture *Sprites = nullptr;
+	Animation Anim;
+
+	uint fx = 0;
+	bool fx_played = false;
+
+	iPoint Position;
+	iPoint Speed;
+	
+	Uint32 Born = 0;
+	Uint32 Life = 0;
+
+	TYPE Particle_Type = NO_PARTICLE;
+	uint TimesCollided = 0;
+	SDL_RendererFlip Flip = SDL_FLIP_NONE;
 
 };
 
 class j1Particles: public j1Module
 {
 public:
+
 	j1Particles();
 	~j1Particles();
 
@@ -72,22 +76,15 @@ public:
 	Particle Shoot;
 
 	SDL_Texture *Particle_1;
-
 	SDL_Texture *particle0 = nullptr;
-
-
-
 
 	Mix_Chunk *ImpactExplosionSound;
 	Mix_Chunk *ImpactExplosionSound2;
-
 
 	//this  function is to store info to destroy particles when it is necessary.
 	uint Destroy1 = 999999;
 	uint Destroy2 = 999999;
 	uint Destroy3 = 999999;
-
-
 
 };
 

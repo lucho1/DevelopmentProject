@@ -19,6 +19,20 @@ bool j1EntityManager::Awake() {
 	return true;
 }
 
+bool j1EntityManager::Start() {
+
+	p2List_item<j1Entity*>* item;
+	item = entities_list.start;
+
+	while (item != nullptr) {
+
+		item->data->Start();
+		item = item->next;
+	}
+
+	return true;
+}
+
 bool j1EntityManager::PreUpdate() {
 
 	do_logic = false;

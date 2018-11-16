@@ -2,25 +2,18 @@
 #include "j1App.h"
 #include "j1Textures.h"
 #include "j1Render.h"
-
 #include "j1Particles.h"
 #include "j1Player.h"
 
 #include "SDL/include/SDL_timer.h"
 
 
-
-
 j1Particles::j1Particles() {
 
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) {
-
+	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) 
 		active[i] = nullptr;
-	}
-
-
+	
 	//	srand(2);
-
 }
 
 j1Particles::~j1Particles() {}
@@ -90,13 +83,15 @@ bool j1Particles::Update(float ds) {
 		}
 
 		else if (SDL_GetTicks() >= p->Born) {
-			App->render->Blit(p->Sprites, p->Position.x, p->Position.y, &(p->Anim.GetCurrentFrame()),1,0,0,0,p->Flip);
-			if (p->fx_played = false) {
 
+			App->render->Blit(p->Sprites, p->Position.x, p->Position.y, &(p->Anim.GetCurrentFrame()),1,0,0,0,p->Flip);
+
+			if (!p->fx_played)
 				p->fx_played = true;
-			}
+			
 		}
 	}
+
 	return ret;
 }
 
@@ -129,13 +124,13 @@ void j1Particles::OnCollision(Collider* c1, Collider* c2)
 	{
 		if (active[i] != nullptr && active[i]->collider == c1) {
 
-			if (c2->type == COLLIDER_STATIC /*|| c2->type == COLLIDER_WALL*/)
-			
+			if (c2->type == COLLIDER_STATIC /*|| c2->type == COLLIDER_WALL*/) {
 
-			delete active[i];
-			active[i] = nullptr;
+				delete active[i];
+				active[i] = nullptr;
 
-			break;
+				break;
+			}
 		}
 	}
 }

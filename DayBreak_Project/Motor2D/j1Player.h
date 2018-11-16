@@ -1,10 +1,10 @@
 #ifndef _j1PLAYER_H_
-#define _j1PLAYER_H
+#define _j1PLAYER_H_
 
 #include "p2Defs.h"
 #include "p2Log.h"
 #include "p2Point.h"
-#include "j1Module.h"
+#include "j1Entity.h"
 #include "j1App.h"
 #include "Animation.h"
 #include "p2DynArray.h"
@@ -12,43 +12,38 @@
 
 enum direction {
 
-	RIGHT,
-	LEFT,
+	pl_RIGHT,
+	pl_LEFT,
 };
 enum State {
-	IDLE,
-	RUN,
-	JUMP,
-	FALL
+
+	pl_IDLE,
+	pl_RUN,
+	pl_JUMP,
+	pl_FALL
 };
 
 
-class j1Player : public j1Module
+class j1Player : public j1Entity
 {
 
 public:
-	j1Player();
+
+	j1Player(iPoint pos);
 	virtual ~j1Player();
 
 public:
 
-	// Called before render is available
-	bool Awake();
-
 	// Called before the first frame
-	bool Start();
-
-	// Called before all Updates
-	bool PreUpdate();
+	void Start() override;
 
 	// Called each loop iteration
-	bool Update(float dt);
-
-	// Called before all Updates
-	bool PostUpdate();
+	void Update(float dt) override;
 
 	// Called before quitting
-	bool CleanUp();
+	void CleanUp() override;
+
+public:
 
 	//Pushbacks loading
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
@@ -59,40 +54,50 @@ public:
 	//Save Game State
 	bool Save(pugi::xml_node& data) const;
 
-	void RectPathfindingTest();
-	SDL_Rect Enemy; //Rect to test
-	p2DynArray<iPoint>* EnemyPath = nullptr;
-	j1Timer recalc_path;
-	SDL_Texture *debug_tex;
+	//Load player stats
+	void LoadPlayer(const char *file_name);
 
 
 public:
 
 	void OnCollision(Collider *c1, Collider *c2);
+	j1Player* CreatePlayer(iPoint pos/*, const char* path, pugi::xml_document &PlayerDocument*/); //Remember to put maps/ at path
 
 public:
 
+	//Player & Gun states
 	int angle;
 	State state;
-	iPoint position;
-	iPoint Gun_position;
-	iPoint Adjusting_Gun_position;
-	int direction_x;
-	fPoint velocity;
-	fPoint MaxVelocity;
-	fPoint initial_vel;
-	fPoint acceleration;
-	bool desaccelerating;
-	bool God = false;
-	
 	bool Shooting;
 	bool jump = false;
-	bool doublejump=true;
+	bool doublejump = true;
 	bool jump_falling = false;
 	int auxY;
-	
-	bool fall = true;
 
+
+	iPoint player_position;
+	iPoint Gun_position;
+	iPoint Adjusting_Gun_position;
+
+	int direction_x;
+
+	fPoint player_velocity;
+	fPoint MaxVelocity;
+	fPoint initial_vel;
+
+	fPoint acceleration;
+	bool desaccelerating;
+	
+
+	bool active;
+	bool fall = true;
+	bool God = false;
+
+	j1Timer desac;
+
+public:
+
+	//Animations Gun & Player
 	Animation*		current_animation = nullptr;
 	Animation*		Gun_current_animation = nullptr;
 	Animation		Idle;
@@ -103,15 +108,16 @@ public:
 	Animation		Gun_Run;
 	Animation		Gun_Shot;
 
+	//Textures/Rects Gun & Player
 	SDL_Texture*	Player_texture = nullptr;
 	SDL_Texture*	Gun_Texture = nullptr;
 	
 	SDL_Rect player_rect;
 	SDL_Rect Gun_Rect;
 
+	//Player Collider
 	Collider *player_collider = nullptr;
-
-	j1Timer desac;
+	
 
 private :
 

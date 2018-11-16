@@ -9,11 +9,12 @@
 	<scene />
 	<:anonymous />
 	<player>
-		<player x="345" y="1116" />
+		<player x="6483" y="1285" />
 	</player>
+	<entities />
 	<:anonymous />
 	<:anonymous />
 	<renderer>
-		<camera x="0" y="-903" />
+		<camera x="-6091" y="-1072" />
 	</renderer>
 </game_state>

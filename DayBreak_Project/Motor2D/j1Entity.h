@@ -29,6 +29,9 @@ public:
 
 public:
 
+	// Called before render is available
+	virtual void Awake() {}
+
 	// Called before the first frame if it was activated before that
 	virtual void Start() {}
 
@@ -38,9 +41,16 @@ public:
 	// Called each logic iteration
 	virtual void Update(float dt) {}
 
+	// Called before all Updates
+	virtual void PreUpdate() {}
+
+	// Called before all Updates
+	virtual void PostUpdate() {}
+
 	// Called before quitting
 	virtual void CleanUp() {}
 
+public:
 
 	virtual bool Load(pugi::xml_node&)
 	{
@@ -52,7 +62,12 @@ public:
 		return true;
 	}
 
+public:
+
 	virtual void OnCollision(Collider* c1, Collider* c2) {}
+
+	virtual void Move() {}
+	virtual void Draw() {}
 
 public:
 

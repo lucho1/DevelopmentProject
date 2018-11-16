@@ -11,27 +11,30 @@
 #include "j1EntityManager.h"
 #include "j1EnemyWalker.h"
 
-j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT), position(pos)
+j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT), enemy_position(pos)
 {
 }
 
 j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
+
+	p2SString tmp("maps\\%s", path);
 
 	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
 	j1Enemy* Enemy = nullptr;
 	switch (enemyType) {
 
 	case ENEMY_TYPE::FLYER:
-		Enemy = new j1EnemyFlyer(pos,path, EnemiesDocument);
+		Enemy = new j1EnemyFlyer(pos, tmp.GetString(), EnemiesDocument);
 		break;
 	case ENEMY_TYPE::WALKER:
-		Enemy = new j1EnemyWalker(pos,path, EnemiesDocument);
+		Enemy = new j1EnemyWalker(pos, tmp.GetString(), EnemiesDocument);
 		break;
 	default:
 		break;
 	}
 
 	App->entity_manager->entities_list.add(Enemy);
+	//debug_tex = App->tex->Load("maps/path2.png");
 	
 	return Enemy;
 }
@@ -97,29 +100,29 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 				if (error_margin > 1) {
 
 					//Checking Y Axis Collisions
-					if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - velocity.y) {
+					if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - enemy_velocity.y) {
 
-						velocity.y = 0;
-						position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
+						enemy_velocity.y = 0;
+						enemy_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 					}
-					else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + velocity.y) {
+					else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + enemy_velocity.y) {
 						falling = false;
-						velocity.y = 0;
-						position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
+						enemy_velocity.y = 0;
+						enemy_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 					}
 				}
 
 				//Checking X Axis Collisions
-				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + velocity.x) { //Colliding Left (going right)
+				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + enemy_velocity.x) { //Colliding Left (going right)
 
-					velocity.x = 0;
-					position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+					enemy_velocity.x = 0;
+					enemy_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
 
 				}
-				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - velocity.x) { //Colliding Right (going left)
+				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - enemy_velocity.x) { //Colliding Right (going left)
 
-					velocity.x = 0;
-					position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+					enemy_velocity.x = 0;
+					enemy_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
 
 				}
 			}

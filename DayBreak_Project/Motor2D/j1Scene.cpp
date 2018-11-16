@@ -105,11 +105,7 @@ bool j1Scene::Start()
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
 
-	/*j1Enemy* Enemy = (j1Enemy*)App->entity_manager->CreateEntity(iPoint(950, 1455), ENTITY_TYPE::ENEMY_ENT);
-	Enemy->CreateEnemy(iPoint(950, 1455), ENEMY_TYPE::FLYER);*/
-
-	//	j1Entity *Enemy_Entity = (j1Entity*)App->entity_manager->CreateEntity(iPoint(800, 1400), ENTITY_TYPE::ENEMY_ENT, "maps/Enemy2_Tileset.png", "Enemy2_Settings.xml");
-
+	
 	pugi::xml_parse_result result3 = EnemiesDocument.load_file("Enemy2_Settings.xml");
 
 	if (result3 == NULL)
@@ -122,11 +118,11 @@ bool j1Scene::Start()
 	Enemy1->CreateEnemy(iPoint(800, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
 	Enemy2->CreateEnemy(iPoint(300, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
 
-	/*pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
 	if (result4 == NULL)
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
-	Enemy3->CreateEnemy(iPoint(600, 1350), WALKER, "maps/Enemy1_Tileset.png", EnemiesDocument);*/
+	Enemy3->CreateEnemy(iPoint(600, 1350), WALKER, "maps/Enemy1_Tileset.png", EnemiesDocument);
 
 	return true;
 }
@@ -164,7 +160,7 @@ bool j1Scene::Update(float dt)
 		ChangeLevel(LEVEL1);
 	
 	App->map->Draw(current_map);
-//	App->map->Draw(current_pathfinding_map);
+	App->map->Draw(current_pathfinding_map);
 
 	int x, y;
 	App->input->GetMousePosition(x, y);

@@ -3,6 +3,7 @@
 #include "j1Collisions.h"
 #include "j1Render.h"
 #include "j1Player.h"
+#include "j1Pathfinding.h"
 
 j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(position, ENEMY_TYPE::FLYER) {
 	
@@ -37,21 +38,40 @@ void j1EnemyWalker::Update(float dt) {
 		velocity.y = 0;
 	
 
-	if (pathfinding_recalc.ReadMs() > 3000) {
 
-		//patho = FindPath(App->player->position, patho);
-		PERF_START(pathfinding_recalc);
+	iPoint initial_pos = App->map->WorldToMap(position.x, (position.y + 30), App->scene->current_pathfinding_map);
+	iPoint final_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, App->scene->current_pathfinding_map);
+
+	//if (pathfinding_recalc.ReadMs() > 3000) {
+
+	if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
+
+		LOG("--PATHFIND----------------------------------------------");
+		LOG("Starting Pos: %d,%d Ending Pos %d,%d", initial_pos.x, initial_pos.y, final_pos.x, final_pos.y);
+		LOG("   Steps--");
+		enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
+		last_enemy_path = enemy_path;
 	}
 
-	for (uint i = 0; i < patho.Count(); ++i)
-	{
-		iPoint pos = App->map->MapToWorld(patho.At(i)->x, patho.At(i)->y, App->scene->current_pathfinding_map);
-		//App->render->Blit(App->player->debug_tex, pos.x, pos.y);
-		pathrect.x = pos.x;
-		pathrect.y = pos.y;
-		pathrect.w = App->scene->current_map.width;
-		pathrect.h = App->scene->current_map.height;
-		App->render->DrawQuad(pathrect, 0, 0, 255, 100);
+	//PERF_START(pathfinding_recalc);
+	//}
+
+	if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
+		enemy_path->Clear();
+
+
+	if (enemy_path != nullptr) {
+
+		for (uint i = 0; i < enemy_path->Count(); ++i)
+		{
+			iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
+			//App->render->Blit(App->player->debug_tex, pos.x, pos.y);
+			pathrect.x = pos.x;
+			pathrect.y = pos.y + 50;
+			pathrect.w = App->scene->current_map.width;
+			pathrect.h = App->scene->current_map.height;
+			App->render->DrawQuad(pathrect, 0, 255, 0, 50);
+		}
 	}
 	
 

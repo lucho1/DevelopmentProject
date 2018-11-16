@@ -17,11 +17,10 @@ public:
 public:
 
 	p2DynArray<iPoint>* enemy_path;
+	p2DynArray<iPoint>* last_enemy_path;
 	
 	SDL_Rect pathrect;
 	j1PerfTimer pathfinding_recalc;
-
-	
 
 private:
 

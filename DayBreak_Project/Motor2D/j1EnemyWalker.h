@@ -19,6 +19,10 @@ public:
 
 	void Update(float dt) override;
 
+	p2DynArray<iPoint>* enemy_path;
+	p2DynArray<iPoint>* last_enemy_path;
+
+
 private:
 
 	Animation* current_animation = nullptr;

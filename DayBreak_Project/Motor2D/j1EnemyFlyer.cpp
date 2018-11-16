@@ -46,34 +46,43 @@ void j1EnemyFlyer::Update(float dt) {
 		velocity.y = 0;
 	
 	
+	
+
+	iPoint initial_pos = App->map->WorldToMap(position.x, (position.y + 30), App->scene->current_pathfinding_map);
+	iPoint final_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, App->scene->current_pathfinding_map);
+
 	//if (pathfinding_recalc.ReadMs() > 3000) {
 
-		iPoint initial_pos = App->map->WorldToMap(position.x, (position.y-20), App->scene->current_pathfinding_map);
-		iPoint final_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, App->scene->current_pathfinding_map);
+		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
 
-		LOG("--PATHFIND----------------------------------------------");
-		LOG("Starting Pos: %d,%d Ending Pos %d,%d", initial_pos.x, initial_pos.y, final_pos.x, final_pos.y);
-		LOG("   Steps--");
-		enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
+			LOG("--PATHFIND----------------------------------------------");
+			LOG("Starting Pos: %d,%d Ending Pos %d,%d", initial_pos.x, initial_pos.y, final_pos.x, final_pos.y);
+			LOG("   Steps--");
+			enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
+			last_enemy_path = enemy_path;
+		}
 
-		bool a = true;
-	//	PERF_START(pathfinding_recalc);
+		//PERF_START(pathfinding_recalc);
 	//}
+			
+	if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr) 
+		enemy_path->Clear();
 
 
-	for (uint i = 0; i < enemy_path->Count(); ++i)
-	{
-		iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
-		//App->render->Blit(App->player->debug_tex, pos.x, pos.y);
-		pathrect.x = pos.x;
-		pathrect.y = pos.y + 50;
-		pathrect.w = App->scene->current_map.width;
-		pathrect.h = App->scene->current_map.height;
-		App->render->DrawQuad(pathrect, 255, 0, 0, 50);
+	if (enemy_path != nullptr) {
+
+		for (uint i = 0; i < enemy_path->Count(); ++i)
+		{
+			iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
+			App->render->Blit(App->player->debug_tex, pos.x, pos.y);
+			/*pathrect.x = pos.x;
+			pathrect.y = pos.y + 50;
+			pathrect.w = App->scene->current_map.width;
+			pathrect.h = App->scene->current_map.height;
+			App->render->DrawQuad(pathrect, 255, 0, 0, 50);*/
+		}
 	}
-	
 
 	entity_collider->SetPos(position.x+40, position.y);
 	App->render->Blit(Enemy_tex, position.x, position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
-
 }

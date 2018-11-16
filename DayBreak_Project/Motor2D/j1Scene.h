@@ -12,7 +12,8 @@ enum LEVELS {
 	MAIN_MENU = 0,
 	LEVEL1,
 	LEVEL2,
-	NO_LEVEL
+	NO_LEVEL,
+	NO_CHANGE
 
 };
 
@@ -54,6 +55,8 @@ public:
 	bool Level1 = false;
 	bool Level2 = true;
 	bool Main_Menu = true;
+	bool changing_same_Level = false;
+	bool Change_Level = false;
 	
 	int LevelIterator = 0;
 

@@ -4,6 +4,7 @@
 
     <image source="Character_tileset.png" width="1024" height="1024" w="102" h="102" />
 
+
   <PlayerSettings>
     
     <StartingPose>
@@ -11,7 +12,8 @@
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
 
-    <Velocity velocity.x="5.5" velocity.y="8"/>
+    <Velocity velocity.x="2" velocity.y="8"/>
+    <MaxVelocity velocity.x="5.5" velocity.y="8"/>
     <Acceleration a.x="0.0" a.y="0.2"/>
     
   </PlayerSettings>
@@ -40,10 +42,17 @@
     </Run>
 
     <Jump loop="false" speed="0.15">
+      <Pushback x="530" y="203" w="106" h="203"/>
+      <Pushback x="636" y="203" w="106" h="203"/>
+   
+    </Jump>
+   
+    <Fall loop="false" speed="0.15">
       <Pushback x="636" y="203" w="106" h="203"/>
       <Pushback x="473" y="203" w="106" h="203"/>
-    </Jump>
-    <Dead loop="false speed="0.15">
+    </Fall>
+	
+    <Dead loop="false" speed="0.15">
       <Pushback x="0" y="406" w="214" h="203"/>
       <Pushback x="214" y="406" w="214" h="203"/>
       <Pushback x="428" y="406" w="214" h="203"/>
@@ -51,7 +60,7 @@
       <Pushback x="0" y="609" w="214" h="203"/>
     </Dead>
 
-    <Gun>
+   <Gun>
        <Idle loop="true" speed="0.17">
          <Pushback x="0" y="811" w="182" h="64"/>
          <Pushback x="0" y="875" w="182" h="64"/>
@@ -73,14 +82,14 @@
          <Pushback x="597" y="698" w="200" h="88"/>
       </Run>
 
-      <Shoot loop="true" speed="0.15">
+      <Shoot loop="true" speed="0.23">
          <Pushback x="597" y="786" w="199" h="76"/>
          <Pushback x="597" y="862" w="199" h="76"/>
          <Pushback x="597" y="938" w="199" h="76"/>
          <Pushback x="797" y="610" w="199" h="76"/>
          <Pushback x="797" y="686" w="199" h="76"/>
          <Pushback x="797" y="762" w="199" h="76"/>
-	 <Pushback x="797" y="838" w="199" h="76"/>
+	       <Pushback x="797" y="838" w="199" h="76"/>
       </Shoot>
     </Gun>	
   </AnimationCoords>

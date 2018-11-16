@@ -4,15 +4,16 @@
 	<window />
 	<textures />
 	<audio />
-	<:anonymous />
 	<map />
 	<pathfinding />
 	<scene />
+	<:anonymous />
 	<player>
-		<player x="580" y="1400" />
+		<player x="345" y="1116" />
 	</player>
 	<:anonymous />
+	<:anonymous />
 	<renderer>
-		<camera x="0" y="-1187" />
+		<camera x="0" y="-903" />
 	</renderer>
 </game_state>

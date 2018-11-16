@@ -43,6 +43,8 @@
     <ClCompile Include="j1Pathfinding.cpp">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClCompile>
+    <ClCompile Include="j1Particles.cpp">
+      <Filter>Modules\Physics</Filter>
     <ClCompile Include="j1PerfTimer.cpp">
       <Filter>Core\Tools</Filter>
     </ClCompile>
@@ -63,6 +65,7 @@
     </ClCompile>
     <ClCompile Include="j1Enemy.cpp">
       <Filter>Modules\Entities\General Entities</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +135,8 @@
     <ClInclude Include="j1Pathfinding.h">
       <Filter>Modules\Controllers\Specific</Filter>
     </ClInclude>
+    <ClInclude Include="j1Particles.h">
+      <Filter>Modules\Physics</Filter>
     <ClInclude Include="j1PerfTimer.h">
       <Filter>Core\Tools</Filter>
     </ClInclude>

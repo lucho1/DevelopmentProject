@@ -16,11 +16,10 @@ public:
 	~j1Fade();
 
 	bool Start();
-	bool Update();
-	//bool Fade(Module* module_off, Module* module_on, float time = 2.0f);
+	bool Update(float dt);
+	bool Fade(float time = 2.0f);
 
 
-private:
 
 	//Module* moduleOff = nullptr;
 	//Module* moduleOn = nullptr;
@@ -31,7 +30,7 @@ private:
 		fade_to_black,
 		fade_from_black
 	} current_step = fade_step::none;
-
+private:
 	Uint32 start_time = 0;
 	Uint32 total_time = 0;
 	SDL_Rect screen;

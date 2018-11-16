@@ -15,6 +15,7 @@
 #include "j1Collisions.h"
 #include "j1Fade.h"
 #include "j1Pathfinding.h"
+#include "j1Particles.h"
 #include "j1App.h"
 #include "j1EntityManager.h"
 
@@ -36,6 +37,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathfinding = new j1PathFinding();
 	player = new j1Player();
 	collisions = new j1Collisions();
+	particles = new j1Particles();
 	fade = new j1Fade();
 	entity_manager = new j1EntityManager();
 
@@ -45,14 +47,16 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(win);
 	AddModule(tex);
 	AddModule(audio);
-	AddModule(fade);
+
 	AddModule(map);
 	AddModule(pathfinding);
 	
 	AddModule(scene);
+	AddModule(particles);
 	AddModule(player);
 	AddModule(entity_manager);
 	AddModule(collisions);
+	AddModule(fade);
 
 
 	// render last to swap buffer
@@ -347,9 +351,7 @@ void j1App::LoadGame(const char* file)
 // ---------------------------------------
 void j1App::SaveGame(const char* file) const
 {
-	// we should be checking if that file actually exist
-	// from the "GetSaveGames" list ... should we overwrite ?
-
+	
 	want_to_save = true;
 	save_game.create(file);
 }

@@ -87,7 +87,7 @@ bool j1Player::Start() {
 	//Rect Pathfinding test
 	//Enemy = { (position.x + player_rect.w + 400), (position.y + 55),  (player_rect.w - 65), (player_rect.h) - 28 };
 	//PERF_START(recalc_path);
-	//debug_tex = App->tex->Load("maps/path2.png");
+	debug_tex = App->tex->Load("maps/path2.png");
 	
 	//Once player is created, saving game to have from beginning a save file to load whenever without giving an error and to load if dead
 	//App->SaveGame("save_game.xml");
@@ -182,22 +182,22 @@ bool j1Player::Update(float dt) {
 		fall = true;
 
 	//Testing pathfinding
-	//if (recalc_path.ReadSec() > 3) {
+	/*if (recalc_path.ReadSec() > 3) {
 
-	//	RectPathfindingTest();
-	//	PERF_START(recalc_path);
-	//}
+		RectPathfindingTest();
+		PERF_START(recalc_path);
+	}
 
-	//if (EnemyPath != nullptr) {
+	if (EnemyPath != nullptr) {
 
-	//	for (uint i = 0; i < EnemyPath->Count(); ++i)
-	//	{
-	//		iPoint pos = App->map->MapToWorld(EnemyPath->At(i)->x, EnemyPath->At(i)->y, App->scene->current_pathfinding_map);
-	//		App->render->Blit(debug_tex, pos.x, pos.y);
-	//	}
-	//}
+		for (uint i = 0; i < EnemyPath->Count(); ++i)
+		{
+			iPoint pos = App->map->MapToWorld(EnemyPath->At(i)->x, EnemyPath->At(i)->y, App->scene->current_pathfinding_map);
+			App->render->Blit(debug_tex, pos.x, pos.y);
+		}
+	}
 
-	//App->render->DrawQuad(Enemy, 0, 0, 255, 255);
+	App->render->DrawQuad(Enemy, 0, 0, 255, 255);*/
 
 	//BLIT PLAYER
 	if (direction_x == RIGHT) {
@@ -286,7 +286,6 @@ bool j1Player::Save(pugi::xml_node& data) const
 }
 
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
-
 	
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {

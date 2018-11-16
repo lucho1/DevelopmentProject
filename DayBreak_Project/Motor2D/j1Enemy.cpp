@@ -20,6 +20,7 @@ j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path
 	p2SString tmp("maps\\%s", path);
 
 	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
+	
 	j1Enemy* Enemy = nullptr;
 	switch (enemyType) {
 

@@ -15,7 +15,8 @@ enum class ENTITY_TYPE {
 
 	ENEMY_ENT,
 	PLAYER_ENT,
-	UNKNOWN = 2
+	OBJECT_ENT,
+	UNKNOWN = 3
 
 };
 

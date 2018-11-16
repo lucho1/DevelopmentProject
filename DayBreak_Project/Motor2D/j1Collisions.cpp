@@ -55,11 +55,11 @@ bool j1Collisions::Start() {
 	
 	Init();
 
-	if (App->scene->currentLevel == LEVEL1)
-		AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
+	//if (App->scene->currentLevel == LEVEL1)
+	//	AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
 
-	else if (App->scene->currentLevel == LEVEL2)
-		AssignMapColliders("Level2.tmx");
+	//else if (App->scene->currentLevel == LEVEL2)
+	//	AssignMapColliders("Level2.tmx");
 
 	return true;
 }
@@ -255,15 +255,6 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 			}
 			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLINKING);
-			}
-			if (strcmp(collidertype, "Push_Triggers") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSH);
-			}
-			if (strcmp(collidertype, "PushOff_Triggers") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSHOFF);
-			}
-			if (strcmp(collidertype, "Win_Trigger") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_WIN);
 			}
 		}
 	}

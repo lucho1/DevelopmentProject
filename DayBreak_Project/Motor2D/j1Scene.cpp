@@ -12,6 +12,9 @@
 #include "j1Collisions.h"
 #include "j1PathFinding.h"
 #include "j1Fade.h"
+#include "j1EntityManager.h"
+#include "j1Enemy.h"
+#include "Brofiler/Brofiler.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -106,6 +109,25 @@ bool j1Scene::Start()
 	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
 	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
 
+	
+	pugi::xml_parse_result result3 = EnemiesDocument.load_file("Enemy2_Settings.xml");
+
+	if (result3 == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+	j1Enemy *Enemy1 = nullptr;
+	j1Enemy *Enemy2 = nullptr;
+	j1Enemy *Enemy3 = nullptr;
+
+	Enemy1->CreateEnemy(iPoint(800, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
+	Enemy2->CreateEnemy(iPoint(300, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
+
+	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+	if (result4 == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+	Enemy3->CreateEnemy(iPoint(600, 1350), WALKER, "maps/Enemy1_Tileset.png", EnemiesDocument);
+
 	return true;
 }
 
@@ -134,6 +156,7 @@ bool j1Scene::Update(float dt)
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) {
+
 		App->LoadGame("save_game.xml");
 	}
 
@@ -156,7 +179,7 @@ bool j1Scene::Update(float dt)
 		Change_Level = true;
 	
 	App->map->Draw(current_map);
-//	App->map->Draw(current_pathfinding_map);
+	App->map->Draw(current_pathfinding_map);
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -228,8 +251,6 @@ void j1Scene::ChangeLevel(int level_change) {
 		App->player->Start();
 		App->collisions->AssignMapColliders(current_map.Filename.GetString());
 	}
-
-	
 }
 
 void j1Scene::IterateLevel(int level_change) {

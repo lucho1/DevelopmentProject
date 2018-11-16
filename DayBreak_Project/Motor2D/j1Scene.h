@@ -50,6 +50,8 @@ public:
 	//Used to change the actual level
 	void ChangeLevel(int level_change);
 
+public:
+
 	bool Level1 = false;
 	bool Level2 = true;
 	bool Main_Menu = true;
@@ -71,11 +73,10 @@ private:
 
 	MapData Level1_pathfinding_map;
 	//MapData Level2_pathfinding_map;
-	int counter;
-
 
 	bool pathfinding = false;
 
+	pugi::xml_document	EnemiesDocument;
 	pugi::xml_document	SceneDocument;
 	pugi::xml_node		music_node;
 

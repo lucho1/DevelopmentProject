@@ -75,21 +75,21 @@ public:
 		p2List_item<tdata>*   p_data_item;
 		p_data_item = new p2List_item < tdata >(item);
 
-		if(start == NULL)
-		{
-			start = end = p_data_item;
-		}
-		else
-		{
-			p_data_item->prev = end;
-			end->next = p_data_item;
-			end = p_data_item;
-		}
+			if (start == NULL)
+			{
+				start = end = p_data_item;
+			}
+			else
+			{
+				p_data_item->prev = end;
+				end->next = p_data_item;
+				end = p_data_item;
+			}
 
-		++size;
-		return(p_data_item);
+			++size;
+			return(p_data_item);
+		
 	}
-
 	/**
 	* Deletes an item from the list
 	*/

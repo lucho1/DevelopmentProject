@@ -68,7 +68,7 @@ public:
 
 public:
 
-	void OnCollision(Collider *c1, Collider *c2/* bool collX, bool collY*/);
+	void OnCollision(Collider *c1, Collider *c2);
 
 public:
 

@@ -131,7 +131,7 @@ bool j1Scene::Start()
 	if (result4 == NULL)
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
-	Enemy3 = Enemy3->CreateEnemy(iPoint(1000, 1430), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+	Enemy3 = Enemy3->CreateEnemy(iPoint(300, 1270), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 
 	return true;
 }

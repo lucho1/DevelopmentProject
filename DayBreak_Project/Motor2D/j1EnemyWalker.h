@@ -17,6 +17,10 @@ public:
 	void Draw();
 	void Move(p2DynArray<iPoint>&path);
 	bool Detect_Area() override;
+	void Patrol();
+
+	bool Limit_Right_Reached = false;
+	bool Limit_Left_Reached = false;
 
 	p2DynArray<iPoint> patho;
 

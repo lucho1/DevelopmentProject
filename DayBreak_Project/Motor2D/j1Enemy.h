@@ -38,10 +38,14 @@ public:
 
 	virtual bool Detect_Area() { return true; };
 
+	virtual void Patrol() {};
+
 public:
 
 	bool falling = false;;
+	bool Path_Found = false;
 
+	int Patrol_Range[2];
 	ENEMY_TYPE type;
 	Direction Current_Direction;
 
@@ -49,6 +53,7 @@ public:
 	iPoint enemy_position;
 	iPoint enemy_velocity;
 	iPoint initial_velocity;
+	iPoint Patrol_velocity;
 
 	bool firstiteration;
 

@@ -21,6 +21,9 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	enemy_velocity = iPoint(5, 4);
 	falling = true;
 	Detect_Range = iPoint(400, 100);
+	Patrol_Range[2] = {};
+	Patrol_velocity = iPoint(2, 0);
+
 
 	PERF_START(pathfinding_recalc);
 }
@@ -30,6 +33,7 @@ j1EnemyWalker::~j1EnemyWalker() {}
 void j1EnemyWalker::Update(float dt) {
 
 	current_animation = &Idle;
+
 	if (Detect_Area()) {
 
      	iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map);
@@ -39,8 +43,6 @@ void j1EnemyWalker::Update(float dt) {
 
 		enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
 			Move(*enemy_path);
-			
-
 		}
 
 		//PERF_START(pathfinding_recalc);
@@ -63,6 +65,9 @@ void j1EnemyWalker::Update(float dt) {
 			}
 		}
 	}
+	else {
+		Patrol();
+	}
 
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 
@@ -73,7 +78,8 @@ bool j1EnemyWalker::Detect_Area() {
 
 	bool ret = false;	
 
-	if (App->scene->Player->player_position.x >= enemy_position.x - Detect_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Range.x) {
+	if ((App->scene->Player->player_position.x >= enemy_position.x - Detect_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Range.x)
+		&& (App->scene->Player->player_position.y >= enemy_position.y - Detect_Range.y && App->scene->Player->player_position.y <= enemy_position.y + Detect_Range.y)) {
 		ret = true;
 	}
 	
@@ -81,18 +87,96 @@ bool j1EnemyWalker::Detect_Area() {
 
 }
 
+
+void j1EnemyWalker::Patrol() {
+
+	if (!Path_Found) {
+		iPoint cell;
+		current_animation = &Run;
+		Run.speed = 0.08;
+		// South-Right
+		if (!Limit_Right_Reached) {
+			
+			cell=(App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map));
+			cell.x += 1;
+			cell.y += 1;
+
+			if (App->pathfinding->IsWalkable(cell)) {
+				Limit_Right_Reached = true;
+				Patrol_Range[0] = enemy_position.x;
+				Current_Direction = LEFT;
+			}
+			else if (!App->pathfinding->IsWalkable(iPoint(cell.x,cell.y-1))) {
+				Limit_Right_Reached = true;
+				Patrol_Range[0] = enemy_position.x;
+				Current_Direction = LEFT;
+			}
+			else
+				enemy_position.x += Patrol_velocity.x;
+		}
+
+		else {
+			if (!Limit_Left_Reached) {
+				
+				//South-Left
+				cell = (App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map));
+				cell.x -= 1;
+				cell.y += 1;;
+				if (App->pathfinding->IsWalkable(cell)) {
+					Limit_Left_Reached = true;
+					(Patrol_Range[1] = enemy_position.x);
+					Path_Found = true;
+					Current_Direction = RIGHT;
+				}
+				else if (!App->pathfinding->IsWalkable(iPoint(cell.x, cell.y - 1))) {
+					Limit_Right_Reached = true;
+					Patrol_Range[1] = enemy_position.x-60;
+					Current_Direction = RIGHT;
+					Path_Found = true;
+				}
+				else
+					enemy_position.x -= Patrol_velocity.x;
+				
+			}
+		}
+	}
+	else {
+		switch (Current_Direction) {
+		case RIGHT:
+			if (enemy_position.x < Patrol_Range[0]) {
+				enemy_position.x += Patrol_velocity.x;
+			}
+			else if (enemy_position.x >= Patrol_Range[0])
+				Current_Direction = LEFT;
+
+			break;
+
+		case LEFT:
+			if (enemy_position.x > Patrol_Range[1]) {
+				enemy_position.x -= Patrol_velocity.x;
+			}
+			else if (enemy_position.x <=( Patrol_Range[1]))
+				Current_Direction = RIGHT;
+			break;
+		}	
+	}
+
+	// south)
+
+};
+
 void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 
-	falling = true;
 
-	if (falling == true) {
 
-		enemy_velocity.y = 2;
-		enemy_position.y += enemy_velocity.y;
-	}
-	else if (falling == false)
-		enemy_velocity.y = 0;
+	//if (falling == true) {
 
+	//	enemy_velocity.y = 2;
+	//	enemy_position.y += enemy_velocity.y;
+	//}
+	//else if (falling == false)
+	//	enemy_velocity.y = 0;
+	Run.speed = 0.15f;
 
 	Current_Direction = App->pathfinding->current_Direction(path);
 	
@@ -106,7 +190,8 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 		current_animation = &Run;
 		break;
 	}
-		
+
+	//falling = true;
 
 }
 

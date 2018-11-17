@@ -5,6 +5,7 @@
 #include "p2DynArray.h"
 #include "Animation.h"
 #include "p2List.h"
+#include "j1Pathfinding.h"
 
 enum ENEMY_TYPE {
 
@@ -12,12 +13,6 @@ enum ENEMY_TYPE {
 	FLYER,
 	WALKER,
 	UNKNOWN = 2
-};
-
-enum Enemy_direction {
-
-	EN_RIGHT,
-	EN_LEFT
 };
 
 class j1Enemy : public j1Entity
@@ -46,11 +41,13 @@ public:
 	bool falling = false;;
 
 	ENEMY_TYPE type;
-	Enemy_direction Direction= EN_RIGHT;
+	Direction Current_Direction;
 
 	iPoint enemy_position;
-	fPoint enemy_velocity;
+	iPoint enemy_velocity;
 	iPoint initial_velocity;
+
+	bool firstiteration;
 
 	SDL_Texture *Enemy_tex = nullptr;
 	SDL_Rect enemy_rect;

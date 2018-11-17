@@ -13,6 +13,10 @@ public:
 	~j1EnemyFlyer();
 
 	void Update(float dt) override;
+	void Draw();
+	void reset_Velocity() {
+		enemy_velocity=iPoint(3, 3);
+	}
 
 public:
 
@@ -21,6 +25,7 @@ public:
 	
 	SDL_Rect pathrect;
 	j1PerfTimer pathfinding_recalc;
+	void Move(p2DynArray<iPoint>&path);
 
 private:
 

@@ -91,9 +91,9 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 				//Calculating an error margin of collision to avoid problems with colliders corners
 				int error_margin = 0;
 
-				if (Direction == EN_RIGHT)
+				if (Current_Direction == RIGHT)
 					error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
-				else if (Direction == EN_LEFT)
+				else if (Current_Direction == LEFT)
 					error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
 
 				//If the enemy falls less than a pixel over a collider, it falls (and it looks ok)
@@ -107,6 +107,7 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 					}
 					else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + enemy_velocity.y) {
 						falling = false;
+
 						enemy_velocity.y = 0;
 						enemy_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 					}

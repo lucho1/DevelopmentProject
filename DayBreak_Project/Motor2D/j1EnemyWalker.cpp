@@ -21,6 +21,8 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	enemy_velocity.y = 2;
 	falling = true;
 
+	firstiteration = true;
+
 	PERF_START(pathfinding_recalc);
 }
 
@@ -28,30 +30,17 @@ j1EnemyWalker::~j1EnemyWalker() {}
 
 void j1EnemyWalker::Update(float dt) {
 
-	falling = true;
-
-	if (falling == true) {
-
-		enemy_velocity.y = 2;
-		enemy_position.y += enemy_velocity.y;
-	}
-	else if (falling == false)
-		enemy_velocity.y = 0;
 	
-
-
+	
 	iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map);
 	iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
 
-	//if (pathfinding_recalc.ReadMs() > 3000) {
-
 	if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
 
-		LOG("--PATHFIND----------------------------------------------");
-		LOG("Starting Pos: %d,%d Ending Pos %d,%d", initial_pos.x, initial_pos.y, final_pos.x, final_pos.y);
-		LOG("   Steps--");
 		enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
+		Move(*enemy_path);
 		last_enemy_path = enemy_path;
+		
 	}
 
 	//PERF_START(pathfinding_recalc);
@@ -59,7 +48,6 @@ void j1EnemyWalker::Update(float dt) {
 
 	if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
 		enemy_path->Clear();
-
 
 	if (enemy_path != nullptr) {
 
@@ -74,11 +62,31 @@ void j1EnemyWalker::Update(float dt) {
 			App->render->DrawQuad(pathrect, 0, 255, 0, 50);
 		}
 	}
-	
 
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 
-	App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
 
 }
 
+
+void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
+
+	
+	Current_Direction = App->pathfinding->current_Direction(path);
+
+	falling = true;
+
+	if (falling == true) {
+
+		enemy_velocity.y = 2;
+		enemy_position.y += enemy_velocity.y;
+	}
+	else if (falling == false)
+		enemy_velocity.y = 0;
+
+
+}
+
+void j1EnemyWalker::Draw() {
+	App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
+}

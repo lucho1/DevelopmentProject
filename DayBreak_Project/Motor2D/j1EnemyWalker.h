@@ -3,6 +3,8 @@
 
 #include "j1Enemy.h"
 #include "Animation.h"
+#include "j1Pathfinding.h"
+
 
 class j1EnemyWalker : public j1Enemy
 {
@@ -12,6 +14,9 @@ public:
 	j1EnemyWalker(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument);
 	~j1EnemyWalker();
 
+	void Draw();
+	void Move(p2DynArray<iPoint>&path);
+
 	p2DynArray<iPoint> patho;
 
 	SDL_Rect pathrect;
@@ -19,8 +24,10 @@ public:
 
 	void Update(float dt) override;
 
-	p2DynArray<iPoint>* enemy_path;
-	p2DynArray<iPoint>* last_enemy_path;
+	p2DynArray<iPoint>* enemy_path = nullptr;
+	p2DynArray<iPoint> last_enemy_path;
+
+	//Direction current_Direction;
 
 
 private:

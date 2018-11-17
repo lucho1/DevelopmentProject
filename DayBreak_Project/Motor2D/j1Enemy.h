@@ -29,6 +29,7 @@ public:
 
 	//Create/Destroy an Enemy
 	j1Enemy* CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument); //Remember to put maps/ at path
+	
 	void DestroyEnemy(j1Enemy *Enemy);
 
 	//Load Enemy
@@ -52,7 +53,7 @@ public:
 	int Patrol_Range[2];
 	ENEMY_TYPE type;
 	Direction Current_Direction;
-
+	Collider* Last_collided;
 	iPoint Detect_Range;
 	iPoint Detect_Shoot_Range;
 	iPoint enemy_position;

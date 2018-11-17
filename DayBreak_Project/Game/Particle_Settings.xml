@@ -40,7 +40,7 @@
       <Pushback x="448" y="192" w="112" h="109"/>
     </Player_Shot_Beam>
 	
-    <Plasma_explosion loop="false" speed="0.15">
+    <Plasma_explosion loop="false" speed="0.25">
       <Pushback x="0" y="301" w="229" h="217"/>
       <Pushback x="229" y="301" w="229" h="217"/>
       <Pushback x="458" y="301" w="229" h="217"/>

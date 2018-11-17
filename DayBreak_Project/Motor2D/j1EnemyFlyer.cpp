@@ -5,6 +5,8 @@
 #include "j1Player.h"
 #include "j1Pathfinding.h"
 #include "j1Player.h"
+#include "j1Particles.h"
+#include "j1EntityManager.h"
 
 
 j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(enemy_position, ENEMY_TYPE::FLYER) {
@@ -18,6 +20,9 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Exploding");
 	LoadPushbacks(Animation_node, Exploding);
 
+	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Dead");
+	LoadPushbacks(Animation_node, Dead);
+
 	current_animation = &Idle;
 	enemy_velocity.y = 3;
 	enemy_velocity.x = 3;
@@ -27,6 +32,8 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Detect_Range = iPoint(600, 400);
 	
 	Detect_Exploding_Range = iPoint(200,200);
+	Start_exploding = false;
+	life = 20;
 
 	//PERF_START(pathfinding_recalc);
 }
@@ -36,7 +43,7 @@ j1EnemyFlyer::~j1EnemyFlyer() {}
 void j1EnemyFlyer::Update(float dt) {
 
 	//CollidingX = false;
-
+	if(life>0){
 	if (Detect_Area()) {
 		//reset_Velocity();
 		iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 15), App->scene->current_pathfinding_map);
@@ -73,6 +80,10 @@ void j1EnemyFlyer::Update(float dt) {
 				App->render->DrawQuad(pathrect, 255, 0, 0, 50);
 			}
 		}
+	  }
+	}
+	if (life <= 0) {
+		App->entity_manager->DestroyEntity(this);
 	}
 	entity_collider->SetPos(enemy_position.x+40, enemy_position.y);
 	Draw();
@@ -101,7 +112,6 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 
 		if (enemy_position.y + enemy_Collider_rect.h >= Y_Collider_Pos) 
 				Current_Direction = UP;
-	
 			CollidingX = false;
 	}
 
@@ -126,8 +136,7 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 		enemy_position.x += enemy_velocity.x;
 		break;
 	case LEFT:
-
-			enemy_position.x -= enemy_velocity.x;
+		enemy_position.x -= enemy_velocity.x;
 		break;
 	case UP:
 		enemy_position.y -= enemy_velocity.y;
@@ -142,23 +151,24 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 		enemy_velocity = iPoint(3, 3);
 	}
 	else {
+		Start_exploding = false;
 		current_animation = &Exploding;
 		enemy_velocity = iPoint(2, 2);
+
+		if (Explosion_Time.ReadSec() >= 0.5f) {
+			current_animation = &Dead;
+		}
+		if (Explosion_Time.ReadSec() > 1) {
+			life = 0;
+			App->particles->AddParticle(App->particles->Plasma_Explosion,enemy_position.x-90,enemy_position.y-70,COLLIDER_NONE,iPoint(0,0),1.5f);
+			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 150, enemy_position.y - 160, COLLIDER_NONE, iPoint(0, 0), 1.9f, SDL_FLIP_NONE, 350.0f);
+			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 70, enemy_position.y - 200, COLLIDER_NONE, iPoint(0, 0), 1.9f,SDL_FLIP_NONE,200.0f);
+		}
 	}
 
-	//if (Current_Direction == RIGHT) {
-	//	enemy_position.x += enemy_velocity.x;
-	//}
-	//else if (Current_Direction == LEFT) {
-	//	enemy_position.x -= enemy_velocity.x;
-	//}
-	//else if (Current_Direction == UP) {
-	//	enemy_position.y -= enemy_velocity.y;
-	//}
-	//else if (Current_Direction == DOWN) {
-	//	enemy_position.y += enemy_velocity.y;
-	//}
-
+	if (Start_exploding == true) {
+		PERF_START(Explosion_Time);
+	}
 }
 
 void j1EnemyFlyer:: Draw() {
@@ -181,6 +191,9 @@ bool  j1EnemyFlyer::Exploding_Area() {
 		ret = true;
 	}
 
+	Start_exploding = true;
+
 	return ret;
 
+	
 }

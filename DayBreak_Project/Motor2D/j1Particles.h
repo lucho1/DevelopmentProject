@@ -58,7 +58,7 @@ public:
 	bool CleanUp();
 
 	void OnCollision(Collider* c1, Collider* c2);
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed, float scale = 1.0f , SDL_RendererFlip Flip = SDL_FLIP_NONE, Uint32 delay = 0);
+	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed=iPoint(0,0), float scale = 1.0f , SDL_RendererFlip Flip = SDL_FLIP_NONE, Uint32 delay = 0);
 
 private:
 

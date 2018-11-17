@@ -50,7 +50,7 @@ public:
 	// Called before quitting
 	virtual void CleanUp() {}
 
-	virtual void Desrtoy(){}
+	virtual void Destroy(){}
 
 public:
 
@@ -73,6 +73,7 @@ public:
 
 public:
 
+	int life;
 	ENTITY_TYPE type;
 	Collider* entity_collider;
 

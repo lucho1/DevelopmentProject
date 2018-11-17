@@ -20,6 +20,7 @@ public:
 
 	bool Detect_Area() override;
 	bool Exploding_Area();
+	bool Start_exploding = false;
 
 	//void Patrol() override;
 
@@ -33,11 +34,15 @@ public:
 	SDL_Rect pathrect;
 	void Move(p2DynArray<iPoint>&path);
 
+	j1Timer Explosion_Time;
+
+
 private:
 
 	Animation* current_animation = nullptr;
 	Animation Idle;
 	Animation Exploding;
+	Animation Dead;
 
 };
 

@@ -42,7 +42,7 @@
       <Pushback x="549" y="561" w="183" h="183"/>
       <Pushback x="732" y="561" w="183" h="183"/>
     </Jump>
-    <Shoot loop="true" speed="0.15"> 
+    <Shoot loop="false" speed="0.15"> 
       <Pushback x="366" y="374" w="183" h="183"/>
       <Pushback x="549" y="374" w="183" h="183"/>
       <Pushback x="732" y="374" w="183" h="183"/>

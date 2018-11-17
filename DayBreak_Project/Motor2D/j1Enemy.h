@@ -36,9 +36,13 @@ public:
 	//Pushbacks loading
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
 
+	virtual bool Shoot_Area() { return true; };
+
 	virtual bool Detect_Area() { return true; };
 
 	virtual void Patrol() {};
+
+	virtual void Shoot() {};
 
 public:
 
@@ -50,10 +54,12 @@ public:
 	Direction Current_Direction;
 
 	iPoint Detect_Range;
+	iPoint Detect_Shoot_Range;
 	iPoint enemy_position;
 	iPoint enemy_velocity;
 	iPoint initial_velocity;
 	iPoint Patrol_velocity;
+
 
 	bool firstiteration;
 

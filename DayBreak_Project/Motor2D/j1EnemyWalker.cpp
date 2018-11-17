@@ -2,8 +2,8 @@
 #include "j1Scene.h"
 #include "j1Collisions.h"
 #include "j1Render.h"
-#include "j1Player.h"
 #include "j1Pathfinding.h"
+#include "j1Particles.h"
 
 j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(enemy_position, ENEMY_TYPE::FLYER) {
 	
@@ -14,16 +14,17 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	LoadPushbacks(Animation_node, Idle);
 	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Run");
 	LoadPushbacks(Animation_node, Run);
-	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Dead");
-	LoadPushbacks(Animation_node, Shoot);
+	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Shoot");
+	LoadPushbacks(Animation_node, Shoot_animation);
 
 	current_animation = &Idle;
-	enemy_velocity = iPoint(5, 4);
+	enemy_velocity = iPoint(3, 4);
 	falling = true;
-	Detect_Range = iPoint(400, 100);
+	Detect_Range = iPoint(600, 100);
+	Detect_Shoot_Range = iPoint(300, 0);
 	Patrol_Range[2] = {};
 	Patrol_velocity = iPoint(2, 0);
-
+	Able_to_Shoot = true;
 
 	PERF_START(pathfinding_recalc);
 }
@@ -89,10 +90,11 @@ bool j1EnemyWalker::Detect_Area() {
 
 
 void j1EnemyWalker::Patrol() {
+	current_animation = &Run;
+
 
 	if (!Path_Found) {
 		iPoint cell;
-		current_animation = &Run;
 		Run.speed = 0.08;
 		// South-Right
 		if (!Limit_Right_Reached) {
@@ -161,8 +163,21 @@ void j1EnemyWalker::Patrol() {
 		}	
 	}
 
+
 	// south)
 
+};
+
+
+bool j1EnemyWalker :: Shoot_Area() {
+	
+	bool ret = false;
+
+	if (App->scene->Player->player_position.x >= enemy_position.x - Detect_Shoot_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Shoot_Range.x) {
+		ret = true;
+	}
+
+	return ret; 
 };
 
 void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
@@ -182,12 +197,21 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 	
 	switch (Current_Direction) {
 	case RIGHT:
-		enemy_position.x += enemy_velocity.x;
-		current_animation = &Run;
+		if (!Shoot_Area()) {
+			enemy_position.x += enemy_velocity.x;
+			current_animation = &Run;
+		}
+		else
+			Shoot();
+
 		break;
 	case LEFT:
-		enemy_position.x -= enemy_velocity.x;
-		current_animation = &Run;
+		if (!Shoot_Area()) {
+			enemy_position.x -= enemy_velocity.x;
+			current_animation = &Run;
+		}
+		else
+			Shoot();
 		break;
 	}
 
@@ -195,9 +219,33 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 
 }
 
+void j1EnemyWalker::Shoot() {
+	
+	current_animation = &Shoot_animation;
+
+	if (Able_to_Shoot == true) {
+		switch (Current_Direction) {
+		case RIGHT:
+			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x +40, enemy_position.y +36, COLLIDER_NONE, iPoint(15, 0), 0.8);
+			break;
+		case LEFT:
+			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x, enemy_position.y +36, COLLIDER_NONE, iPoint(-15, 0), 0.8, SDL_FLIP_HORIZONTAL);
+			break;
+		}
+		Able_to_Shoot = false;
+	}
+	if (Shoot_animation.Finished()) {
+		Shoot_animation.Reset();
+		Able_to_Shoot = true;
+	}
+
+}
+
 void j1EnemyWalker::Draw() {
 
-	if (Current_Direction == RIGHT || Current_Direction == UP_RIGHT || Current_Direction == DOWN_RIGHT || Current_Direction == UP || Current_Direction == DOWN)
+	
+			
+	if (Current_Direction == RIGHT || Current_Direction == UP_RIGHT || Current_Direction == DOWN_RIGHT || Current_Direction == UP || Current_Direction == DOWN||Current_Direction==NONE)
 		App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
 	else if (Current_Direction == LEFT || Current_Direction == UP_LEFT || Current_Direction == DOWN_RIGHT) {
 		App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.5);

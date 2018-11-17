@@ -17,7 +17,11 @@ public:
 	void Draw();
 	void Move(p2DynArray<iPoint>&path);
 	bool Detect_Area() override;
-	void Patrol();
+	bool Shoot_Area() override;
+	bool Able_to_Shoot;
+
+	void Patrol() override;
+	void Shoot() override;
 
 	bool Limit_Right_Reached = false;
 	bool Limit_Left_Reached = false;
@@ -40,7 +44,7 @@ private:
 	Animation* current_animation = nullptr;
 	Animation Idle;
 	Animation Run;
-	Animation Shoot;
+	Animation Shoot_animation;
 
 };
 

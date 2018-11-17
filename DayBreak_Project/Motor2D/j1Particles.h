@@ -16,13 +16,6 @@ struct SDL_Texture;
 struct Collider;
 enum COLLIDER_TYPE;
 
-enum TYPE {
-	NO_PARTICLE,
-	PARTICLE_1,
-	PARTICLE_2
-
-};
-
 struct Particle {
 
 	Particle();
@@ -40,11 +33,12 @@ struct Particle {
 
 	iPoint Position;
 	iPoint Speed;
+	float scale;
 	
 	Uint32 Born = 0;
 	Uint32 Life = 0;
 
-	TYPE Particle_Type = NO_PARTICLE;
+	//TYPE Particle_Type = NO_PARTICLE;
 	uint TimesCollided = 0;
 	SDL_RendererFlip Flip = SDL_FLIP_NONE;
 
@@ -64,7 +58,7 @@ public:
 	bool CleanUp();
 
 	void OnCollision(Collider* c1, Collider* c2);
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type , iPoint speed, SDL_RendererFlip Flip= SDL_FLIP_NONE, Uint32 delay = 0);
+	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed, float scale = 1.0f , SDL_RendererFlip Flip = SDL_FLIP_NONE, Uint32 delay = 0);
 
 private:
 
@@ -72,8 +66,11 @@ private:
 
 public:
 
-	Particle ShootExplosion;
-	Particle Shoot;
+	Particle Player_Shoot;
+	Particle Enemy_Shoot;
+	Particle Blood;
+	Particle Player_Shoot_Beam;
+	Particle Plasma_Explosion;
 
 	SDL_Texture *Particle_1;
 	SDL_Texture *particle0 = nullptr;
@@ -85,6 +82,10 @@ public:
 	uint Destroy1 = 999999;
 	uint Destroy2 = 999999;
 	uint Destroy3 = 999999;
+
+private:
+	pugi::xml_document	ParticleDocument;
+	pugi::xml_node		Animation_node;
 
 };
 

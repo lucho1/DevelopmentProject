@@ -134,6 +134,7 @@ Direction j1PathFinding::current_Direction(p2DynArray<iPoint>&path) const {
 			return DOWN;
 		else if (Direction_comp.y == -1)
 			return UP;
+
 	}
 	else return NONE;
 }

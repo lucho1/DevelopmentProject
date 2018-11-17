@@ -4,6 +4,8 @@
 #include "j1Render.h"
 #include "j1Particles.h"
 #include "j1Player.h"
+#include "j1Scene.h"
+
 
 #include "SDL/include/SDL_timer.h"
 
@@ -12,38 +14,40 @@ j1Particles::j1Particles() {
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) 
 		active[i] = nullptr;
-	
-	//	srand(2);
+
+
+
+
 }
 
 j1Particles::~j1Particles() {}
 
 bool j1Particles::Start() {
 
+
+	pugi::xml_parse_result result = ParticleDocument.load_file("Particle_Settings.xml");
+	if (result == NULL)
+		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
+
+
+
+ 	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Blood");
+	App->scene->Player->LoadPushbacks(Animation_node, Blood.Anim);
+	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Player_Shoot");
+	App->scene->Player->LoadPushbacks(Animation_node, Player_Shoot.Anim);
+	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Enemy_Shoot");
+	App->scene->Player->LoadPushbacks(Animation_node, Enemy_Shoot.Anim);
+	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Player_Shot_Beam");
+	App->scene->Player->LoadPushbacks(Animation_node, Player_Shoot_Beam.Anim);
+	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Plasma_explosion");
+	App->scene->Player->LoadPushbacks(Animation_node, Plasma_Explosion.Anim);
+
+	Particle_1 = App->tex->Load("maps/Particles.png");
 	//LOG("Loading Particles");
 	//particle0 = App->textures->Load("Images/Player/Ship&Ball_Sprite.png");
-	Particle_1 = App->tex->Load("maps/Projectil_test.png");
-	Shoot.Anim.PushBack({ 0,0,163,50 });
-	Shoot.Anim.PushBack({ 163,0,163,50 });
-	Shoot.Anim.PushBack({ 326,0,163,50 });
-	Shoot.Anim.PushBack({ 0,50,163,50 });
-	Shoot.Anim.loop = true;
-	Shoot.Anim.speed = 0.15f;
-	Shoot.Life = 1200;
-	Shoot.Sprites = Particle_1;
 
-	////BOOOOOOOOOOOOOOOOOOOOOOOOOOOMBAAAA un movimiento muy sexy: se-xy, un movimiento muy sensual: sen-sual
-	//HipopotamoBomba.Anim.PushBack({ 0, 306, 16, 6 });
-	//HipopotamoBomba.Anim.PushBack({ 17, 303, 15, 10 });
-	//HipopotamoBomba.Anim.PushBack({ 34, 301, 10, 15 });
-
-	//HipopotamoBomba.Anim.loop = false;
-	//HipopotamoBomba.Anim.speed = 0.1f;
-	//HipopotamoBomba.Sprites = Particle0;
-	//HipopotamoBomba.Life = 1200;
-	//HipopotamoBomba.Speed.y = 3;
-	//HipopotamoBomba.Speed.x = (HipopotamoBomba.Position.x ^ 2);
-
+	Player_Shoot.Sprites = Blood.Sprites = Enemy_Shoot.Sprites = Plasma_Explosion.Sprites = Player_Shoot_Beam.Sprites = Particle_1;
+	Enemy_Shoot.Life = 600;
 
 	return true;
 
@@ -84,7 +88,7 @@ bool j1Particles::Update(float ds) {
 
 		else if (SDL_GetTicks() >= p->Born) {
 
-			App->render->Blit(p->Sprites, p->Position.x, p->Position.y, &(p->Anim.GetCurrentFrame()),1,0,0,0,p->Flip);
+			App->render->Blit(p->Sprites, p->Position.x, p->Position.y, &(p->Anim.GetCurrentFrame()),1,0,0,0,p->Flip,p->scale);
 
 			if (!p->fx_played)
 				p->fx_played = true;
@@ -95,7 +99,7 @@ bool j1Particles::Update(float ds) {
 	return ret;
 }
 
-void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed,SDL_RendererFlip Flip, Uint32 delay) {
+void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed,float scale, SDL_RendererFlip Flip, Uint32 delay) {
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) {
 		if (active[i] == nullptr) {
@@ -107,6 +111,7 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 			p->Sprites = particle.Sprites;
 			p->Speed = speed;
 			p->Flip = Flip;
+			p->scale = scale;
 			if (collider_type != COLLIDER_NONE) {
 				p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(), collider_type, this);
 			}

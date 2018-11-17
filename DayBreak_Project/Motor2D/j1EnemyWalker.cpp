@@ -226,10 +226,10 @@ void j1EnemyWalker::Shoot() {
 	if (Able_to_Shoot == true) {
 		switch (Current_Direction) {
 		case RIGHT:
-			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x +40, enemy_position.y +36, COLLIDER_NONE, iPoint(15, 0), 0.8);
+			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x +40, enemy_position.y +36, COLLIDER_ENEMY_BULLET, iPoint(15, 0), 0.8);
 			break;
 		case LEFT:
-			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x, enemy_position.y +36, COLLIDER_NONE, iPoint(-15, 0), 0.8, SDL_FLIP_HORIZONTAL);
+			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x, enemy_position.y +36, COLLIDER_ENEMY_BULLET, iPoint(-15, 0), 0.8, SDL_FLIP_HORIZONTAL);
 			break;
 		}
 		Able_to_Shoot = false;

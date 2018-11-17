@@ -168,11 +168,11 @@ void j1Player::Update(float dt) {
 		angle = 0;
 
 		if (direction_x == pl_RIGHT) {
-			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_NONE, iPoint(16, 0), 0.8f);
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y-18, COLLIDER_NONE, iPoint(player_position.x-player_position.x+acceleration.x, 0), 1.1f);
+		     App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(16, 0), 0.8f);
+			 App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y-18, COLLIDER_NONE, iPoint(player_position.x-player_position.x+acceleration.x, 0), 1.1f);
 		}
 		else if (direction_x == pl_LEFT) {
-			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_NONE, iPoint(-16, 0), 0.8f, SDL_FLIP_HORIZONTAL);
+			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(-16, 0), 0.8f, SDL_FLIP_HORIZONTAL);
 			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
 		}
 		Shooting = true;

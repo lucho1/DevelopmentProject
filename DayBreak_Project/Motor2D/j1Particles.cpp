@@ -31,7 +31,7 @@ bool j1Particles::Start() {
 
 
 
- 	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Blood");
+	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Blood");
 	App->scene->Player->LoadPushbacks(Animation_node, Blood.Anim);
 	Animation_node = ParticleDocument.child("config").child("Particle_Pushbacks").child("Player_Shoot");
 	App->scene->Player->LoadPushbacks(Animation_node, Player_Shoot.Anim);
@@ -48,7 +48,8 @@ bool j1Particles::Start() {
 
 	Player_Shoot.Sprites = Blood.Sprites = Enemy_Shoot.Sprites = Plasma_Explosion.Sprites = Player_Shoot_Beam.Sprites = Particle_1;
 	Enemy_Shoot.Life = 600;
-
+	Player_Shoot.Life = 1200;
+	Player_Shoot.collider = App->collisions->AddCollider({0,0,100,20},COLLIDER_PLAYER_BULLET,this);
 	return true;
 
 }
@@ -83,7 +84,7 @@ bool j1Particles::Update(float ds) {
 		if (p->Update() == false) {
 
 			delete p;
-			active[i] = nullptr;
+ 			active[i] = nullptr;
 		}
 
 		else if (SDL_GetTicks() >= p->Born) {
@@ -112,10 +113,9 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 			p->Speed = speed;
 			p->Flip = Flip;
 			p->scale = scale;
-			if (collider_type != COLLIDER_NONE) {
-				p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(), collider_type, this);
+			if (collider_type != COLLIDER_NONE && p->collider==nullptr) {
+					p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(), collider_type, this);
 			}
-
 			active[i] = p;
 			break;
 
@@ -163,14 +163,14 @@ bool Particle::Update() {
 	if (Life > 0) {
 
 		if (((int)SDL_GetTicks() - (int)Born) > (int)Life)
-			ret = false;
+			return false;
 	}
 	else
 		if (Anim.Finished())
 			ret = false;
 
 	if (collider != nullptr)
-		ret = false;
+		ret = true;
 
 	if (SDL_GetTicks() >= Born) {
 
@@ -178,7 +178,7 @@ bool Particle::Update() {
 		Position.y += Speed.y;
 
 		if (collider != nullptr)
-			collider->SetPos(Position.x, Position.y);
+ 			collider->SetPos(Position.x, Position.y);
 	}
 
 	return ret;

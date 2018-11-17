@@ -50,6 +50,8 @@ public:
 	// Called before quitting
 	virtual void CleanUp() {}
 
+	virtual void Desrtoy(){}
+
 public:
 
 	virtual bool Load(pugi::xml_node&)

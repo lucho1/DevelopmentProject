@@ -107,7 +107,6 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 					}
 					else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + enemy_velocity.y) {
 						falling = false;
-
 						enemy_velocity.y = 0;
 						enemy_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 					}

@@ -18,10 +18,9 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	LoadPushbacks(Animation_node, Shoot);
 
 	current_animation = &Idle;
-	enemy_velocity.y = 2;
+	enemy_velocity = iPoint(5, 4);
 	falling = true;
-
-	firstiteration = true;
+	Detect_Range = iPoint(400, 100);
 
 	PERF_START(pathfinding_recalc);
 }
@@ -30,49 +29,59 @@ j1EnemyWalker::~j1EnemyWalker() {}
 
 void j1EnemyWalker::Update(float dt) {
 
-	
-	
-	iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map);
-	iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
+	current_animation = &Idle;
+	if (Detect_Area()) {
 
-	if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
+     	iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map);
+		iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
+
+		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
 
 		enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
-		Move(*enemy_path);
-		last_enemy_path = enemy_path;
-		
-	}
+			Move(*enemy_path);
+			
 
-	//PERF_START(pathfinding_recalc);
-	//}
+		}
 
-	if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
-		enemy_path->Clear();
+		//PERF_START(pathfinding_recalc);
+		//}
 
-	if (enemy_path != nullptr) {
+		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
+			enemy_path->Clear();
 
-		for (uint i = 0; i < enemy_path->Count(); ++i)
-		{
-			iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
-			//App->render->Blit(debug_tex, pos.x, pos.y);
-			pathrect.x = pos.x;
-			pathrect.y = pos.y + 50;
-			pathrect.w = App->scene->current_map.width;
-			pathrect.h = App->scene->current_map.height;
-			App->render->DrawQuad(pathrect, 0, 255, 0, 50);
+		if (enemy_path != nullptr) {
+
+			for (uint i = 0; i < enemy_path->Count(); ++i)
+			{
+				iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
+				//App->render->Blit(debug_tex, pos.x, pos.y);
+				pathrect.x = pos.x;
+				pathrect.y = pos.y + 50;
+				pathrect.w = App->scene->current_map.width;
+				pathrect.h = App->scene->current_map.height;
+				App->render->DrawQuad(pathrect, 0, 255, 0, 50);
+			}
 		}
 	}
 
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 
+	Draw();
+}
+
+bool j1EnemyWalker::Detect_Area() {
+
+	bool ret = false;	
+
+	if (App->scene->Player->player_position.x >= enemy_position.x - Detect_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Range.x) {
+		ret = true;
+	}
+	
+	return ret;
 
 }
 
-
 void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
-
-	
-	Current_Direction = App->pathfinding->current_Direction(path);
 
 	falling = true;
 
@@ -85,8 +94,27 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 		enemy_velocity.y = 0;
 
 
+	Current_Direction = App->pathfinding->current_Direction(path);
+	
+	switch (Current_Direction) {
+	case RIGHT:
+		enemy_position.x += enemy_velocity.x;
+		current_animation = &Run;
+		break;
+	case LEFT:
+		enemy_position.x -= enemy_velocity.x;
+		current_animation = &Run;
+		break;
+	}
+		
+
 }
 
 void j1EnemyWalker::Draw() {
-	App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
+
+	if (Current_Direction == RIGHT || Current_Direction == UP_RIGHT || Current_Direction == DOWN_RIGHT || Current_Direction == UP || Current_Direction == DOWN)
+		App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
+	else if (Current_Direction == LEFT || Current_Direction == UP_LEFT || Current_Direction == DOWN_RIGHT) {
+		App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.5);
+	}
 }

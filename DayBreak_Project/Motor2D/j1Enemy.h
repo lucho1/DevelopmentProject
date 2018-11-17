@@ -36,6 +36,8 @@ public:
 	//Pushbacks loading
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
 
+	virtual bool Detect_Area() { return true; };
+
 public:
 
 	bool falling = false;;
@@ -43,6 +45,7 @@ public:
 	ENEMY_TYPE type;
 	Direction Current_Direction;
 
+	iPoint Detect_Range;
 	iPoint enemy_position;
 	iPoint enemy_velocity;
 	iPoint initial_velocity;

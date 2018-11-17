@@ -16,6 +16,7 @@ public:
 
 	void Draw();
 	void Move(p2DynArray<iPoint>&path);
+	bool Detect_Area() override;
 
 	p2DynArray<iPoint> patho;
 

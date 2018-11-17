@@ -97,7 +97,7 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 					error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
 
 				//If the enemy falls less than a pixel over a collider, it falls (and it looks ok)
-				if (error_margin > 1) {
+				if (error_margin > 2) {
 
 					//Checking Y Axis Collisions
 					if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - enemy_velocity.y) {
@@ -117,12 +117,16 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 					enemy_velocity.x = 0;
 					enemy_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+					CollidingX = true;
+					Y_Collider_Pos = c2->rect.y;
 
 				}
 				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - enemy_velocity.x) { //Colliding Right (going left)
 
 					enemy_velocity.x = 0;
 					enemy_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+					CollidingX = true;
+					Y_Collider_Pos = c2->rect.y;
 
 				}
 			}

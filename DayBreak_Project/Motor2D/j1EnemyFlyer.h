@@ -17,6 +17,7 @@ public:
 	void reset_Velocity() {
 		enemy_velocity=iPoint(3, 3);
 	}
+
 	bool Detect_Area() override;
 	bool Exploding_Area();
 
@@ -30,7 +31,6 @@ public:
 	p2DynArray<iPoint>* last_enemy_path;
 	
 	SDL_Rect pathrect;
-	j1PerfTimer pathfinding_recalc;
 	void Move(p2DynArray<iPoint>&path);
 
 private:

@@ -28,13 +28,14 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	
 	Detect_Exploding_Range = iPoint(200,200);
 
-	PERF_START(pathfinding_recalc);
+	//PERF_START(pathfinding_recalc);
 }
 
 j1EnemyFlyer::~j1EnemyFlyer() {}
 
 void j1EnemyFlyer::Update(float dt) {
 
+	//CollidingX = false;
 
 	if (Detect_Area()) {
 		//reset_Velocity();
@@ -96,6 +97,14 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 
 	Current_Direction = App->pathfinding->current_Direction(path);
 
+	if (CollidingX && Detect_Area() && (RIGHT || LEFT || UP_RIGHT || UP_LEFT)) {
+
+		if (enemy_position.y + enemy_Collider_rect.h >= Y_Collider_Pos) 
+				Current_Direction = UP;
+	
+			CollidingX = false;
+	}
+
 	switch (Current_Direction) {
 	case UP_RIGHT:
 		enemy_position.x += enemy_velocity.x;
@@ -149,9 +158,6 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 	//else if (Current_Direction == DOWN) {
 	//	enemy_position.y += enemy_velocity.y;
 	//}
-
-
-
 
 }
 

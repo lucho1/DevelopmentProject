@@ -70,6 +70,9 @@ public:
 	//Path texture
 	SDL_Texture *debug_tex;
 
+	bool CollidingX = false;
+	int Y_Collider_Pos;
+
 public:
 
 	pugi::xml_node		EnemySettings;

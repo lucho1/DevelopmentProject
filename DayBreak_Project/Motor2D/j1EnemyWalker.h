@@ -16,6 +16,10 @@ public:
 
 	void Draw();
 	void Move(p2DynArray<iPoint>&path);
+	void Update(float dt) override;
+
+public:
+
 	bool Detect_Area() override;
 	bool Shoot_Area() override;
 	bool Able_to_Shoot;
@@ -26,18 +30,15 @@ public:
 	bool Limit_Right_Reached = false;
 	bool Limit_Left_Reached = false;
 
+public:
+
 	p2DynArray<iPoint> patho;
-
 	SDL_Rect pathrect;
-	j1PerfTimer pathfinding_recalc;
-
-	void Update(float dt) override;
 
 	p2DynArray<iPoint>* enemy_path = nullptr;
 	p2DynArray<iPoint> last_enemy_path;
 
 	//Direction current_Direction;
-
 
 private:
 

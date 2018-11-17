@@ -10,9 +10,10 @@
       <Level1 position.x="580" position.y="1400" />
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
+    
     <Collider  w="60" h="90"/>
-
-    <Velocity velocity.x="5.5" velocity.y="8"/>
+    <Velocity initial_velocity.x="5.5" initial_velocity.y="8" velocity.x="3" velocity.y="3"/>
+    <Detection_Range det_x="600" det_y="400" det_exp_x="200" det_exp_y="200" />
     
   </EnemySettings>
 

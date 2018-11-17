@@ -15,37 +15,21 @@ j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT
 {
 }
 
-j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
-
-	p2SString tmp("maps\\%s", path);
-
-	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
-	j1Enemy* Enemy = nullptr;
-	switch (enemyType) {
-
-	case ENEMY_TYPE::FLYER:
-		Enemy = new j1EnemyFlyer(pos, tmp.GetString(), EnemiesDocument);
-		break;
-	case ENEMY_TYPE::WALKER:
-		Enemy = new j1EnemyWalker(pos, tmp.GetString(), EnemiesDocument);
-		break;
-	default:
-		break;
-	}
-
-	App->entity_manager->entities_list.add(Enemy);
-	//debug_tex = App->tex->Load("maps/path2.png");
-	
-	return Enemy;
-}
-
 bool j1Enemy::LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument) {
 
 	EnemySettings = EnemiesDocument.child("config");
 
-	//Starting Position & Velocity
-	initial_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.x").as_int();
-	initial_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.y").as_int();
+	//Starting Position & Velocities
+	initial_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("initial_velocity.x").as_int();
+	initial_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute("initial_velocity.y").as_int();
+
+	enemy_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.x").as_int();
+	enemy_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.y").as_int();
+
+	//Detection Range
+	Detect_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_x").as_int();
+	Detect_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_y").as_int();
+
 
 	enemy_rect.x = 0;
 	enemy_rect.y = 0;
@@ -132,6 +116,29 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 			}
 		}
 	}
+}
+
+j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
+
+	p2SString tmp("maps\\%s", path);
+
+	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
+	j1Enemy* Enemy = nullptr;
+	switch (enemyType) {
+
+	case ENEMY_TYPE::FLYER:
+		Enemy = new j1EnemyFlyer(pos, tmp.GetString(), EnemiesDocument);
+		break;
+	case ENEMY_TYPE::WALKER:
+		Enemy = new j1EnemyWalker(pos, tmp.GetString(), EnemiesDocument);
+		break;
+	default:
+		break;
+	}
+
+	App->entity_manager->entities_list.add(Enemy);
+
+	return Enemy;
 }
 
 void j1Enemy::DestroyEnemy(j1Enemy *Enemy) {

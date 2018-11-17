@@ -22,14 +22,17 @@ public:
 
 	j1Enemy(iPoint pos, ENEMY_TYPE type_);
 	~j1Enemy() {}
-
-	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
 	
 public:
 
 	//Create/Destroy an Enemy
 	j1Enemy* CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument); //Remember to put maps/ at path
+	
 	void DestroyEnemy(j1Enemy *Enemy);
+
+	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
+
+public:
 
 	//Load Enemy
 	bool LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument);
@@ -49,26 +52,27 @@ public:
 	bool falling = false;;
 	bool Path_Found = false;
 
-	int Patrol_Range[2];
 	ENEMY_TYPE type;
 	Direction Current_Direction;
 
 	iPoint Detect_Range;
 	iPoint Detect_Shoot_Range;
+	iPoint Detect_Exploding_Range;
+
 	iPoint enemy_position;
 	iPoint enemy_velocity;
 	iPoint initial_velocity;
-	iPoint Patrol_velocity;
 
+	iPoint Patrol_velocity;
+	int Patrol_Range[2];
+
+public:
 
 	bool firstiteration;
 
 	SDL_Texture *Enemy_tex = nullptr;
 	SDL_Rect enemy_rect;
 	SDL_Rect enemy_Collider_rect;
-
-	//Path texture
-	SDL_Texture *debug_tex;
 
 	bool CollidingX = false;
 	int Y_Collider_Pos;

@@ -253,6 +253,7 @@ bool j1Scene::CleanUp()
 
 void j1Scene::ChangeLevel(int level_change) {
 	
+	
 	LEVELS aux = currentLevel;
 	if (level_change != NO_CHANGE) {
 		App->collisions->CleanUp();

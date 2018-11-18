@@ -15,7 +15,8 @@ enum class ENTITY_TYPE {
 
 	ENEMY_ENT,
 	PLAYER_ENT,
-	UNKNOWN = 2
+	OBJECT_ENT,
+	UNKNOWN = 3
 
 };
 
@@ -50,6 +51,8 @@ public:
 	// Called before quitting
 	virtual void CleanUp() {}
 
+	virtual void Destroy(){}
+
 public:
 
 	virtual bool Load(pugi::xml_node&)
@@ -71,6 +74,7 @@ public:
 
 public:
 
+	int life;
 	ENTITY_TYPE type;
 	Collider* entity_collider;
 

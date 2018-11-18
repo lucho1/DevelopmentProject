@@ -18,7 +18,7 @@ j1Collisions::j1Collisions()
 	//Set all matrix positions of "PLAYER" to true except PLAYER-NONE & PLAYER-PLAYER (which remain false)
 	for (int p = 0; p < COLLIDER_MAX - 1; p++) {
 
-		if (p != COLLIDER_NONE || p != COLLIDER_PLAYER)
+		if (p != COLLIDER_NONE || p != COLLIDER_PLAYER|| p!=COLLIDER_PLAYER_BULLET)
 			matrix[COLLIDER_PLAYER][p] = true;
 	}
 
@@ -32,6 +32,7 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_STATIC][COLLIDER_PLAYER] = true;
 
 	//Set enemy matrix
+	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER_BULLET] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_STATIC] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_FALL] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
@@ -54,12 +55,6 @@ bool j1Collisions::Awake() {
 bool j1Collisions::Start() {
 	
 	Init();
-
-	if (App->scene->currentLevel == LEVEL1)
-		AssignMapColliders("Level1.tmx"); //This should be called in scene!!!!
-
-	else if (App->scene->currentLevel == LEVEL2)
-		AssignMapColliders("Level2.tmx");
 
 	return true;
 }
@@ -167,6 +162,12 @@ void j1Collisions::DebugDraw() {
 		case COLLIDER_ENEMY:
 			App->render->DrawQuad(colliders[i]->rect, 200, 200, 200, 40);
 			break;
+		case COLLIDER_PLAYER_BULLET:
+			App->render->DrawQuad(colliders[i]->rect, 100, 50, 73, 100);
+			break;
+		case COLLIDER_ENEMY_BULLET:
+			App->render->DrawQuad(colliders[i]->rect, 50, 200, 73, 80);
+			break;
 		default:
 			break;
 
@@ -247,24 +248,13 @@ void j1Collisions::AssignMapColliders(const char* file_name) {
 
 		for (collider = type.child("object"); collider&&result; collider= collider.next_sibling("object")) {
 			
-			if (strcmp(collidertype, "Colliders") == 0) {
+			if (strcmp(collidertype, "Colliders") == 0) 
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_STATIC);
-			}
-			if (strcmp(collidertype, "Death_Colliders") == 0) {
+			
+
+			if (strcmp(collidertype, "Death_Colliders") == 0) 
 				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_FALL);
-			}
-			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLINKING);
-			}
-			if (strcmp(collidertype, "Push_Triggers") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSH);
-			}
-			if (strcmp(collidertype, "PushOff_Triggers") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSHOFF);
-			}
-			if (strcmp(collidertype, "Win_Trigger") == 0) {
-				AddCollider({ collider.attribute("x").as_int(),collider.attribute("y").as_int(),collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_WIN);
-			}
+			
 		}
 	}
 }

@@ -22,7 +22,9 @@ enum COLLIDER_TYPE {
 	TRIGGER_PUSH,
 	TRIGGER_PUSHOFF,
 	COLLIDER_ENEMY,
-	COLLIDER_MAX=10
+	COLLIDER_ENEMY_BULLET,
+	COLLIDER_PLAYER_BULLET,
+	COLLIDER_MAX=12
 };
 
 struct Collider {
@@ -42,6 +44,7 @@ struct Collider {
 	void SetPos(int x, int y) { rect.x = x; rect.y = y; }
 	bool CheckCollision(const SDL_Rect &r) const;
 	void ChangeCollider(COLLIDER_TYPE type_) { type = type_; }
+
 
 };
 

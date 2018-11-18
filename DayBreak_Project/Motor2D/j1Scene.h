@@ -53,6 +53,9 @@ public:
 	//Used to change the actual level
 	void ChangeLevel(int level_change);
 
+	//Load Map Objects
+	bool LoadObjects(const char*file_name);
+
 public:
 
 	bool Level1 = false;

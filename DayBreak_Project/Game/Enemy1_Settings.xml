@@ -10,9 +10,10 @@
       <Level1 position.x="580" position.y="1400" />
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
+    
     <Collider  w="60" h="90"/>
-
-    <Velocity velocity.x="5.5" velocity.y="8"/>
+    <Velocity initial_velocity.x="5.5" initial_velocity.y="8" velocity.x="3" velocity.y="3" patrol_x="2" patrol_y="0"/>
+    <Detection_Range det_x="600" det_y="100" det_shooting_x ="300" det_shooting_y="0"/>
     
   </EnemySettings>
 
@@ -42,14 +43,14 @@
       <Pushback x="549" y="561" w="183" h="183"/>
       <Pushback x="732" y="561" w="183" h="183"/>
     </Jump>
-    <Shoot loop="true" speed="0.15"> 
+    <Shoot loop="false" speed="0.15"> 
       <Pushback x="366" y="374" w="183" h="183"/>
       <Pushback x="549" y="374" w="183" h="183"/>
       <Pushback x="732" y="374" w="183" h="183"/>
       <Pushback x="0" y="561" w="183" h="183"/>
    
     </Shoot>
-    <Dead loop="false speed="0.15">
+    <Dead loop="false" speed="0.15">
       <Pushback x="0" y="748" w="197" h="187"/>
       <Pushback x="197" y="748" w="197" h="187"/>
       <Pushback x="394" y="748" w="197" h="187"/>

@@ -134,14 +134,14 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 }
 
 // Load WAV
-unsigned int j1Audio::LoadFx(const char* path)
+unsigned int j1Audio::LoadFx(const char* path, Mix_Chunk *chunk)
 {
 	unsigned int ret = 0;
 
 	if(!active)
 		return 0;
 
-	Mix_Chunk* chunk = Mix_LoadWAV(path);
+	chunk = Mix_LoadWAV(path);
 
 	if(chunk == NULL)
 	{

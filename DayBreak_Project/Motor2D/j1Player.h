@@ -8,6 +8,7 @@
 #include "j1App.h"
 #include "Animation.h"
 #include "p2DynArray.h"
+#include "j1Audio.h"
 
 
 enum direction {
@@ -99,6 +100,11 @@ public:
 	bool God = false;
 
 	j1Timer desac;
+
+private:
+
+	Mix_Chunk *shoot_pl;
+
 
 public:
 

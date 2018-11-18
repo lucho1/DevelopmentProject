@@ -4,6 +4,7 @@
 #include "j1Enemy.h"
 #include "Animation.h"
 #include "j1Pathfinding.h"
+#include "j1Audio.h"
 
 
 class j1EnemyWalker : public j1Enemy
@@ -50,6 +51,7 @@ private:
 	Animation Run;
 	Animation Shoot_animation;
 	Animation Dead;
+	Mix_Chunk *shoot;
 };
 
 #endif

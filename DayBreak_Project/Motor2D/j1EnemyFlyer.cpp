@@ -31,6 +31,7 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Detect_Exploding_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_exp_x").as_int();
 	Detect_Exploding_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_exp_y").as_int();
   
+	explosion = Mix_LoadWAV("audio/fx/Explosion.wav");
 	Start_exploding = false;
 	life = 20;
 
@@ -163,6 +164,9 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 			current_animation = &Dead;
 		}
 		if (Explosion_Time.ReadSec() > 1) {
+
+			//Mix_PlayChannel(-1, explosion, 0);
+
 			App->render->DoCameraShake = true;
 			App->render->power = 7.0f;
 			App->render->Time_Doing_Shake = 1.0f;
@@ -203,7 +207,7 @@ bool  j1EnemyFlyer::Exploding_Area() {
 		return true;
 	}
   
-  Start_exploding = true;
+	Start_exploding = true;
 	return false;
 	
 }

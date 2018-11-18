@@ -70,7 +70,7 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 	for (; item != nullptr; item = item->next) {
 
-		if (item->data->type==ENTITY_TYPE::ENEMY_ENT && c2->type == COLLIDER_PLAYER_BULLET) {
+		if (c1->type == COLLIDER_ENEMY && c2->type == COLLIDER_PLAYER_BULLET) {
 			if (Last_collided == c2) {
 				return;
 			}

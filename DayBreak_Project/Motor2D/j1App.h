@@ -61,6 +61,7 @@ public:
 	bool cap = true;
 	bool using_VSYNC = false;
 	uint32 frame_cap;
+	uint32				capped_ms;
 
 private:
 
@@ -128,7 +129,7 @@ private:
 	uint32				last_sec_frame_count = 0;
 	uint32				prev_last_sec_frame_count = 0;
 
-	uint32				capped_ms;
+	
 	float				dt;
 };
 

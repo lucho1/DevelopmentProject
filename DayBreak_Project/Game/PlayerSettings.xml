@@ -1,5 +1,4 @@
 <!-- Config file for Player-->
-
 <config>
 
     <image source="Character_tileset.png" width="1024" height="1024" w="102" h="102" />
@@ -12,7 +11,7 @@
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
     <Life life="40"/>
-    <Velocity velocity.x="5.5" velocity.y="8"/>
+    <Velocity velocity.x="6" velocity.y="7"/>
     <MaxVelocity velocity.x="7" velocity.y="8"/>
     <Acceleration a.x="0.0" a.y="0.2"/>
     

@@ -174,8 +174,17 @@ bool j1Scene::Update(float dt)
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level)
 		Change_Level = true;
 	
-	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN) {
+
 		App->cap = !App->cap;
+
+		if(App->cap)
+			App->frame_cap = 30;
+		else 
+			App->frame_cap = 60;
+		
+		App->capped_ms = 1000 / App->frame_cap;
+	}
 
 	App->map->Draw(current_map);
 	if (Player != nullptr) {

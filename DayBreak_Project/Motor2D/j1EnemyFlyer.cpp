@@ -102,7 +102,7 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 
 	Current_Direction = App->pathfinding->current_Direction(path);
 
-	if (App->cap)
+	//if (App->cap)
 		dt = App->frame_cap;
 
 	enemy_velocity *= (dt / App->frame_cap);

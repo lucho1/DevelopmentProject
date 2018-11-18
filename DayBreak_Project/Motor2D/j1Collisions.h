@@ -78,7 +78,7 @@ public:
 	Collider* AddColliderEntity(SDL_Rect r, COLLIDER_TYPE type, j1Entity*callback = nullptr);
 	void AssignMapColliders(const char* file_name);
 
-	bool debug = true;
+	bool debug = false;
 
 private:
 

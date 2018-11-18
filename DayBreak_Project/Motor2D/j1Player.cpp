@@ -244,7 +244,7 @@ void j1Player::Draw(float dt) {
 
 void j1Player::HandleInput(float dt) {
 
-	if (App->cap)
+	//if (App->cap)
 		dt = App->frame_cap;
 		
 	player_velocity *= (dt / App->frame_cap);

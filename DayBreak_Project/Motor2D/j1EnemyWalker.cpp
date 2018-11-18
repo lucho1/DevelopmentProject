@@ -116,7 +116,7 @@ void j1EnemyWalker::Patrol(float dt) {
 
 	current_animation = &Run;
 
-	if (App->cap)
+	//if (App->cap)
 		dt = App->frame_cap;
 
 	Patrol_velocity *= (dt / App->frame_cap);
@@ -214,7 +214,7 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 	//else if (falling == false)
 	//	enemy_velocity.y = 0;
 
-	if (App->cap)
+	//if(App->cap)
 		dt = App->frame_cap;
 
 	enemy_velocity *= (dt / App->frame_cap);

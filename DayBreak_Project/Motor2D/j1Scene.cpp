@@ -147,12 +147,16 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
+	BROFILER_CATEGORY("Scene PreUpdate", Profiler::Color::GreenYellow);
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+
+	BROFILER_CATEGORY("Scene Update", Profiler::Color::PaleVioletRed);
+
 	if (Change_Level) {
 
 		App->fade->Fade(2.0f);
@@ -182,7 +186,7 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN&&!changing_same_Level) {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && !changing_same_Level) {
 
 		//App->fade->Fade(2.0f);
 		App->map->TriggerActive = false;
@@ -190,15 +194,18 @@ bool j1Scene::Update(float dt)
 		//ChangeLevel(currentLevel);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN&&!Change_Level) {
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && !Change_Level) {
 
 		Change_Level = true;
 		App->map->TriggerActive = false;
 	}
 
-	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN&&!Change_Level)
+	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level)
 		Change_Level = true;
 	
+	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+		App->cap = !App->cap;
+
 	App->map->Draw(current_map);
 
 	//int x, y;
@@ -234,6 +241,8 @@ bool j1Scene::Update(float dt)
 // Called each loop iteration
 bool j1Scene::PostUpdate()
 {
+
+	BROFILER_CATEGORY("Scene PostUpdate", Profiler::Color::YellowGreen);
 	bool ret = true;
 
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)

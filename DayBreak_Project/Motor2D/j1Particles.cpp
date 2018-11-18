@@ -6,18 +6,14 @@
 #include "j1Player.h"
 #include "j1Scene.h"
 
-
 #include "SDL/include/SDL_timer.h"
+#include "Brofiler/Brofiler.h"
 
 
 j1Particles::j1Particles() {
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) 
 		active[i] = nullptr;
-
-
-
-
 }
 
 j1Particles::~j1Particles() {}
@@ -72,6 +68,8 @@ bool j1Particles::CleanUp() {
 }
 
 bool j1Particles::Update(float ds) {
+
+	BROFILER_CATEGORY("Particles Update", Profiler::Color::PaleVioletRed);
 
 	bool ret = true;
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) {

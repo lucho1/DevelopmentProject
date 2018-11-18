@@ -4,6 +4,7 @@
 #include "j1Scene.h"
 #include "j1Collisions.h"
 
+#include "Brofiler/Brofiler.h"
 
 j1EntityManager::j1EntityManager()
 {
@@ -16,7 +17,7 @@ j1EntityManager::~j1EntityManager() {}
 bool j1EntityManager::Awake() {
 
 	LOG("AWAKING ENTITY MANAGER");
-	times_per_sec = TIMES_PER_SEC; //Read this with an XML
+	times_per_sec = TIMES_PER_SEC;
 	update_ms_cycle = 1.0f / (float)times_per_sec;
 
 	return true;
@@ -38,11 +39,14 @@ bool j1EntityManager::Start() {
 
 bool j1EntityManager::PreUpdate() {
 
+	BROFILER_CATEGORY("Entities PreUpdate", Profiler::Color::GreenYellow);
 	do_logic = false;
 	return true;
 }
 
 bool j1EntityManager::Update(float dt) {
+
+	BROFILER_CATEGORY("Entities Update", Profiler::Color::OrangeRed);
 
 	/*accumulated_time += dt;
 

@@ -58,6 +58,8 @@ public:
 	void SaveGame(const char* file) const;
 	void GetSaveGames(p2List<p2SString>& list_to_fill) const;
 
+	bool cap = true;
+
 private:
 
 	// Load config file
@@ -81,6 +83,7 @@ private:
 	// Load / Save
 	bool LoadGameNow();
 	bool SavegameNow() const;
+
 
 public:
 

@@ -141,6 +141,7 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
+
 	bool ret = true;
 	PrepareUpdate();
 
@@ -188,7 +189,7 @@ void j1App::PrepareUpdate()
 void j1App::FinishUpdate()
 {
 
-	BROFILER_CATEGORY("FINISH_Updates", Profiler::Color::Green);
+	BROFILER_CATEGORY("FINISH_Updates", Profiler::Color::AliceBlue);
 	if(want_to_save == true)
 		SavegameNow();
 
@@ -210,12 +211,18 @@ void j1App::FinishUpdate()
 	uint32 frames_on_last_update = prev_last_sec_frame_count;
 
 	static char title[256];
-	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
-		avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
 
-//	App->win->SetTitle(title);
+	if (cap)
+		sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu Framerate Cap: ON",
+			avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
+	else
+		sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu Framerate Cap: OFF",
+			avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
 
-	if (last_frame_ms < capped_ms)
+
+	App->win->SetTitle(title);
+
+	if (cap && last_frame_ms < capped_ms)
 		SDL_Delay(capped_ms - last_frame_ms);
 
 }

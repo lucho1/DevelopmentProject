@@ -8,6 +8,8 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 
+#include "Brofiler/Brofiler.h"
+
 j1Render::j1Render() : j1Module()
 {
 	name.create("renderer");
@@ -68,6 +70,7 @@ bool j1Render::Start()
 // Called each loop iteration
 bool j1Render::PreUpdate()
 {
+	BROFILER_CATEGORY("Render PreUpdate", Profiler::Color::ForestGreen);
 	SDL_RenderClear(renderer);
 	return true;
 }
@@ -79,6 +82,8 @@ bool j1Render::Update(float dt)
 
 bool j1Render::PostUpdate()
 {
+
+	BROFILER_CATEGORY("Render PostUpdate", Profiler::Color::LightGoldenRodYellow);
 
 	if (App->scene->currentLevel != MAIN_MENU) {
 

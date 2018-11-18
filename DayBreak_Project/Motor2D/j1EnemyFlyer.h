@@ -32,6 +32,7 @@ public:
 	SDL_Rect pathrect;
 	void Move(p2DynArray<iPoint>&path);
 
+	iPoint Detect_Exploding_Range;
 	j1Timer Explosion_Time;
 
 

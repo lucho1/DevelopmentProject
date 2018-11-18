@@ -39,6 +39,10 @@ public:
 	p2DynArray<iPoint> last_enemy_path;
 
 	//Direction current_Direction;
+	iPoint Detect_Shoot_Range;
+
+	iPoint Patrol_velocity;
+	int Patrol_Range[2];
 
 private:
 

@@ -9,6 +9,8 @@
 #include "j1Collisions.h"
 #include "j1Scene.h"
 
+#include "Brofiler/Brofiler.h"
+
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
 	name.create("map");
@@ -40,6 +42,8 @@ bool j1Map::Start() {
 
 void j1Map::Draw(MapData &data)
 {
+
+	BROFILER_CATEGORY("SPC: Map Draw", Profiler::Color::DarkOliveGreen);
 
 	if (map_loaded == false)
 		return;

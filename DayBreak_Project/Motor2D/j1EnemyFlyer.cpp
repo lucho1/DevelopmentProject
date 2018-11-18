@@ -8,6 +8,7 @@
 #include "j1Particles.h"
 #include "j1EntityManager.h"
 
+#include "Brofiler/Brofiler.h"
 
 j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(enemy_position, ENEMY_TYPE::FLYER) {
 
@@ -38,6 +39,8 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 j1EnemyFlyer::~j1EnemyFlyer() {}
 
 void j1EnemyFlyer::Update(float dt) {
+
+	BROFILER_CATEGORY("EnemyFlyer Update", Profiler::Color::DarkOrange);
 
 	if (life > 0) {
 

@@ -56,15 +56,11 @@ public:
 	Direction Current_Direction;
 	Collider* Last_collided;
 	iPoint Detect_Range;
-	iPoint Detect_Shoot_Range;
-	iPoint Detect_Exploding_Range;
+	
 
 	iPoint enemy_position;
 	iPoint enemy_velocity;
 	iPoint initial_velocity;
-
-	iPoint Patrol_velocity;
-	int Patrol_Range[2];
 
 public:
 

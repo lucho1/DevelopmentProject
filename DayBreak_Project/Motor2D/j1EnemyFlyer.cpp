@@ -33,50 +33,50 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Start_exploding = false;
 	life = 20;
 
-
 }
 
 j1EnemyFlyer::~j1EnemyFlyer() {}
 
 void j1EnemyFlyer::Update(float dt) {
 
-	if(life>0){
+	if (life > 0) {
 
-	if (Detect_Area()) {
-		
-		iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 15), App->scene->current_pathfinding_map);
-		iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
+		if (Detect_Area()) {
 
-		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
+			iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 15), App->scene->current_pathfinding_map);
+			iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
 
-			enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
-			Move(*enemy_path);
-			last_enemy_path = enemy_path;
-		}
+			if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
 
-		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
-			enemy_path->Clear();
-
-		if (enemy_path != nullptr) {
-
-			for (uint i = 0; i < enemy_path->Count(); ++i) {
-
-				iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
-				pathrect.x = pos.x;
-				pathrect.y = pos.y;
-				pathrect.w = App->scene->current_map.width;
-				pathrect.h = App->scene->current_map.height;
-				App->render->DrawQuad(pathrect, 255, 0, 0, 50);
+				enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
+				Move(*enemy_path);
+				last_enemy_path = enemy_path;
 			}
+
+			if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
+				enemy_path->Clear();
+
+			if (enemy_path != nullptr) {
+
+				for (uint i = 0; i < enemy_path->Count(); ++i) {
+
+					iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
+					pathrect.x = pos.x;
+					pathrect.y = pos.y;
+					pathrect.w = App->scene->current_map.width;
+					pathrect.h = App->scene->current_map.height;
+					App->render->DrawQuad(pathrect, 255, 0, 0, 50);
+				}
+			}
+
+			entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
+			Draw();
+
 		}
 
-	entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
-	Draw();
-    
+		if (life <= 0)
+			App->entity_manager->DestroyEntity(this);
 	}
-    
-	if (life <= 0)
-		App->entity_manager->DestroyEntity(this);
 }
 
 bool j1EnemyFlyer::Detect_Area() {

@@ -188,20 +188,6 @@ void j1EnemyWalker::Patrol() {
 	}
 };
 
-
-bool j1EnemyWalker :: Shoot_Area() {
-	
-	bool ret = false;
-
-	if (App->scene->Player->player_position.x >= enemy_position.x - Detect_Shoot_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Shoot_Range.x) {
-		
-    ret = true;
-	}
-  
-	return ret; 
-
-}
-
 void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 
 	//if (falling == true) {

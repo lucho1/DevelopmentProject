@@ -43,7 +43,7 @@ public:
 
 	virtual bool Detect_Area() { return true; };
 
-	virtual void Patrol() {};
+	virtual void Patrol(float dt) {};
 
 	virtual void Shoot() {};
 

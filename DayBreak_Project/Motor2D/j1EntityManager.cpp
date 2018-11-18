@@ -48,18 +48,24 @@ bool j1EntityManager::Update(float dt) {
 
 	BROFILER_CATEGORY("Entities Update", Profiler::Color::OrangeRed);
 
-	/*accumulated_time += dt;
+	accumulated_time += dt;
 
 	if (accumulated_time >= update_ms_cycle)
 		do_logic = true;
 
-	if (do_logic == true) {*/
+	if (do_logic == true) {
+
 		p2List_item<j1Entity*>*item = entities_list.start;
-		for (; item != nullptr; item = item->next) 
-			item->data->Update(dt);
+		for (; item != nullptr; item = item->next)
+			item->data->FixUpdate(dt);
 	
-		accumulated_time = 0.0f;
-	//}
+	}
+
+	accumulated_time -= update_ms_cycle;
+
+	p2List_item<j1Entity*>*item = entities_list.start;
+	for (; item != nullptr; item = item->next)
+		item->data->Update(dt);
 	
 	return true;
 }

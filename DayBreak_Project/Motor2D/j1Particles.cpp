@@ -67,7 +67,7 @@ bool j1Particles::CleanUp() {
 	return true;
 }
 
-bool j1Particles::Update(float ds) {
+bool j1Particles::Update(float dt) {
 
 	BROFILER_CATEGORY("Particles Update", Profiler::Color::PaleVioletRed);
 
@@ -88,7 +88,7 @@ bool j1Particles::Update(float ds) {
 
 		else if (SDL_GetTicks() >= p->Born) {
 
-			App->render->Blit(p->Sprites, p->Position.x, p->Position.y, &(p->Anim.GetCurrentFrame()),1,0,0,0,p->Flip,p->scale);
+			App->render->Blit(p->Sprites, p->Position.x, p->Position.y, &(p->Anim.GetCurrentFrame(dt)),1,0,0,0,p->Flip,p->scale);
 
 			if (!p->fx_played)
 				p->fx_played = true;
@@ -99,7 +99,7 @@ bool j1Particles::Update(float ds) {
 	return ret;
 }
 
-void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed,float scale, SDL_RendererFlip Flip, Uint32 delay) {
+void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed,float scale, SDL_RendererFlip Flip, Uint32 delay, float dt) {
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) {
 		if (active[i] == nullptr) {
@@ -109,11 +109,12 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 			p->Position.x = x;
 			p->Position.y = y;
 			p->Sprites = particle.Sprites;
-			p->Speed = speed;
+			p->Speed.x = speed.x * dt;
+			p->Speed.y = speed.y * dt;
 			p->Flip = Flip;
 			p->scale = scale;
 			if (collider_type != COLLIDER_NONE && p->collider==nullptr) {
-					p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(), collider_type, this);
+					p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(dt), collider_type, this);
 			}
 			active[i] = p;
 			break;

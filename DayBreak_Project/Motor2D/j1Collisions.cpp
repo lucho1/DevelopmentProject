@@ -76,7 +76,6 @@ bool j1Collisions::PreUpdate() {
 		}
 	}
 
-
 	return ret;
 }
 

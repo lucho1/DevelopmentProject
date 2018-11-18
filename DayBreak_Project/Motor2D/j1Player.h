@@ -43,6 +43,8 @@ public:
 	// Called before quitting
 	void CleanUp() override;
 
+	void FixUpdate(float dt) override;
+
 public:
 
 	//Pushbacks loading
@@ -57,7 +59,8 @@ public:
 	//Load player stats
 	void LoadPlayer(const char *file_name);
 
-	void Draw();
+	void Draw(float dt);
+	void HandleInput(float dt);
 
 
 public:

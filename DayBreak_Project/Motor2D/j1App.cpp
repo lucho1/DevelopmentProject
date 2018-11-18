@@ -181,8 +181,9 @@ void j1App::PrepareUpdate()
 	frame_count++;
 	last_sec_frame_count++;
 
-	dt = (float)frame_time.ReadSec();
+	dt = (float)frame_time.ReadMs();
 	frame_time.Start();
+
 }
 
 // ---------------------------------------------
@@ -207,17 +208,17 @@ void j1App::FinishUpdate()
 	//TITLE STUFF
 	float avg_fps = float(frame_count) / startup_time.ReadSec();
 	float seconds_since_startup = startup_time.ReadSec();
-	uint32 last_frame_ms = frame_time.Read();
+	uint32 last_frame_ms = frame_time.ReadMs();
 	uint32 frames_on_last_update = prev_last_sec_frame_count;
 
 	static char title[256];
-
+	
 	if (cap)
-		sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu Framerate Cap: ON",
-			avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
+		sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i Av.FPS: %.2f Last Frame Ms: %02u || Framerate Cap: ON",
+			frames_on_last_update, avg_fps, last_frame_ms);
 	else
-		sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu Framerate Cap: OFF",
-			avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
+		sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i Av.FPS: %.2f Last Frame Ms: %02u || Framerate Cap: OFF",
+			frames_on_last_update, avg_fps, last_frame_ms);
 
 
 	App->win->SetTitle(title);

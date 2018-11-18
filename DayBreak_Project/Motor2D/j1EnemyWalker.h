@@ -14,9 +14,10 @@ public:
 	j1EnemyWalker(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument);
 	~j1EnemyWalker();
 
-	void Draw();
-	void Move(p2DynArray<iPoint>&path);
+	void Draw(float dt);
+	void Move(p2DynArray<iPoint>&path, float dt);
 	void Update(float dt) override;
+	void FixUpdate(float dt) override;
 
 public:
 
@@ -24,7 +25,7 @@ public:
 	bool Shoot_Area() override;
 	bool Able_to_Shoot;
 
-	void Patrol() override;
+	void Patrol(float dt) override;
 	void Shoot() override;
 
 	bool Limit_Right_Reached = false;

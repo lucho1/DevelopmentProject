@@ -26,6 +26,6 @@
     <folder>maps/</folder>
   </map>
 
-  <music level1_mus="audio\music\ingame_music.ogg" back_music ="audio\music\boss.ogg"/>
+  <music intro1="audio\music\Intro.ogg" intro2="audio\music\Intro2.ogg" level="audio\music\stage_music.ogg"/>
 
 </config>

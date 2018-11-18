@@ -74,7 +74,6 @@ void j1Player::Start() {
 void j1Player::Update(float dt) {
 
 	if (life > 0) {
-
 		if ((!jump || !fall) && state != pl_RUN) {
 
 			Gun_Run.Reset();
@@ -330,7 +329,6 @@ void j1Player::Update(float dt) {
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
 		if (Dead.Finished()) {
-
 		}
 	}
 	Draw();
@@ -353,7 +351,6 @@ void j1Player::Draw() {
 		App->render->Blit(Player_texture, player_position.x, player_position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4f);
 		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x - 30, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1, angle, 60, 0, SDL_FLIP_HORIZONTAL, 0.4f);
 	}
-
 
 }
 

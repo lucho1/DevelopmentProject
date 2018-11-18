@@ -161,6 +161,10 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 		}
 		if (Explosion_Time.ReadSec() > 1) {
 			life = 0;
+			if (App->scene->Player->player_position.x >= enemy_position.x - 100 && App->scene->Player->player_position.x <= enemy_position.x + 100
+				&& App->scene->Player->player_position.y >= enemy_position.y - 100 && App->scene->Player->player_position.y <= enemy_position.y + 100) {
+				App->scene->Player->life -= 20;
+			}
 			App->particles->AddParticle(App->particles->Plasma_Explosion,enemy_position.x-90,enemy_position.y-70,COLLIDER_NONE,iPoint(0,0),1.5f);
 			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 150, enemy_position.y - 160, COLLIDER_NONE, iPoint(0, 0), 1.9f, SDL_FLIP_NONE, 350.0f);
 			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 70, enemy_position.y - 200, COLLIDER_NONE, iPoint(0, 0), 1.9f,SDL_FLIP_NONE,200.0f);

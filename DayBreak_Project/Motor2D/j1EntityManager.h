@@ -8,7 +8,7 @@
 #include "PugiXml\src\pugixml.hpp"
 
 #define TIMES_PER_SEC 5
-#define PATHFINDING_PER_SEC 1
+#define PATHFINDING_PER_SEC 3
 
 class j1EntityManager : public j1Module
 {

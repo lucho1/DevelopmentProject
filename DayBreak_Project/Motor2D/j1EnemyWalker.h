@@ -33,11 +33,9 @@ public:
 
 public:
 
-	p2DynArray<iPoint> patho;
 	SDL_Rect pathrect;
 
 	p2DynArray<iPoint>* enemy_path = nullptr;
-	p2DynArray<iPoint> last_enemy_path;
 
 	//Direction current_Direction;
 	iPoint Detect_Shoot_Range;

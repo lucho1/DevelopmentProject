@@ -51,7 +51,6 @@ void j1EnemyFlyer::FixUpdate(float dt) {
 
 			enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
 			Move(*enemy_path, dt);
-			last_enemy_path = enemy_path;
 		}
 
 		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)

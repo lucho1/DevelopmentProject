@@ -20,13 +20,13 @@ public:
 	bool Exploding_Area();
 	bool Start_exploding = false;
 
+	void Move(p2DynArray<iPoint>&path, float dt);
+
 public:
 
 	p2DynArray<iPoint>* enemy_path;
-	p2DynArray<iPoint>* last_enemy_path;
 	
 	SDL_Rect pathrect;
-	void Move(p2DynArray<iPoint>&path, float dt);
 
 	iPoint Detect_Exploding_Range;
 	j1Timer Explosion_Time;

@@ -7,14 +7,11 @@
 	<map />
 	<pathfinding />
 	<scene />
-	<:anonymous />
-	<player>
-		<player x="6483" y="1285" />
-	</player>
 	<entities />
 	<:anonymous />
 	<:anonymous />
+	<:anonymous />
 	<renderer>
-		<camera x="-6091" y="-1072" />
+		<camera x="0" y="-1242" />
 	</renderer>
 </game_state>

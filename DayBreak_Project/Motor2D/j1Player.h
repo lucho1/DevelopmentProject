@@ -8,6 +8,7 @@
 #include "j1App.h"
 #include "Animation.h"
 #include "p2DynArray.h"
+#include "j1Audio.h"
 
 
 enum direction {
@@ -100,6 +101,11 @@ public:
 
 	j1Timer desac;
 
+private:
+
+	Mix_Chunk *shoot_pl;
+
+
 public:
 
 	//Animations Gun & Player
@@ -123,7 +129,7 @@ public:
 	SDL_Rect Gun_Rect;
 
 	//Player Collider
-	Collider *player_collider = nullptr;
+	//Collider *player_collider = nullptr;
 	Collider *Last_collided = nullptr;
 	
 

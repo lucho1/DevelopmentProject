@@ -70,7 +70,7 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 	for (; item != nullptr; item = item->next) {
 
-		if (item->data->type==ENTITY_TYPE::ENEMY_ENT && c2->type == COLLIDER_PLAYER_BULLET) {
+		if (c1->type == COLLIDER_ENEMY && c2->type == COLLIDER_PLAYER_BULLET) {
 			if (Last_collided == c2) {
 				return;
 			}
@@ -161,12 +161,23 @@ void j1Enemy::DestroyEnemy(j1Enemy *Enemy) {
 	while (item != nullptr) {
 
 		if (item->data == Enemy) {
-
 			App->entity_manager->entities_list.del(item);
-			RELEASE(item->data);
 			break;
 		}
 
 		item = item->next;
 	}
+}
+void j1Enemy::CleanUp() {
+
+	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
+
+	while (item != nullptr) {
+		if (item->data->type == ENTITY_TYPE::ENEMY_ENT){
+			App->entity_manager->entities_list.del(item);
+			break;
+		}
+		item = item->next;
+	}
+
 }

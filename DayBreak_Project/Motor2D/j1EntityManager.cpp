@@ -96,7 +96,9 @@ bool j1EntityManager::CleanUp() {
 	item = entities_list.start;
 
 	while (item != nullptr) {
-
+		if (item->data->entity_collider != nullptr) {
+			item->data->entity_collider->to_delete = true;
+		}
 		RELEASE(item->data);
 		item = item->next;
 	}
@@ -137,11 +139,40 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 	while (item != nullptr) {
 
 		if (item->data == Entity) {
-			Entity->entity_collider->to_delete = true;
+			if(Entity->entity_collider!=nullptr)
+				Entity->entity_collider->to_delete = true;
 			entities_list.del(item);
 			break;
 		}
 
 		item = item->next;
+	}
+}
+
+void j1EntityManager::DesrtroyEnemies() {
+
+	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
+
+	while (item != nullptr) {
+		if (item->data->type == ENTITY_TYPE::ENEMY_ENT) {
+			if (item->data->entity_collider != nullptr)
+				item->data->entity_collider->to_delete = true;
+			App->entity_manager->entities_list.del(item);
+		}
+		item = item->next;
+	}
+}
+
+void j1EntityManager::LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, const char* path, pugi::xml_document &EnemiesDocument) {
+
+	pugi::xml_node pos;
+
+	for (pos = Enemy.child("Position"); pos; pos = pos.next_sibling("Position")) {
+
+		int x = pos.attribute("x").as_int();
+		int y = pos.attribute("y").as_int();
+
+		j1Enemy* Enemy = nullptr;
+		Enemy->CreateEnemy(iPoint(x, y), type, path, EnemiesDocument);
 	}
 }

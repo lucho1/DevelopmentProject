@@ -30,6 +30,10 @@ public:
 
 	j1Entity *CreateEntity(ENTITY_TYPE eType);
 	void DestroyEntity(j1Entity *Entity);
+	void DesrtroyEnemies();
+
+	void LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, const char* path, pugi::xml_document &EnemiesDocument);
+
 
 public:
 

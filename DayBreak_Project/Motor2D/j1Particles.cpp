@@ -46,7 +46,7 @@ bool j1Particles::Start() {
 	Enemy_Shoot.Life = 600;
 	Player_Shoot.Life = 1200;
 	Player_Shoot.collider = App->collisions->AddCollider({0,0,80,10},COLLIDER_PLAYER_BULLET,this);
-	Enemy_Shoot.collider = App->collisions->AddCollider({ 0,0,50,10 }, COLLIDER_PLAYER_BULLET, this);
+	Enemy_Shoot.collider = App->collisions->AddCollider({ 0,0,50,10 }, COLLIDER_ENEMY_BULLET, this);
 	return true;
 
 }

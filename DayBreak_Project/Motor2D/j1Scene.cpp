@@ -180,6 +180,7 @@ bool j1Scene::Update(float dt)
 	App->map->Draw(current_map);
 	if (Player != nullptr) {
 		if (Player->life <= 0) {
+			if(Player->Dead.Finished())
 			ChangeLevel(LEVEL2+1);
 		}
 	}

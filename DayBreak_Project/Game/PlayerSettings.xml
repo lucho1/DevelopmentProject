@@ -11,7 +11,7 @@
       <Level1 position.x="580" position.y="1400" />
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
-    <Life life="40"/>
+    <Life life="70"/>
     <Velocity velocity.x="5.5" velocity.y="8"/>
     <MaxVelocity velocity.x="7" velocity.y="8"/>
     <Acceleration a.x="0.0" a.y="0.2"/>

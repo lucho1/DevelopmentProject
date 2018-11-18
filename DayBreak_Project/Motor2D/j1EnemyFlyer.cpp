@@ -24,7 +24,6 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Dead");
 	LoadPushbacks(Animation_node, Dead);
 
-	falling = true;
 	Current_Direction = LEFT;
 	current_animation = &Idle;
 

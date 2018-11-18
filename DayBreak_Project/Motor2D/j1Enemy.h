@@ -52,8 +52,8 @@ public:
 
 public:
 
-	bool falling = false;;
 	bool Path_Found = false;
+	bool onGround;
 
 	ENEMY_TYPE type;
 	Direction Current_Direction;

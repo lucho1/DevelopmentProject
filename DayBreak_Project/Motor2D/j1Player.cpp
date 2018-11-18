@@ -379,6 +379,12 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		if (Last_collided == c2) {
 			return;
 		}
+		if (App->render->DoCameraShake == false) {
+			App->render->DoCameraShake = true;
+			App->render->power = 3.0f;
+			App->render->Time_Doing_Shake = 0.3f;
+			PERF_START(App->render->CameraShake_Time);
+		}
 		life -= 5;
 		LOG("%d", life);
 		Last_collided = c2;

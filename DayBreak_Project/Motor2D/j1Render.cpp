@@ -15,6 +15,7 @@ j1Render::j1Render() : j1Module()
 	background.g = 0;
 	background.b = 0;
 	background.a = 0;
+	Time_Doing_Shake = 0;
 }
 
 // Destructor
@@ -77,10 +78,38 @@ bool j1Render::Update(float dt)
 	return true;
 }
 
+void j1Render::CameraShake(float power) {
+
+	int a = rand() % 4;
+	switch (a) {
+	case 0:
+		camera.x += 1 * power;
+		break;
+	case 1:
+		camera.x -= 1 * power;
+		break;
+	case 2:
+		camera.y += 1 * power;
+		break;
+	case 3:
+		camera.y -= 1 * power;
+	}
+
+}
+
+
 bool j1Render::PostUpdate()
 {
 
 	if (App->scene->currentLevel != MAIN_MENU) {
+		
+			if (DoCameraShake) {
+			if (CameraShake_Time.ReadSec()<Time_Doing_Shake)
+				CameraShake(power);
+			else {
+				DoCameraShake = false;
+			}
+		}
 
 		if (App->scene->Player->player_position.x <= -(camera.x - camera.w / 4) && camera.x < 0)
 			camera.x += App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;

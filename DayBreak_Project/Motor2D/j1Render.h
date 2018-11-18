@@ -4,7 +4,7 @@
 #include "SDL/include/SDL.h"
 #include "p2Point.h"
 #include "j1Module.h"
-
+#include "j1Timer.h"
 
 class j1Render : public j1Module
 {
@@ -51,6 +51,14 @@ public:
 		camera.x = 0;
 		camera.y = 0;
 	}
+	void CameraShake(float power);
+
+	bool DoCameraShake = false;
+
+	float power = 0;
+	float Time_Doing_Shake;
+	j1Timer CameraShake_Time;
+
 
 public:
 

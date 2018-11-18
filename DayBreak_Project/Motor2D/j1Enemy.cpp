@@ -10,42 +10,27 @@
 #include "j1Scene.h"
 #include "j1EntityManager.h"
 #include "j1EnemyWalker.h"
+#include "j1Particles.h"
 
 j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT), enemy_position(pos)
 {
-}
-
-j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
-
-	p2SString tmp("maps\\%s", path);
-
-	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
-	j1Enemy* Enemy = nullptr;
-	switch (enemyType) {
-
-	case ENEMY_TYPE::FLYER:
-		Enemy = new j1EnemyFlyer(pos, tmp.GetString(), EnemiesDocument);
-		break;
-	case ENEMY_TYPE::WALKER:
-		Enemy = new j1EnemyWalker(pos, tmp.GetString(), EnemiesDocument);
-		break;
-	default:
-		break;
-	}
-
-	App->entity_manager->entities_list.add(Enemy);
-	//debug_tex = App->tex->Load("maps/path2.png");
-	
-	return Enemy;
 }
 
 bool j1Enemy::LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument) {
 
 	EnemySettings = EnemiesDocument.child("config");
 
-	//Starting Position & Velocity
-	initial_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.x").as_int();
-	initial_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.y").as_int();
+	//Starting Position & Velocities
+	initial_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("initial_velocity.x").as_int();
+	initial_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute("initial_velocity.y").as_int();
+
+	enemy_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.x").as_int();
+	enemy_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute("velocity.y").as_int();
+
+	//Detection Range
+	Detect_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_x").as_int();
+	Detect_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_y").as_int();
+
 
 	enemy_rect.x = 0;
 	enemy_rect.y = 0;
@@ -82,7 +67,19 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 	p2List_item<j1Entity*>* item = App->entity_manager->entities_list.start;
 
+
 	for (; item != nullptr; item = item->next) {
+
+		if (item->data->type==ENTITY_TYPE::ENEMY_ENT && c2->type == COLLIDER_PLAYER_BULLET) {
+			if (Last_collided == c2) {
+				return;
+			}
+			life -= 5;
+			Last_collided = c2;
+				App->particles->AddParticle(App->particles->Blood, enemy_position.x, enemy_position.y, COLLIDER_NONE, iPoint(0, 0), 1.5f, SDL_FLIP_NONE);
+			
+		}
+
 
 		if (item->data->type == ENTITY_TYPE::ENEMY_ENT && c1 == item->data->entity_collider) {
 
@@ -91,13 +88,13 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 				//Calculating an error margin of collision to avoid problems with colliders corners
 				int error_margin = 0;
 
-				if (Direction == EN_RIGHT)
+				if (Current_Direction == RIGHT)
 					error_margin = (c1->rect.x + c1->rect.w) - c2->rect.x;
-				else if (Direction == EN_LEFT)
+				else if (Current_Direction == LEFT)
 					error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
 
 				//If the enemy falls less than a pixel over a collider, it falls (and it looks ok)
-				if (error_margin > 1) {
+				if (error_margin > 2) {
 
 					//Checking Y Axis Collisions
 					if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - enemy_velocity.y) {
@@ -117,17 +114,44 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 					enemy_velocity.x = 0;
 					enemy_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 4;
+					CollidingX = true;
+					Y_Collider_Pos = c2->rect.y;
 
 				}
 				else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - enemy_velocity.x) { //Colliding Right (going left)
 
 					enemy_velocity.x = 0;
 					enemy_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 4;
+					CollidingX = true;
+					Y_Collider_Pos = c2->rect.y;
 
 				}
 			}
 		}
 	}
+}
+
+j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument) {
+
+	p2SString tmp("maps\\%s", path);
+
+	static_assert(ENEMY_TYPE::UNKNOWN == ENEMY_TYPE(2), "UPDATE ENEMY TYPES");
+	j1Enemy* Enemy = nullptr;
+	switch (enemyType) {
+
+	case ENEMY_TYPE::FLYER:
+		Enemy = new j1EnemyFlyer(pos, tmp.GetString(), EnemiesDocument);
+		break;
+	case ENEMY_TYPE::WALKER:
+		Enemy = new j1EnemyWalker(pos, tmp.GetString(), EnemiesDocument);
+		break;
+	default:
+		break;
+	}
+
+	App->entity_manager->entities_list.add(Enemy);
+
+	return Enemy;
 }
 
 void j1Enemy::DestroyEnemy(j1Enemy *Enemy) {

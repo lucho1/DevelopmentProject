@@ -13,6 +13,16 @@ public:
 	~j1EnemyFlyer();
 
 	void Update(float dt) override;
+	void Draw();
+	void reset_Velocity() {
+		enemy_velocity=iPoint(3, 3);
+	}
+
+	bool Detect_Area() override;
+	bool Exploding_Area();
+	bool Start_exploding = false;
+
+	//void Patrol() override;
 
 public:
 
@@ -20,13 +30,16 @@ public:
 	p2DynArray<iPoint>* last_enemy_path;
 	
 	SDL_Rect pathrect;
-	j1PerfTimer pathfinding_recalc;
+	void Move(p2DynArray<iPoint>&path);
+
+	j1Timer Explosion_Time;
+
 
 private:
 
 	Animation* current_animation = nullptr;
 	Animation Idle;
-	Animation Run;
+	Animation Exploding;
 	Animation Dead;
 
 };

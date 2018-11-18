@@ -129,7 +129,7 @@ public:
 	SDL_Rect Gun_Rect;
 
 	//Player Collider
-	Collider *player_collider = nullptr;
+	//Collider *player_collider = nullptr;
 	Collider *Last_collided = nullptr;
 	
 

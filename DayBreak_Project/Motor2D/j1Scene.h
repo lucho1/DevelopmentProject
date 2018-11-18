@@ -85,7 +85,7 @@ private:
 	MapData Level2_map;
 
 	MapData Level1_pathfinding_map;
-	//MapData Level2_pathfinding_map;
+	MapData Level2_pathfinding_map;
 
 	bool pathfinding = false;
 

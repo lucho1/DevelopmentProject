@@ -87,7 +87,7 @@ void j1EnemyFlyer::Update(float dt) {
 }
 
 bool j1EnemyFlyer::Detect_Area() {
-
+	
 	if ((App->scene->Player->player_position.x >= enemy_position.x - Detect_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Range.x)
 		&& (App->scene->Player->player_position.y >= enemy_position.y - Detect_Range.y && App->scene->Player->player_position.y <= enemy_position.y + Detect_Range.y)) {
 		

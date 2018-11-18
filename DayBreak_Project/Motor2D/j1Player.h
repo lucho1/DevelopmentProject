@@ -57,6 +57,8 @@ public:
 	//Load player stats
 	void LoadPlayer(const char *file_name);
 
+	void Draw();
+
 
 public:
 
@@ -107,6 +109,8 @@ public:
 	Animation		Gun_Idle;
 	Animation		Gun_Run;
 	Animation		Gun_Shot;
+	Animation		Gun_None;
+	Animation		Dead;
 
 	//Textures/Rects Gun & Player
 	SDL_Texture*	Player_texture = nullptr;
@@ -117,6 +121,7 @@ public:
 
 	//Player Collider
 	Collider *player_collider = nullptr;
+	Collider *Last_collided = nullptr;
 	
 
 private :

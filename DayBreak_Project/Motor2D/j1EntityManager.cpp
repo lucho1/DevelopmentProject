@@ -107,8 +107,7 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 	while (item != nullptr) {
 
 		if (item->data == Entity) {
-			if(Entity->entity_collider!=nullptr)
- 				delete Entity->entity_collider;
+			Entity->entity_collider->to_delete = true;
 			entities_list.del(item);
 			break;
 		}

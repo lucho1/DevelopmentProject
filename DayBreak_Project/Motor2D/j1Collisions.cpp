@@ -171,6 +171,9 @@ void j1Collisions::DebugDraw() {
 		case COLLIDER_PLAYER_BULLET:
 			App->render->DrawQuad(colliders[i]->rect, 100, 50, 73, 100);
 			break;
+		case COLLIDER_ENEMY_BULLET:
+			App->render->DrawQuad(colliders[i]->rect, 50, 200, 73, 80);
+			break;
 		default:
 			break;
 

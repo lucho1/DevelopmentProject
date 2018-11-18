@@ -81,12 +81,13 @@ void j1EnemyFlyer::Update(float dt) {
 			}
 		}
 	  }
+	entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
+	Draw();
 	}
 	if (life <= 0) {
 		App->entity_manager->DestroyEntity(this);
 	}
-	entity_collider->SetPos(enemy_position.x+40, enemy_position.y);
-	Draw();
+	
 
 }
 

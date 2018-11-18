@@ -84,7 +84,6 @@ void j1EnemyWalker::Update(float dt) {
 		if(Dead.Finished())
 			App->entity_manager->DestroyEntity(this);
 	}
-	LOG("%d", life);
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 
 	Draw();

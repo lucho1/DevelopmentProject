@@ -41,7 +41,7 @@ avoid confusing code and build an easier work flow.
 
 ![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UML.png)
 
-### Innovation
+### Innovations
 * Platforms that must be activated or deactivated to pass the level
 * Textures Flipping
 * Player characteristics loaded from XML file.
@@ -50,9 +50,6 @@ avoid confusing code and build an easier work flow.
 * Music made by us from other base music
 
 ## Gameplay & Instructions
-
-_[TO EMBEDD A VIDEO]_
-<iframe width="1280" height="720" src="https://www.youtube.com/embed/isoApESpyFE" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
 You must pass through each level and get to the door that will take you out!
 

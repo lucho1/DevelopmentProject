@@ -13,6 +13,9 @@
 #include "j1Player.h"
 #include "j1EntityManager.h"
 
+#include "SDL_mixer\include\SDL_mixer.h"
+#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
+
 #include "Brofiler/Brofiler.h"
 
 j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_position(pos) {
@@ -43,6 +46,8 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 	LoadPushbacks(Animation_node, Gun_Shot);
 
 	PlayerSettings = PlayerDocument.child("config");
+
+	shoot_pl = Mix_LoadWAV("audio/fx/Shoot.wav");
 
 	life = 40;
 	
@@ -211,19 +216,20 @@ void j1Player::FixUpdate(float dt) {
 			LOG("GOD MODE ACTIVE");
 			jump = true;
 			fall = false;
+			life += 20;
 
 		}
-		else
-			fall = true;
+		else {
 
+			fall = true;
+			life = 40;
+		}
 	}
 
 	else if (life <= 0) {
 
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
-		/*if (Dead.Finished()) {
-		}*/
 	}
 
 }
@@ -389,6 +395,7 @@ void j1Player::HandleInput(float dt) {
 			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
 		}
 
+		Mix_PlayChannel(-1, shoot_pl, 0);
 		Shooting = true;
 	}
 }
@@ -494,6 +501,9 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	//Check if touched button or end level door
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
 		App->map->TriggerActive = true;
+
+		
+	
 
 	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;

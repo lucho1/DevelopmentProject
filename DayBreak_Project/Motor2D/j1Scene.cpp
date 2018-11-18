@@ -45,13 +45,11 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 
-	
-
-	pugi::xml_parse_result result = SceneDocument.load_file("config.xml");
+	pugi::xml_parse_result load_scenedoc_res = SceneDocument.load_file("config.xml");
 	music_node = SceneDocument.child("config").child("music");
 
-	if (result == NULL)
-		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
+	if (load_scenedoc_res == NULL)
+		LOG("The xml file containing the music fails. Pugi error: %s", load_scenedoc_res.description());
 	
 	App->map->Load("Level1.tmx", Level1_map);
 	App->map->Load("Level2.tmx", Level2_map);
@@ -90,6 +88,26 @@ bool j1Scene::Start()
 			App->collisions->Start();
 
 		App->audio->PlayMusic(music_node.attribute("level").as_string());
+
+		//LOAD SCENE ENEMIES
+		//Load Enemy Flyers
+		pugi::xml_parse_result Enemies_doc_res = EnemiesDocument.load_file("Enemy2_Settings.xml");
+		if (Enemies_doc_res == NULL)
+			LOG("The xml file containing the player tileset fails. Pugi error: %s", Enemies_doc_res.description());
+
+		pugi::xml_parse_result enemies_pos_result = EnemiesPositions.load_file("Enemy_Positions.xml");
+		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy2");
+
+		App->entity_manager->LoadSceneEnemeies(en_pos, FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+
+		//Load enemy Walkers
+		pugi::xml_parse_result Enemies_doc_res2 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+		if (Enemies_doc_res2 == NULL)
+			LOG("The xml file containing the player tileset fails. Pugi error: %s", Enemies_doc_res2.description());
+
+		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy1");
+
+		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 	}
 
 	else if (Level2 == true) {
@@ -115,9 +133,29 @@ bool j1Scene::Start()
 			App->collisions->Start();
 
 		App->audio->PlayMusic(music_node.attribute("level").as_string());
+
+		//LOAD SCENE ENEMIES
+		//Load Enemy Flyers
+		pugi::xml_parse_result Enemies_doc_res = EnemiesDocument.load_file("Enemy2_Settings.xml");
+		if (Enemies_doc_res == NULL)
+			LOG("The xml file containing the player tileset fails. Pugi error: %s", Enemies_doc_res.description());
+
+		pugi::xml_parse_result enemies_pos_result = EnemiesPositions.load_file("Enemy_Positions.xml");
+		en_pos = EnemiesPositions.child("config").child("Level2").child("Enemy2");
+
+		App->entity_manager->LoadSceneEnemeies(en_pos, FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+
+		//Load enemy Walkers
+		pugi::xml_parse_result Enemies_doc_res2 = EnemiesDocument.load_file("Enemy1_Settings.xml");
+		if (Enemies_doc_res2 == NULL)
+			LOG("The xml file containing the player tileset fails. Pugi error: %s", Enemies_doc_res2.description());
+
+		en_pos = EnemiesPositions.child("config").child("Level2").child("Enemy1");
+
+		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 	}
 
-	App->audio->ControlVolume(20);
+	App->audio->ControlVolume(10);
 	App->render->ResetCamera();
 
 	if (pathfinding) {
@@ -128,22 +166,6 @@ bool j1Scene::Start()
 
 		RELEASE_ARRAY(data);
 	}
-	
-	pugi::xml_parse_result result3 = EnemiesDocument.load_file("Enemy2_Settings.xml");
-
-	if (result3 == NULL)
-		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
-
-
-	Enemy1 = Enemy1->CreateEnemy(iPoint(1000, 1270), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
-	Enemy2 = Enemy2->CreateEnemy(iPoint(300, 1430), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
-
-	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
-	if (result4 == NULL)
-		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
-
-	Enemy3 = Enemy3->CreateEnemy(iPoint(300, 1270), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
-
 
 	return true;
 }

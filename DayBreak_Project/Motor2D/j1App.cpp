@@ -212,13 +212,24 @@ void j1App::FinishUpdate()
 	uint32 frames_on_last_update = prev_last_sec_frame_count;
 
 	static char title[256];
-	
-	if (cap)
-		sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i Av.FPS: %.2f Last Frame Ms: %02u || Framerate Cap: ON",
-			frames_on_last_update, avg_fps, last_frame_ms);
+
+	char *vsync_;
+	char *cap_string;
+
+	if (using_VSYNC)
+		vsync_ = "ON";
 	else
-		sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i Av.FPS: %.2f Last Frame Ms: %02u || Framerate Cap: OFF",
-			frames_on_last_update, avg_fps, last_frame_ms);
+		vsync_ = "OFF";
+
+	if (cap)
+		cap_string = "ON";
+	else
+		cap_string = "OFF";
+	
+
+	sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i   Av.FPS: %.2f   Last Frame Ms: %02u || VSYNC: %s   Framerate Cap: %s ",
+		frames_on_last_update, avg_fps, last_frame_ms, vsync_, cap_string);
+
 
 
 	App->win->SetTitle(title);

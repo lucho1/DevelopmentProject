@@ -145,3 +145,19 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 		item = item->next;
 	}
 }
+
+
+void j1EntityManager::LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, const char* path, pugi::xml_document &EnemiesDocument) {
+
+	//for (type = App->map->map_file.child("map").child("objectgroup"); type && result; type = type.next_sibling("objectgroup"))
+	pugi::xml_node pos;
+
+	for (pos = Enemy.child("Position"); pos; pos = pos.next_sibling("Position")) {
+
+		int x = pos.attribute("x").as_int();
+		int y = pos.attribute("y").as_int();
+
+		j1Enemy* Enemy = nullptr;
+		Enemy->CreateEnemy(iPoint(x, y), type, path, EnemiesDocument);
+	}
+}

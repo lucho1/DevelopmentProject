@@ -93,6 +93,10 @@ private:
 	pugi::xml_document	SceneDocument;
 	pugi::xml_node		music_node;
 
+	pugi::xml_document EnemiesPositions;
+	pugi::xml_node en_pos;
+	
+
 };
 
 #endif // __j1SCENE_H__

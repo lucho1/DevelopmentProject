@@ -69,8 +69,8 @@ public:
 
 	virtual void OnCollision(Collider* c1, Collider* c2) {}
 
-	virtual void Move() {}
-	virtual void Draw() {}
+	virtual void Move(float dt) {}
+	virtual void Draw(float dt) {}
 
 public:
 

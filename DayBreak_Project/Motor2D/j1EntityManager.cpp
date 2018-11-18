@@ -4,6 +4,7 @@
 #include "j1Scene.h"
 #include "j1Collisions.h"
 
+#include "Brofiler/Brofiler.h"
 
 j1EntityManager::j1EntityManager()
 {
@@ -16,8 +17,11 @@ j1EntityManager::~j1EntityManager() {}
 bool j1EntityManager::Awake() {
 
 	LOG("AWAKING ENTITY MANAGER");
-	times_per_sec = TIMES_PER_SEC; //Read this with an XML
+	times_per_sec = TIMES_PER_SEC;
+	paths_per_sec = PATHFINDING_PER_SEC;
+
 	update_ms_cycle = 1.0f / (float)times_per_sec;
+	update_enemies = 1.0f / (float)paths_per_sec;
 
 	return true;
 }
@@ -38,24 +42,48 @@ bool j1EntityManager::Start() {
 
 bool j1EntityManager::PreUpdate() {
 
+	BROFILER_CATEGORY("Entities PreUpdate", Profiler::Color::GreenYellow);
 	do_logic = false;
 	return true;
 }
 
 bool j1EntityManager::Update(float dt) {
 
-	/*accumulated_time += dt;
+	BROFILER_CATEGORY("Entities Update", Profiler::Color::OrangeRed);
+
+	accumulated_time += dt;
+	accumulated_time_enemies += dt;
 
 	if (accumulated_time >= update_ms_cycle)
 		do_logic = true;
 
-	if (do_logic == true) {*/
+	if (accumulated_time_enemies >= update_enemies)
+		do_enemies_logic = true;
+
+	if (do_logic == true) {
+
 		p2List_item<j1Entity*>*item = entities_list.start;
-		for (; item != nullptr; item = item->next) 
-			item->data->Update(dt);
+		for (; item != nullptr; item = item->next)
+			if(item->data->type != ENTITY_TYPE::ENEMY_ENT)
+				item->data->FixUpdate(dt);
 	
-		accumulated_time = 0.0f;
-	//}
+	}
+
+	if (do_enemies_logic = true) {
+
+		p2List_item<j1Entity*>*item = entities_list.start;
+		for (; item != nullptr; item = item->next)
+			if (item->data->type == ENTITY_TYPE::ENEMY_ENT)
+				item->data->FixUpdate(dt);
+
+	}
+
+	accumulated_time -= update_ms_cycle;
+	accumulated_time_enemies -= update_enemies;
+
+	p2List_item<j1Entity*>*item = entities_list.start;
+	for (; item != nullptr; item = item->next)
+		item->data->Update(dt);
 	
 	return true;
 }

@@ -8,7 +8,6 @@
 #include "j1App.h"
 #include "j1Entity.h"
 
-
 #define MAX_COLLIDERS 700
 
 enum COLLIDER_TYPE {
@@ -79,10 +78,11 @@ public:
 	Collider* AddColliderEntity(SDL_Rect r, COLLIDER_TYPE type, j1Entity*callback = nullptr);
 	void AssignMapColliders(const char* file_name);
 
+	bool debug = true;
+
 private:
 
 	Collider* colliders[MAX_COLLIDERS];
-	bool debug = true;
 	bool matrix[COLLIDER_MAX][COLLIDER_MAX];
 
 	

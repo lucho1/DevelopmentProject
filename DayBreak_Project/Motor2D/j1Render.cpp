@@ -8,6 +8,8 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 
+#include "Brofiler/Brofiler.h"
+
 j1Render::j1Render() : j1Module()
 {
 	name.create("renderer");
@@ -31,11 +33,14 @@ bool j1Render::Awake(pugi::xml_node& config)
 	// load flags
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
-	if(config.child("vsync").attribute("value").as_bool(true) == true)
+	if (config.child("vsync").attribute("value").as_bool(true) == true)
 	{
 		flags |= SDL_RENDERER_PRESENTVSYNC;
+		App->using_VSYNC = true;
 		LOG("Using vsync");
 	}
+	else
+		App->using_VSYNC = false;
 
 	renderer = SDL_CreateRenderer(App->win->window, -1, flags);
 
@@ -69,6 +74,7 @@ bool j1Render::Start()
 // Called each loop iteration
 bool j1Render::PreUpdate()
 {
+	BROFILER_CATEGORY("Render PreUpdate", Profiler::Color::ForestGreen);
 	SDL_RenderClear(renderer);
 	return true;
 }
@@ -100,6 +106,8 @@ void j1Render::CameraShake(float power) {
 
 bool j1Render::PostUpdate()
 {
+
+	BROFILER_CATEGORY("Render PostUpdate", Profiler::Color::LightGoldenRodYellow);
 
 	if (App->scene->currentLevel != MAIN_MENU) {
 		

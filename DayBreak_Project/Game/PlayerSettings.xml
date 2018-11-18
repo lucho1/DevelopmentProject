@@ -42,14 +42,13 @@
     </Run>
 
     <Jump loop="false" speed="0.15">
-      <Pushback x="530" y="203" w="106" h="203"/>
       <Pushback x="636" y="203" w="106" h="203"/>
    
     </Jump>
    
-    <Fall loop="false" speed="0.15">
-      <Pushback x="636" y="203" w="106" h="203"/>
-      <Pushback x="473" y="203" w="106" h="203"/>
+    <Fall loop="true" speed="0.15">
+      <Pushback x="743" y="203" w="106" h="203"/>
+
     </Fall>
 	
     <Dead loop="false" speed="0.15">
@@ -61,6 +60,9 @@
     </Dead>
 
    <Gun>
+	<None loop="true" speed="0.17">
+	<Pushback x="0" y="0" w="1" h="1"/>
+	</None>
        <Idle loop="true" speed="0.17">
          <Pushback x="0" y="811" w="182" h="64"/>
          <Pushback x="0" y="875" w="182" h="64"/>

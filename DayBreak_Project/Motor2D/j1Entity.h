@@ -51,6 +51,8 @@ public:
 	// Called before quitting
 	virtual void CleanUp() {}
 
+	virtual void Destroy(){}
+
 public:
 
 	virtual bool Load(pugi::xml_node&)
@@ -72,6 +74,7 @@ public:
 
 public:
 
+	int life;
 	ENTITY_TYPE type;
 	Collider* entity_collider;
 

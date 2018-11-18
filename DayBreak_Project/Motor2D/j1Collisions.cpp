@@ -18,7 +18,7 @@ j1Collisions::j1Collisions()
 	//Set all matrix positions of "PLAYER" to true except PLAYER-NONE & PLAYER-PLAYER (which remain false)
 	for (int p = 0; p < COLLIDER_MAX - 1; p++) {
 
-		if (p != COLLIDER_NONE || p != COLLIDER_PLAYER)
+		if (p != COLLIDER_NONE || p != COLLIDER_PLAYER|| p!=COLLIDER_PLAYER_BULLET)
 			matrix[COLLIDER_PLAYER][p] = true;
 	}
 
@@ -32,6 +32,7 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_STATIC][COLLIDER_PLAYER] = true;
 
 	//Set enemy matrix
+	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER_BULLET] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_STATIC] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_FALL] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
@@ -160,6 +161,12 @@ void j1Collisions::DebugDraw() {
 			break;
 		case COLLIDER_ENEMY:
 			App->render->DrawQuad(colliders[i]->rect, 200, 200, 200, 40);
+			break;
+		case COLLIDER_PLAYER_BULLET:
+			App->render->DrawQuad(colliders[i]->rect, 100, 50, 73, 100);
+			break;
+		case COLLIDER_ENEMY_BULLET:
+			App->render->DrawQuad(colliders[i]->rect, 50, 200, 73, 80);
 			break;
 		default:
 			break;

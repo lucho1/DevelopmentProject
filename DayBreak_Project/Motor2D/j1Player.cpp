@@ -194,13 +194,11 @@ void j1Player::FixUpdate(float dt) {
 			LOG("GOD MODE ACTIVE");
 			jump = true;
 			fall = false;
-			life += 20;
+			//life += 20;
 
 		}
 		else {
-
 			fall = true;
-			life = 40;
 		}
 	}
 
@@ -208,7 +206,8 @@ void j1Player::FixUpdate(float dt) {
 
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
-		App->entity_manager->DestroyEntity(this);
+		if(Dead.Finished())
+			App->entity_manager->DestroyEntity(this);
 
 	}
 	LOG("%d", life);

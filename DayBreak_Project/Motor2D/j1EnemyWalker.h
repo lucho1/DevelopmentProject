@@ -35,7 +35,6 @@ public:
 public:
 
 	SDL_Rect pathrect;
-
 	p2DynArray<iPoint>* enemy_path = nullptr;
 
 	//Direction current_Direction;

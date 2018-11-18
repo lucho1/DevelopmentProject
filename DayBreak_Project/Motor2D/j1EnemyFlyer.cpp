@@ -23,33 +23,29 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Dead");
 	LoadPushbacks(Animation_node, Dead);
 
-	current_animation = &Idle;
-	enemy_velocity.y = 3;
-	enemy_velocity.x = 3;
 	falling = true;
 	Current_Direction = LEFT;
+	current_animation = &Idle;
 
-	Detect_Range = iPoint(600, 400);
-	
-	Detect_Exploding_Range = iPoint(200,200);
+	Detect_Exploding_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_exp_x").as_int();
+	Detect_Exploding_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_exp_y").as_int();
+  
 	Start_exploding = false;
 	life = 20;
 
-	//PERF_START(pathfinding_recalc);
+
 }
 
 j1EnemyFlyer::~j1EnemyFlyer() {}
 
 void j1EnemyFlyer::Update(float dt) {
 
-	//CollidingX = false;
 	if(life>0){
+
 	if (Detect_Area()) {
-		//reset_Velocity();
+		
 		iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 15), App->scene->current_pathfinding_map);
 		iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
-
-		//if (pathfinding_recalc.ReadMs() > 3000) {
 
 		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
 
@@ -58,21 +54,14 @@ void j1EnemyFlyer::Update(float dt) {
 			last_enemy_path = enemy_path;
 		}
 
-		//PERF_START(pathfinding_recalc);
-	//}
-
-
-
 		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
 			enemy_path->Clear();
 
-
 		if (enemy_path != nullptr) {
 
-			for (uint i = 0; i < enemy_path->Count(); ++i)
-			{
+			for (uint i = 0; i < enemy_path->Count(); ++i) {
+
 				iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
-				//App->render->Blit(debug_tex, pos.x, pos.y);
 				pathrect.x = pos.x;
 				pathrect.y = pos.y;
 				pathrect.w = App->scene->current_map.width;
@@ -80,27 +69,25 @@ void j1EnemyFlyer::Update(float dt) {
 				App->render->DrawQuad(pathrect, 255, 0, 0, 50);
 			}
 		}
-	  }
+
 	entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
 	Draw();
+    
 	}
-	if (life <= 0) {
+    
+	if (life <= 0)
 		App->entity_manager->DestroyEntity(this);
-	}
-	
-
 }
 
 bool j1EnemyFlyer::Detect_Area() {
 
-	bool ret = false;
-
 	if ((App->scene->Player->player_position.x >= enemy_position.x - Detect_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Range.x)
 		&& (App->scene->Player->player_position.y >= enemy_position.y - Detect_Range.y && App->scene->Player->player_position.y <= enemy_position.y + Detect_Range.y)) {
-		ret = true;
+		
+		return true;
 	}
 
-	return ret;
+	return false;
 
 }
 
@@ -117,6 +104,7 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 	}
 
 	switch (Current_Direction) {
+
 	case UP_RIGHT:
 		enemy_position.x += enemy_velocity.x;
 		enemy_position.y -= enemy_velocity.y;	
@@ -148,10 +136,13 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 	}
 
 	if (!Exploding_Area()) {
+
 		current_animation = &Idle;
 		enemy_velocity = iPoint(3, 3);
 	}
+
 	else {
+    
 		Start_exploding = false;
 		current_animation = &Exploding;
 		enemy_velocity = iPoint(2, 2);
@@ -180,25 +171,22 @@ void j1EnemyFlyer:: Draw() {
 
 	if( Current_Direction == RIGHT || Current_Direction == UP_RIGHT||Current_Direction==DOWN_RIGHT|| Current_Direction== UP|| Current_Direction==DOWN|| Current_Direction==NONE)
 		App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_NONE, 0.5);
-	else if (Current_Direction ==LEFT||Current_Direction ==UP_LEFT || Current_Direction==DOWN_RIGHT) {
+	
+	else if (Current_Direction ==LEFT||Current_Direction ==UP_LEFT || Current_Direction==DOWN_RIGHT) 
 		App->render->Blit(Enemy_tex, enemy_position.x, enemy_position.y, &current_animation->GetCurrentFrame(), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.5);
-	}
-
+	
 }
 
 
 bool  j1EnemyFlyer::Exploding_Area() {
 
-	bool ret = false;
-
 	if ((App->scene->Player->player_position.x >= enemy_position.x - Detect_Exploding_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Exploding_Range.x)
 		&& (App->scene->Player->player_position.y >= enemy_position.y - Detect_Exploding_Range.y && App->scene->Player->player_position.y <= enemy_position.y + Detect_Exploding_Range.y)) {
-		ret = true;
+		
+		return true;
 	}
-
-	Start_exploding = true;
-
-	return ret;
-
+  
+  Start_exploding = true;
+	return false;
 	
 }

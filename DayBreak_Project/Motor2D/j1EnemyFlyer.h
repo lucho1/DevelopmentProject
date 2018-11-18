@@ -26,8 +26,6 @@ public:
 
 public:
 
-	iPoint Detect_Exploding_Range;
-
 	p2DynArray<iPoint>* enemy_path;
 	p2DynArray<iPoint>* last_enemy_path;
 	

@@ -53,12 +53,12 @@ void j1EnemyFlyer::FixUpdate(float dt) {
 			enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
 			Move(*enemy_path, dt);
 		}
-
-		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
-			enemy_path->Clear();
-
-		entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
+		
 	}
+	else if (enemy_path != nullptr)
+		enemy_path->Clear();
+
+	entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
 }
 
 void j1EnemyFlyer::Update(float dt) {

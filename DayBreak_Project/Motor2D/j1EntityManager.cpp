@@ -150,17 +150,18 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 }
 
 void j1EntityManager::DesrtroyEnemies() {
+
 	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
 
 	while (item != nullptr) {
 		if (item->data->type == ENTITY_TYPE::ENEMY_ENT) {
-			if(item->data->entity_collider!=nullptr)
+			if (item->data->entity_collider != nullptr)
 				item->data->entity_collider->to_delete = true;
 			App->entity_manager->entities_list.del(item);
 		}
 		item = item->next;
 	}
-
+}
 
 void j1EntityManager::LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, const char* path, pugi::xml_document &EnemiesDocument) {
 

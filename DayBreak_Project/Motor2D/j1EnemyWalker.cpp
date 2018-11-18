@@ -58,12 +58,13 @@ void j1EnemyWalker::FixUpdate(float dt){
 			Move(*enemy_path, dt);
 		}
 
-		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
-			enemy_path->Clear();
-
 	}
-	else if (!Detect_Area() && life > 0)
+	else if (!Detect_Area() && life > 0) {
+
 		Patrol(dt);
+		if(enemy_path != nullptr) 
+			enemy_path->Clear();
+	}
 
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 

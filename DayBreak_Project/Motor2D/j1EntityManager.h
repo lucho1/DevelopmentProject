@@ -8,6 +8,7 @@
 #include "PugiXml\src\pugixml.hpp"
 
 #define TIMES_PER_SEC 5
+#define PATHFINDING_PER_SEC 1
 
 class j1EntityManager : public j1Module
 {
@@ -38,7 +39,12 @@ public:
 	float update_ms_cycle;
 	int times_per_sec;
 
+	float accumulated_time_enemies;
+	int paths_per_sec;
+	float update_enemies;
+
 	bool do_logic;
+	bool do_enemies_logic;
 
 };
 

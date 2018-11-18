@@ -151,6 +151,10 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path) {
 			current_animation = &Dead;
 		}
 		if (Explosion_Time.ReadSec() > 1) {
+			App->render->DoCameraShake = true;
+			App->render->power = 7.0f;
+			App->render->Time_Doing_Shake = 1.0f;
+			PERF_START(App->render->CameraShake_Time);
 			life = 0;
 			if (App->scene->Player->player_position.x >= enemy_position.x - 100 && App->scene->Player->player_position.x <= enemy_position.x + 100
 				&& App->scene->Player->player_position.y >= enemy_position.y - 100 && App->scene->Player->player_position.y <= enemy_position.y + 100) {

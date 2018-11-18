@@ -1,0 +1,44 @@
+<!-- Config file for EnemyPositions-->
+
+<Level1>
+   <Enemy1>
+	<Position x="811" y="1268"/>
+	<Position x="2759" y="1608"/>
+	<Position x="3449" y="1097"/>
+	<Position x="4100" y="1440"/>
+	<Position x="5813" y="758"/>
+   </Enemy1>
+
+   <Enemy2>
+	<Position x="1466" y="1007"/>
+	<Position x="1896" y="1126"/>
+	<Position x="3449" y="1097"/>
+	<Position x="5329" y="615"/>
+	<Position x="6713" y="758"/>
+   </Enemy2>
+</Level1>
+<Level2>
+   <Enemy1>
+	<Position x="1864" y="1270"/>
+	<Position x="2830" y="588"/>
+	<Position x="3607" y="927"/>
+	<Position x="4958" y="1268"/>
+	<Position x="4779" y="757"/>
+	<Position x="7263" y="927"/>
+	<Position x="6977" y="1267"/>
+	<Position x="9572" y="927"/>
+	<Position x="11125" y="1097"/>
+	<Position x="14083" y="2117"/>
+   </Enemy1>
+
+   <Enemy2>
+	<Position x="927" y="882"/>
+	<Position x="2279" y="633"/>
+	<Position x="4157" y="406"/>
+	<Position x="7992" y="564"/>
+	<Position x="9213" y="1230"/>
+	<Position x="10607" y="1412"/>
+	<Position x="12228" y="1412"/>
+	<Position x="12524" y="588"/>
+   </Enemy2>
+</Level2>

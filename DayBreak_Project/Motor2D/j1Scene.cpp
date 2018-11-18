@@ -200,7 +200,6 @@ bool j1Scene::Update(float dt)
 		Change_Level = true;
 	
 	App->map->Draw(current_map);
-	App->map->Draw(current_pathfinding_map);
 
 	//int x, y;
 	//App->input->GetMousePosition(x, y);

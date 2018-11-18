@@ -23,6 +23,19 @@ j1Collisions::j1Collisions()
 			matrix[COLLIDER_PLAYER][p] = true;
 	}
 
+	for (int p = 0; p < COLLIDER_MAX - 1; p++) {
+
+		if (p == COLLIDER_STATIC || p == COLLIDER_PLAYER || p == COLLIDER_BLINKING)
+			matrix[COLLIDER_ENEMY_BULLET][p] = true;
+	}
+
+	for (int p = 0; p < COLLIDER_MAX - 1; p++) {
+
+		if (p == COLLIDER_STATIC || p == COLLIDER_ENEMY || p == COLLIDER_BLINKING)
+			matrix[COLLIDER_PLAYER_BULLET][p] = true;
+	}
+
+
 	//Set all matrix positions that must be true to true (the others remain false)
 	matrix[TRIGGER_WIN][COLLIDER_PLAYER] = true;
 	matrix[TRIGGER_PUSHOFF][COLLIDER_PLAYER] = true;
@@ -38,6 +51,8 @@ j1Collisions::j1Collisions()
 	matrix[COLLIDER_ENEMY][COLLIDER_FALL] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_BLINKING] = true;
+
+
 
 }
 
@@ -102,16 +117,15 @@ bool j1Collisions::Update(float dt) {
 			c2 = colliders[j];
 
 			if (c1->CheckCollision(c2->rect)) {
+					if (matrix[c1->type][c2->type] && c1->callback)
+						c1->callback->OnCollision(c1, c2);
+					if (matrix[c2->type][c1->type] && c2->callback)
+						c2->callback->OnCollision(c2, c1);
 
-				if (matrix[c1->type][c2->type] && c1->callback)
-					c1->callback->OnCollision(c1, c2);
-				if (matrix[c2->type][c1->type] && c2->callback)
-					c2->callback->OnCollision(c2, c1);
-
-				if (matrix[c1->type][c2->type] && c1->callback2)
-					c1->callback2->OnCollision(c1, c2);
-				if (matrix[c2->type][c1->type] && c2->callback2)
-					c2->callback2->OnCollision(c2, c1);
+					if (matrix[c1->type][c2->type] && c1->callback2)
+						c1->callback2->OnCollision(c1, c2);
+					if (matrix[c2->type][c1->type] && c2->callback2)
+						c2->callback2->OnCollision(c2, c1);
 			}
 		}
 	}

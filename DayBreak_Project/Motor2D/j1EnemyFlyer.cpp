@@ -31,6 +31,7 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Detect_Exploding_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_exp_x").as_int();
 	Detect_Exploding_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_exp_y").as_int();
   
+	explosion = Mix_LoadWAV("audio/fx/Explosion.wav");
 	Start_exploding = false;
 	life = 20;
 
@@ -52,12 +53,12 @@ void j1EnemyFlyer::FixUpdate(float dt) {
 			enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
 			Move(*enemy_path, dt);
 		}
-
-		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
-			enemy_path->Clear();
-
-		entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
+		
 	}
+	else if (enemy_path != nullptr)
+		enemy_path->Clear();
+
+	entity_collider->SetPos(enemy_position.x + 40, enemy_position.y);
 }
 
 void j1EnemyFlyer::Update(float dt) {
@@ -86,7 +87,7 @@ void j1EnemyFlyer::Update(float dt) {
 }
 
 bool j1EnemyFlyer::Detect_Area() {
-
+	
 	if ((App->scene->Player->player_position.x >= enemy_position.x - Detect_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Range.x)
 		&& (App->scene->Player->player_position.y >= enemy_position.y - Detect_Range.y && App->scene->Player->player_position.y <= enemy_position.y + Detect_Range.y)) {
 		
@@ -163,6 +164,9 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 			current_animation = &Dead;
 		}
 		if (Explosion_Time.ReadSec() > 1) {
+
+			//Mix_PlayChannel(-1, explosion, 0);
+
 			App->render->DoCameraShake = true;
 			App->render->power = 7.0f;
 			App->render->Time_Doing_Shake = 1.0f;
@@ -203,7 +207,7 @@ bool  j1EnemyFlyer::Exploding_Area() {
 		return true;
 	}
   
-  Start_exploding = true;
+	Start_exploding = true;
 	return false;
 	
 }

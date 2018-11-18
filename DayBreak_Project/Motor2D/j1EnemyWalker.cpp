@@ -35,6 +35,8 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	Patrol_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("patrol_x").as_int();
 	Patrol_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute(" patrol_y").as_int();
 
+	shoot = Mix_LoadWAV("audio/fx/Shoot2.wav");
+
 }
 
 j1EnemyWalker::~j1EnemyWalker() {}
@@ -56,11 +58,13 @@ void j1EnemyWalker::FixUpdate(float dt){
 			Move(*enemy_path, dt);
 		}
 
-		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
+	}
+	else if (!Detect_Area() && life > 0) {
+
+		Patrol(dt);
+		if(enemy_path != nullptr) 
 			enemy_path->Clear();
 	}
-	else if (!Detect_Area() && life > 0)
-		Patrol(dt);
 
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 
@@ -262,6 +266,7 @@ void j1EnemyWalker::Shoot() {
 			break;
 		}
 
+		Mix_PlayChannel(-1, shoot, 0);
 		Able_to_Shoot = false;
 	}
 	if (Shoot_animation.Finished()) {

@@ -13,6 +13,9 @@
 #include "j1Player.h"
 #include "j1EntityManager.h"
 
+#include "SDL_mixer\include\SDL_mixer.h"
+#pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
+
 #include "Brofiler/Brofiler.h"
 
 j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_position(pos) {
@@ -21,29 +24,9 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 
 	if (result == NULL)
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
-	
-	//Loading Settings
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Idle");
-	LoadPushbacks(Animation_node, Idle);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Run");
-	LoadPushbacks(Animation_node, Run);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Jump");
-	LoadPushbacks(Animation_node, Jump);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Fall");
-	LoadPushbacks(Animation_node, Fall);	
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Dead");
-	LoadPushbacks(Animation_node, Dead);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("None");
-	LoadPushbacks(Animation_node, Gun_None);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Idle");
-	LoadPushbacks(Animation_node, Gun_Idle);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Run");
-	LoadPushbacks(Animation_node, Gun_Run);
-	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Shoot");
-	LoadPushbacks(Animation_node, Gun_Shot);
 
 	PlayerSettings = PlayerDocument.child("config");
-
+	shoot_pl = Mix_LoadWAV("audio/fx/Shoot.wav");
 	life = 40;
 	
 }
@@ -53,8 +36,8 @@ j1Player::~j1Player() {}
 void j1Player::CleanUp() { 
 
 	LOG("Cleaning Up Player");
-	if (player_collider != nullptr)
-		player_collider->to_delete = true;
+	/*if (player_collider != nullptr)
+		player_collider->to_delete = true;*/
 
 	if (current_animation != nullptr)
 		current_animation = nullptr;
@@ -211,20 +194,24 @@ void j1Player::FixUpdate(float dt) {
 			LOG("GOD MODE ACTIVE");
 			jump = true;
 			fall = false;
+			life += 20;
 
 		}
-		else
-			fall = true;
+		else {
 
+			fall = true;
+			life = 40;
+		}
 	}
 
 	else if (life <= 0) {
 
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
-		/*if (Dead.Finished()) {
-		}*/
+		App->entity_manager->DestroyEntity(this);
+
 	}
+	LOG("%d", life);
 
 }
 
@@ -241,14 +228,14 @@ void j1Player::Draw(float dt) {
 
 	if (direction_x == pl_RIGHT) {
 
-		player_collider->SetPos(player_position.x, player_position.y);
+		entity_collider->SetPos(player_position.x, player_position.y);
 		App->render->Blit(Player_texture, player_position.x, player_position.y, &(current_animation->GetCurrentFrame(dt)), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4f);
 		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame(dt)), 1, angle, 0, 0, SDL_FLIP_NONE, 0.4f);
 	}
 
 	if (direction_x == pl_LEFT) {
 
-		player_collider->SetPos(player_position.x, player_position.y);
+		entity_collider->SetPos(player_position.x, player_position.y);
 		App->render->Blit(Player_texture, player_position.x, player_position.y, &(current_animation->GetCurrentFrame(dt)), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4f);
 		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x - 30, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame(dt)), 1, angle, 60, 0, SDL_FLIP_HORIZONTAL, 0.4f);
 	}
@@ -282,7 +269,7 @@ void j1Player::HandleInput(float dt) {
 
 		player_position.x += player_velocity.x + acceleration.x;
 
-		if (acceleration.x < MaxVelocity.x)
+		if (acceleration.x <= MaxVelocity.x)
 			acceleration.x += 0.2f;
 
 
@@ -389,6 +376,7 @@ void j1Player::HandleInput(float dt) {
 			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
 		}
 
+		Mix_PlayChannel(-1, shoot_pl, 0);
 		Shooting = true;
 	}
 }
@@ -397,6 +385,7 @@ bool j1Player::Load(pugi::xml_node& data)
 {
 	player_position.x = data.child("player").attribute("x").as_int();
 	player_position.y = data.child("player").attribute("y").as_int();
+	life = data.child("player").attribute("life").as_int();
 
 	return true;
 }
@@ -408,6 +397,7 @@ bool j1Player::Save(pugi::xml_node& data) const
 
 	pl.append_attribute("x") = player_position.x;
 	pl.append_attribute("y") = player_position.y;
+	pl.append_attribute("life") = life;
 
 	return true;
 }
@@ -488,12 +478,14 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		//Checking if falling
 		if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
 			App->LoadGame("save_game.xml");
-
 	}
 
 	//Check if touched button or end level door
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
 		App->map->TriggerActive = true;
+
+		
+	
 
 	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;
@@ -534,6 +526,32 @@ j1Player* j1Player::CreatePlayer(iPoint pos/*, const char* path, pugi::xml_docum
 }
 
 void j1Player::LoadPlayer(const char *file_name) {
+	
+	//Loading Settings
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Idle");
+	LoadPushbacks(Animation_node, Idle);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Run");
+	LoadPushbacks(Animation_node, Run);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Jump");
+	LoadPushbacks(Animation_node, Jump);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Fall");
+	LoadPushbacks(Animation_node, Fall);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Dead");
+	LoadPushbacks(Animation_node, Dead);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("None");
+	LoadPushbacks(Animation_node, Gun_None);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Idle");
+	LoadPushbacks(Animation_node, Gun_Idle);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Run");
+	LoadPushbacks(Animation_node, Gun_Run);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Shoot");
+	LoadPushbacks(Animation_node, Gun_Shot);
+
+
+
+	PlayerSettings = PlayerDocument.child("config");
+
+	life = PlayerSettings.child("PlayerSettings").child("Life").attribute("life").as_int();
 
 	p2SString tmp("maps\\%s", file_name);
 	Player_texture = App->tex->Load(tmp.GetString());
@@ -572,7 +590,7 @@ void j1Player::LoadPlayer(const char *file_name) {
 	player_rect.w = PlayerSettings.child("image").attribute("w").as_int();
 	player_rect.h = PlayerSettings.child("image").attribute("h").as_int();
 
-	player_collider = App->collisions->AddColliderEntity({ player_rect.x + 50, player_rect.y, (player_rect.w - 65), (player_rect.h) - 28 }, COLLIDER_PLAYER, this);
+	entity_collider = App->collisions->AddColliderEntity({ player_rect.x + 50, player_rect.y, (player_rect.w - 65), (player_rect.h) - 28 }, COLLIDER_PLAYER, this);
 
 	state = State::pl_IDLE;
 

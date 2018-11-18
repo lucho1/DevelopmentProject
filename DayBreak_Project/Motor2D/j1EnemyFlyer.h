@@ -3,6 +3,7 @@
 
 #include "j1Enemy.h"
 #include "Animation.h"
+#include "j1Audio.h"
 
 class j1EnemyFlyer : public j1Enemy
 {

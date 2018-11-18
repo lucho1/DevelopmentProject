@@ -166,6 +166,7 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 		if (Explosion_Time.ReadSec() > 1) {
 
 			//Mix_PlayChannel(-1, explosion, 0);
+
 			App->render->DoCameraShake = true;
 			App->render->power = 7.0f;
 			App->render->Time_Doing_Shake = 1.0f;

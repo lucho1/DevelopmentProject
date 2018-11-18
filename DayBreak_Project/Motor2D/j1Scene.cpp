@@ -15,6 +15,7 @@
 #include "j1EntityManager.h"
 #include "j1Enemy.h"
 #include "j1Player.h"
+#include "j1Objects.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -57,6 +58,9 @@ bool j1Scene::Start()
 	}
 
 	if (Level1 == true) {
+
+		App->collisions->AssignMapColliders("Level1.tmx");
+		LoadObjects("Level1.tmx");
 	
 		if (Player == nullptr)
 			Player = Player->CreatePlayer(iPoint(200, 1080));
@@ -77,6 +81,9 @@ bool j1Scene::Start()
 	}
 
 	else if (Level2 == true) {
+
+		App->collisions->AssignMapColliders("Level1.tmx");
+		LoadObjects("Level2.tmx");
 
 		if (Player == nullptr)
 			Player = Player->CreatePlayer(iPoint(580, 1400));
@@ -132,6 +139,7 @@ bool j1Scene::Start()
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
 	Enemy3 = Enemy3->CreateEnemy(iPoint(300, 1270), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+
 
 	return true;
 }
@@ -201,7 +209,7 @@ bool j1Scene::Update(float dt)
 	//iPoint mc2 = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_map);
 
 	//iPoint mapatW = App->map->MapToWorld(mc2.x, mc2.y, current_map);
-	//iPoint pl_pos = App->map->WorldToMap(App->player->position.x, App->player->position.y, current_map);
+	//iPoint pl_pos = App->map->WorldToMap(Player->player_position.x, App->player->position.y, current_map);
 	//iPoint en_pos = App->map->WorldToMap(App->player->Enemy.x, App->player->Enemy.y, current_map);
 
 	//
@@ -245,6 +253,7 @@ bool j1Scene::CleanUp()
 
 void j1Scene::ChangeLevel(int level_change) {
 	
+	
 	LEVELS aux = currentLevel;
 	if (level_change != NO_CHANGE) {
 		App->collisions->CleanUp();
@@ -253,11 +262,15 @@ void j1Scene::ChangeLevel(int level_change) {
 	}
 
 	if (currentLevel == LEVEL1) {
+
 		App->LoadGame("Level_1_settings.xml");
+		//App->collisions->AssignMapColliders("Level1.tmx");
 	
 	}
 	if (currentLevel == LEVEL2) {
+
 		App->LoadGame("Level_2_settings.xml");
+		//App->collisions->AssignMapColliders("Level2.tmx");
 	}
 
 	if (currentLevel!=aux) {
@@ -302,4 +315,77 @@ void j1Scene::IterateLevel(int level_change) {
 			currentLevel = LEVEL2;
 			current_map = Level2_map;
 	}
+}
+
+
+bool j1Scene::LoadObjects(const char*file_name) {
+
+	p2SString tmp("%s%s", App->map->folder.GetString(), file_name);
+
+	pugi::xml_parse_result result = App->map->map_file.load_file(tmp.GetString());
+
+	if (result == NULL) {
+
+		LOG("Could not load xml file %s. pugi error: %s", file_name, result.description());
+		return true;
+	}
+
+	pugi::xml_node collider;
+	pugi::xml_node type;
+	const char* collidertype;
+
+	for (type = App->map->map_file.child("map").child("objectgroup"); type && result; type = type.next_sibling("objectgroup")) {
+
+		collidertype = type.attribute("name").as_string();
+
+		for (collider = type.child("object"); collider&&result; collider = collider.next_sibling("object")) {
+
+			if (strcmp(collidertype, "Push_Triggers") == 0) {
+
+				int x = collider.attribute("x").as_int();
+				int y = collider.attribute("y").as_int();
+
+				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSH);
+				j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::PUSHON);
+
+
+			}
+
+			if (strcmp(collidertype, "PushOff_Triggers") == 0) {
+
+				int x = collider.attribute("x").as_int();
+				int y = collider.attribute("y").as_int();
+
+				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSHOFF);
+				j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::PUSHOFF);
+
+			}
+
+			if (strcmp(collidertype, "Win_Trigger") == 0) {
+				
+				int x = collider.attribute("x").as_int();
+				int y = collider.attribute("y").as_int();
+
+				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_WIN);
+				j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::WIN);
+			}
+
+			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
+
+				int x = collider.attribute("x").as_int();
+				int y = collider.attribute("y").as_int();
+
+				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLINKING);
+				j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::BLINK_BLOCK);
+
+			}
+		}
+	}
+
+
+	return true;
 }

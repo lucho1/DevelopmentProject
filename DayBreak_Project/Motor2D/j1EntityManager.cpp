@@ -1,7 +1,9 @@
 #include "j1EntityManager.h"
 #include "p2Log.h"
 #include "j1Entity.h"
+#include "j1Scene.h"
 #include "j1Collisions.h"
+
 
 j1EntityManager::j1EntityManager()
 {
@@ -78,7 +80,7 @@ bool j1EntityManager::CleanUp() {
 
 j1Entity *j1EntityManager::CreateEntity(ENTITY_TYPE eType) {
 
-	static_assert(ENTITY_TYPE::UNKNOWN == ENTITY_TYPE(2), "UPDATE ENTITY TYPES");
+	static_assert(ENTITY_TYPE::UNKNOWN == ENTITY_TYPE(3), "UPDATE ENTITY TYPES");
 	
 	j1Entity* Entity = nullptr;
 

@@ -45,6 +45,7 @@ struct Collider {
 	bool CheckCollision(const SDL_Rect &r) const;
 	void ChangeCollider(COLLIDER_TYPE type_) { type = type_; }
 
+
 };
 
 class j1Collisions : public j1Module{

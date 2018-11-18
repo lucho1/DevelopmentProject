@@ -49,7 +49,8 @@ bool j1Particles::Start() {
 	Player_Shoot.Sprites = Blood.Sprites = Enemy_Shoot.Sprites = Plasma_Explosion.Sprites = Player_Shoot_Beam.Sprites = Particle_1;
 	Enemy_Shoot.Life = 600;
 	Player_Shoot.Life = 1200;
-	Player_Shoot.collider = App->collisions->AddCollider({0,0,100,20},COLLIDER_PLAYER_BULLET,this);
+	Player_Shoot.collider = App->collisions->AddCollider({0,0,80,10},COLLIDER_PLAYER_BULLET,this);
+	Enemy_Shoot.collider = App->collisions->AddCollider({ 0,0,50,10 }, COLLIDER_PLAYER_BULLET, this);
 	return true;
 
 }

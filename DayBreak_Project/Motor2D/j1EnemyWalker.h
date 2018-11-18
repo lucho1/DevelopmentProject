@@ -46,7 +46,7 @@ private:
 	Animation Idle;
 	Animation Run;
 	Animation Shoot_animation;
-
+	Animation Dead;
 };
 
 #endif

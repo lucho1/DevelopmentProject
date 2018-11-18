@@ -10,6 +10,7 @@
 #include "j1Scene.h"
 #include "j1EntityManager.h"
 #include "j1EnemyWalker.h"
+#include "j1Particles.h"
 
 j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT), enemy_position(pos)
 {
@@ -66,7 +67,19 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 	p2List_item<j1Entity*>* item = App->entity_manager->entities_list.start;
 
+
 	for (; item != nullptr; item = item->next) {
+
+		if (item->data->type==ENTITY_TYPE::ENEMY_ENT && c2->type == COLLIDER_PLAYER_BULLET) {
+			if (Last_collided == c2) {
+				return;
+			}
+			life -= 5;
+			Last_collided = c2;
+				App->particles->AddParticle(App->particles->Blood, enemy_position.x, enemy_position.y, COLLIDER_NONE, iPoint(0, 0), 1.5f, SDL_FLIP_NONE);
+			
+		}
+
 
 		if (item->data->type == ENTITY_TYPE::ENEMY_ENT && c1 == item->data->entity_collider) {
 

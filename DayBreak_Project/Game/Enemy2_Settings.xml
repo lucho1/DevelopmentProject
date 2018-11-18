@@ -30,7 +30,9 @@
       <Pushback x="504" y="242" w="252" h="242"/>
       <Pushback x="756" y="242" w="252" h="242"/>
     </Idle>
-
+    <Dead loop="true" speed="0.25">
+     <Pushback x="504" y="726" w="252" h="242"/>
+    </Dead>
     <Exploding loop="true" speed="0.15">
       <Pushback x="0" y="484" w="252" h="242"/>
       <Pushback x="252" y="484" w="252" h="242"/>

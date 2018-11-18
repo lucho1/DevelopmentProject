@@ -4,6 +4,7 @@
 #include "j1Render.h"
 #include "j1Pathfinding.h"
 #include "j1Particles.h"
+#include "j1EntityManager.h"
 
 j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(enemy_position, ENEMY_TYPE::FLYER) {
 	
@@ -16,11 +17,15 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	LoadPushbacks(Animation_node, Run);
 	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Shoot");
 	LoadPushbacks(Animation_node, Shoot_animation);
+	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Dead");
+	LoadPushbacks(Animation_node, Dead);
 
 	current_animation = &Idle;
 	falling = true;
 	Patrol_Range[2] = {};
 	Able_to_Shoot = true;
+	
+	life = 20;
 
 	Detect_Shoot_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_shooting_x").as_int();
 	Detect_Shoot_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_shooting_y").as_int();
@@ -34,40 +39,49 @@ j1EnemyWalker::~j1EnemyWalker() {}
 
 void j1EnemyWalker::Update(float dt) {
 
-	current_animation = &Idle;
 
-	if (Detect_Area()) {
+	if (life>0) {
 
-     	iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map);
-		iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
+		current_animation = &Idle;
 
-		if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
+		if (Detect_Area()) {
 
-			enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
-			Move(*enemy_path);
+			iPoint initial_pos = App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map);
+			iPoint final_pos = App->map->WorldToMap(App->scene->Player->player_position.x, App->scene->Player->player_position.y, App->scene->current_pathfinding_map);
 
-		}
+			if (App->pathfinding->IsWalkable(initial_pos) && App->pathfinding->IsWalkable(final_pos)) {
+        
+				enemy_path = App->pathfinding->CreatePath(initial_pos, final_pos);
+				Move(*enemy_path);
+			}
 
-		if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
-			enemy_path->Clear();
+			if ((!App->pathfinding->IsWalkable(initial_pos) || !App->pathfinding->IsWalkable(final_pos)) && enemy_path != nullptr)
+				enemy_path->Clear();
 
-		if (enemy_path != nullptr) {
+			if (enemy_path != nullptr) {
 
-			for (uint i = 0; i < enemy_path->Count(); ++i) {
-
-				iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
-				pathrect.x = pos.x;
-				pathrect.y = pos.y + 50;
-				pathrect.w = App->scene->current_map.width;
-				pathrect.h = App->scene->current_map.height;
-				App->render->DrawQuad(pathrect, 0, 255, 0, 50);
+				for (uint i = 0; i < enemy_path->Count(); ++i)
+				{
+					iPoint pos = App->map->MapToWorld(enemy_path->At(i)->x, enemy_path->At(i)->y, App->scene->current_pathfinding_map);
+					//App->render->Blit(debug_tex, pos.x, pos.y);
+					pathrect.x = pos.x;
+					pathrect.y = pos.y + 50;
+					pathrect.w = App->scene->current_map.width;
+					pathrect.h = App->scene->current_map.height;
+					App->render->DrawQuad(pathrect, 0, 255, 0, 50);
+				}
 			}
 		}
+		else {
+			Patrol();
+		}
 	}
-	else
-		Patrol();
-	
-
+  
+	if (life <= 0) {
+		current_animation = &Dead;
+		if(Dead.Finished())
+			App->entity_manager->DestroyEntity(this);
+	}
 	entity_collider->SetPos(enemy_position.x, enemy_position.y);
 	Draw();
 }
@@ -173,6 +187,20 @@ void j1EnemyWalker::Patrol() {
 		}	
 	}
 };
+
+
+bool j1EnemyWalker :: Shoot_Area() {
+	
+	bool ret = false;
+
+	if (App->scene->Player->player_position.x >= enemy_position.x - Detect_Shoot_Range.x && App->scene->Player->player_position.x <= enemy_position.x + Detect_Shoot_Range.x) {
+		
+    ret = true;
+	}
+  
+	return ret; 
+
+}
 
 void j1EnemyWalker::Move(p2DynArray<iPoint>&path) {
 

@@ -54,7 +54,7 @@ public:
 
 	ENEMY_TYPE type;
 	Direction Current_Direction;
-
+	Collider* Last_collided;
 	iPoint Detect_Range;
 	iPoint Detect_Shoot_Range;
 	iPoint Detect_Exploding_Range;

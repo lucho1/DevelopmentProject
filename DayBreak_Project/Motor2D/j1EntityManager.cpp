@@ -1,6 +1,7 @@
 #include "j1EntityManager.h"
 #include "p2Log.h"
 #include "j1Entity.h"
+#include "j1Collisions.h"
 
 j1EntityManager::j1EntityManager()
 {
@@ -106,9 +107,8 @@ void j1EntityManager::DestroyEntity(j1Entity *Entity) {
 	while (item != nullptr) {
 
 		if (item->data == Entity) {
-
+			Entity->entity_collider->to_delete = true;
 			entities_list.del(item);
-			RELEASE(item->data);
 			break;
 		}
 

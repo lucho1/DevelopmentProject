@@ -28,15 +28,23 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 	LoadPushbacks(Animation_node, Run);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Jump");
 	LoadPushbacks(Animation_node, Jump);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Fall");
+	LoadPushbacks(Animation_node, Fall);	
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Dead");
+	LoadPushbacks(Animation_node, Dead);
+	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("None");
+	LoadPushbacks(Animation_node, Gun_None);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Idle");
 	LoadPushbacks(Animation_node, Gun_Idle);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Run");
 	LoadPushbacks(Animation_node, Gun_Run);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Shoot");
 	LoadPushbacks(Animation_node, Gun_Shot);
+
 	PlayerSettings = PlayerDocument.child("config");
 
-
+	life = 40;
+	
 }
 
 j1Player::~j1Player() {}
@@ -64,272 +72,287 @@ void j1Player::Start() {
 
 
 void j1Player::Update(float dt) {
-	
-	if ((!jump || !fall ) && state != pl_RUN) {
 
-		Gun_Run.Reset();
-		current_animation = &Idle;
-		Gun_current_animation = &Gun_Idle;
-		
-		//GUN ADJUST
-		Adjusting_Gun_position.x = 0;
-		Adjusting_Gun_position.y = player_rect.h / 3;
+	if (life > 0) {
+		if ((!jump || !fall) && state != pl_RUN) {
 
-	}
-	
-	//X axis Movement
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
+			Gun_Run.Reset();
+			current_animation = &Idle;
+			Gun_current_animation = &Gun_Idle;
 
-		state = State::pl_RUN;
+			//GUN ADJUST
+			Adjusting_Gun_position.x = 0;
+			Adjusting_Gun_position.y = player_rect.h / 3;
 
-		desaccelerating = false;
-		player_velocity.x = player_velocity.x; //??
-
-		direction_x = pl_RIGHT;
-
-		player_position.x += player_velocity.x + acceleration.x;
-
-		if (acceleration.x < MaxVelocity.x)
-			acceleration.x += 0.2f;
-		
-		
-		Gun_current_animation = &Gun_Run;
-		current_animation = &Run;
-
-		//GUN ADJUST
-		Adjusting_Gun_position.x = 0;
-		Adjusting_Gun_position.y = player_rect.h / 3.5f;
-
-		if (!jump) 
-			angle = 0;
-		
-		
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP && !jump && !desaccelerating) 
-		desaccelerating = true;
-	
-	else
-		state = State::pl_IDLE;
-
-
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-
-		state = State::pl_RUN;
-
-		desaccelerating = false;
-		player_velocity.x = player_velocity.x; //??
-
-		direction_x = pl_LEFT;
-
-		player_position.x -= player_velocity.x + acceleration.x;
-
-		if (acceleration.x < MaxVelocity.x)
-			acceleration.x += 0.2f;
-		
-		Gun_current_animation = &Gun_Run;
-		current_animation = &Run;
-
-		//GUN ADJUST
-		Adjusting_Gun_position.x = -5;
-		Adjusting_Gun_position.y = player_rect.h / 3.5f;
-
-		if (!jump) 
-			angle = 0;
-		
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP && !jump && !desaccelerating) 
-		desaccelerating = true;
-	
-
-	//Y axis Movement
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
-		
-		jump = true;
-		jump_falling = false;
-
-		acceleration.y = 0.2f;
-		auxY = player_position.y;
-		player_velocity.y = initial_vel.y;
-	}
-
-	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
-
-		doublejump = false;
-		jump_falling = false;
-
-		acceleration.y = 0.2f;
-		auxY = player_position.y;
-		player_velocity.y = initial_vel.y;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && !Shooting) {
-
-		angle = 0;
-
-		if (direction_x == pl_RIGHT) {
-		     App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(16, 0), 0.8f);
-			 App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y-18, COLLIDER_NONE, iPoint(player_position.x-player_position.x+acceleration.x, 0), 1.1f);
-		}
-		else if (direction_x == pl_LEFT) {
-			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(-16, 0), 0.8f, SDL_FLIP_HORIZONTAL);
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
-		}
-		Shooting = true;
-	}
-		
-	if (Shooting) {
-
-		Gun_current_animation = &Gun_Shot;
-
-		if (Gun_Shot.Finished()) {
-			Shooting = false;
-			Gun_Shot.Reset();
 		}
 
-		Adjusting_Gun_position.x = 2;
-		Adjusting_Gun_position.y = player_rect.h / 3.5f;
-	}
+		//X axis Movement
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 
+			state = State::pl_RUN;
 
-	if (desaccelerating==true) {
-
-		if(acceleration.x > 0) {
-
-			acceleration.x -= 0.2f;
-
-			if (direction_x == pl_RIGHT)
-				player_position.x += acceleration.x;
-
-			else if (direction_x == pl_LEFT)
-				player_position.x -= acceleration.x;
-		}
-		else
 			desaccelerating = false;
+			player_velocity.x = player_velocity.x; //??
 
-	}
+			direction_x = pl_RIGHT;
+
+			player_position.x += player_velocity.x + acceleration.x;
+
+			if (acceleration.x < MaxVelocity.x)
+				acceleration.x += 0.2f;
 
 
-	//JUMP
-	if (jump || doublejump) {
+			Gun_current_animation = &Gun_Run;
+			current_animation = &Run;
 
-		if(jump)
-			current_animation = &Jump;
+			//GUN ADJUST
+			Adjusting_Gun_position.x = 0;
+			Adjusting_Gun_position.y = player_rect.h / 3.5f;
 
-		if (player_velocity.y >= 0 && !jump_falling) {
+			if (!jump)
+				angle = 0;
+
+
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP && !jump && !desaccelerating)
+			desaccelerating = true;
+
+		else
+			state = State::pl_IDLE;
+
+
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
+
+			state = State::pl_RUN;
+
+			desaccelerating = false;
+			player_velocity.x = player_velocity.x; //??
+
+			direction_x = pl_LEFT;
+
+			player_position.x -= player_velocity.x + acceleration.x;
+
+			if (acceleration.x < MaxVelocity.x)
+				acceleration.x += 0.2f;
+
+			Gun_current_animation = &Gun_Run;
+			current_animation = &Run;
+
+			//GUN ADJUST
+			Adjusting_Gun_position.x = -5;
+			Adjusting_Gun_position.y = player_rect.h / 3.5f;
+
+			if (!jump)
+				angle = 0;
+
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP && !jump && !desaccelerating)
+			desaccelerating = true;
+
+
+		//Y axis Movement
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
+
+			jump = true;
+			jump_falling = false;
+
+			acceleration.y = 0.2f;
+			auxY = player_position.y;
+			player_velocity.y = initial_vel.y;
+		}
+
+		else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
+
+			doublejump = false;
+			jump_falling = false;
+
+			acceleration.y = 0.2f;
+			auxY = player_position.y;
+			player_velocity.y = initial_vel.y;
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && !Shooting) {
+
+			angle = 0;
 
 			if (direction_x == pl_RIGHT) {
-
-				if (angle < 0) 
-					angle *= (-1);
-				
-				if (angle < 20)
-					angle += 1;
-
+				App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(16, 0), 0.8f);
+				App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x + acceleration.x, 0), 1.1f);
 			}
 			else if (direction_x == pl_LEFT) {
-				
-				if (angle > 0) 
-					angle *= (-1);
-				
-				if(angle>-20)
-					angle -= 1;
+				App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(-16, 0), 0.8f, SDL_FLIP_HORIZONTAL);
+				App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
+			}
+			Shooting = true;
+		}
 
+		if (Shooting) {
+
+			Gun_current_animation = &Gun_Shot;
+
+			if (Gun_Shot.Finished()) {
+				Shooting = false;
+				Gun_Shot.Reset();
 			}
 
-			fall = false;
-			player_position.y -= player_velocity.y;
-			player_velocity.y -= 0.43f;
+			Adjusting_Gun_position.x = 2;
+			Adjusting_Gun_position.y = player_rect.h / 3.5f;
 		}
 
-		else if (player_velocity.y < 0) {
-			
-			jump_falling = true;
-			fall = true;
+
+		if (desaccelerating == true) {
+
+			if (acceleration.x > 0) {
+
+				acceleration.x -= 0.2f;
+
+				if (direction_x == pl_RIGHT)
+					player_position.x += acceleration.x;
+
+				else if (direction_x == pl_LEFT)
+					player_position.x -= acceleration.x;
+			}
+			else
+				desaccelerating = false;
 
 		}
-	}
 
-	if (!jump) 
-		doublejump = true;
-	
 
-	//FALL
-	if (fall) {
+		//JUMP
+		if (jump || doublejump) {
 
-		Jump.Reset();
+			if (jump)
+				current_animation = &Jump;
 
-		if (player_velocity.y < initial_vel.y) {
+			if (player_velocity.y >= 0 && !jump_falling) {
 
-			if (direction_x == pl_RIGHT) {
+				if (direction_x == pl_RIGHT) {
 
-				if (angle < 0)
-					angle *= (-1);
-				
-				if (angle > 0)
-					angle -= 1;
-					
+					if (angle < 0)
+						angle *= (-1);
+
+					if (angle < 20)
+						angle += 1;
+
+				}
+				else if (direction_x == pl_LEFT) {
+
+					if (angle > 0)
+						angle *= (-1);
+
+					if (angle > -20)
+						angle -= 1;
+
+				}
+
+				fall = false;
+				player_position.y -= player_velocity.y;
+				player_velocity.y -= 0.43f;
 			}
 
-			else if (direction_x == pl_LEFT) {
+			else if (player_velocity.y < 0) {
 
-				if (angle > 0) 
-					angle *= (-1);
-				
-				if (angle < 0) 
-					angle += 1;
-					
+				jump_falling = true;
+				fall = true;
+
+			}
+		}
+
+		if (!jump)
+			doublejump = true;
+
+
+		//FALL
+		if (fall) {
+
+			Jump.Reset();
+
+			current_animation = &Fall;
+			if (player_velocity.y < initial_vel.y) {
+
+				if (direction_x == pl_RIGHT) {
+
+					if (angle < 0)
+						angle *= (-1);
+
+					if (angle > 0)
+						angle -= 1;
+
+				}
+
+				else if (direction_x == pl_LEFT) {
+
+					if (angle > 0)
+						angle *= (-1);
+
+					if (angle < 0)
+						angle += 1;
+
+				}
+
+				player_velocity.y += acceleration.y;
+				acceleration.y += 0.02f;
 			}
 
-			player_velocity.y += acceleration.y;
-			acceleration.y += 0.02f;
-		}
-
-		player_position.y += player_velocity.y;
-	}
-
-	//God mode
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
-		God = !God;
-
-	if (God) {
-
-		LOG("GOD MODE ACTIVE");
-		jump = true;
-		fall = false;
-
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-
-			player_velocity.y = initial_vel.y;
-			player_position.y -= player_velocity.y;
-		}
-
-		else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-
-			player_velocity.y = initial_vel.y;
 			player_position.y += player_velocity.y;
 		}
 
-	}
-	else
-		fall = true;
+		//God mode
+		if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+			God = !God;
 
-	//BLIT PLAYER
+		if (God) {
+
+			LOG("GOD MODE ACTIVE");
+			jump = true;
+			fall = false;
+
+			if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+
+				player_velocity.y = initial_vel.y;
+				player_position.y -= player_velocity.y;
+			}
+
+			else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+
+				player_velocity.y = initial_vel.y;
+				player_position.y += player_velocity.y;
+			}
+
+		}
+		else
+			fall = true;
+
+	}
+	else if( life<=0) {
+		current_animation = &Dead;
+		Gun_current_animation = &Gun_None;
+		if (Dead.Finished()) {
+		}
+	}
+	Draw();
+
+}
+
+void j1Player::Draw() {
+
+
 	if (direction_x == pl_RIGHT) {
 
 		player_collider->SetPos(player_position.x, player_position.y);
 		App->render->Blit(Player_texture, player_position.x, player_position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_NONE, 0.4f);
-		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1,angle, 0, 0, SDL_FLIP_NONE, 0.4f);
+		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1, angle, 0, 0, SDL_FLIP_NONE, 0.4f);
 	}
 
 	if (direction_x == pl_LEFT) {
 
 		player_collider->SetPos(player_position.x, player_position.y);
 		App->render->Blit(Player_texture, player_position.x, player_position.y, &(current_animation->GetCurrentFrame()), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4f);
-		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x-30, player_position.y+Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1, angle,60, 0, SDL_FLIP_HORIZONTAL, 0.4f);
+		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x - 30, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame()), 1, angle, 60, 0, SDL_FLIP_HORIZONTAL, 0.4f);
 	}
-}
 
+}
 
 bool j1Player::Load(pugi::xml_node& data)
 {
@@ -351,10 +374,21 @@ bool j1Player::Save(pugi::xml_node& data) const
 }
 
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
-	
+
+	if (c2->type == COLLIDER_ENEMY_BULLET) {
+		if (Last_collided == c2) {
+			return;
+		}
+		life -= 5;
+		LOG("%d", life);
+		Last_collided = c2;
+		App->particles->AddParticle(App->particles->Blood, player_position.x-35, player_position.y-30, COLLIDER_NONE, iPoint(0, 0), 1.5f, SDL_FLIP_NONE);
+
+	}
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
+		
 		//Calculating an error margin of collision to avoid problems with colliders corners
 		int error_margin = 0;
 

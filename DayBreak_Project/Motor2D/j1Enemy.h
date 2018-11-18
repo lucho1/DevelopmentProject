@@ -40,6 +40,8 @@ public:
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
 
 	virtual bool Shoot_Area() { return true; };
+	
+	void CleanUp();
 
 	virtual bool Detect_Area() { return true; };
 

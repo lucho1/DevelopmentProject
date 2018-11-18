@@ -65,7 +65,10 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
-	SDL_RenderSetLogicalSize(renderer, 900,400);
+
+		SDL_RenderSetLogicalSize(renderer, 900,500);
+
+
 
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
@@ -74,6 +77,9 @@ bool j1Render::Start()
 // Called each loop iteration
 bool j1Render::PreUpdate()
 {
+
+
+
 	BROFILER_CATEGORY("Render PreUpdate", Profiler::Color::ForestGreen);
 	SDL_RenderClear(renderer);
 	return true;
@@ -110,9 +116,9 @@ bool j1Render::PostUpdate()
 	BROFILER_CATEGORY("Render PostUpdate", Profiler::Color::LightGoldenRodYellow);
 
 	if (App->scene->currentLevel != MAIN_MENU) {
-		
-			if (DoCameraShake) {
-			if (CameraShake_Time.ReadSec()<Time_Doing_Shake)
+
+		if (DoCameraShake) {
+			if (CameraShake_Time.ReadSec() < Time_Doing_Shake)
 				CameraShake(power);
 			else {
 				DoCameraShake = false;
@@ -121,16 +127,18 @@ bool j1Render::PostUpdate()
 
 		if (App->scene->Player->player_position.x <= -(camera.x - camera.w / 4) && camera.x < 0)
 			camera.x += App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
-		
+
 		else if (App->scene->Player->player_position.x >= -(camera.x - camera.w + camera.w / 2.5f))
 			camera.x -= App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
-		
 
-		camera.y = -(App->scene->Player->player_position.y - (App->win->screen_surface->h/3));
+
+		camera.y = -(App->scene->Player->player_position.y - (App->win->screen_surface->h / 3));
 	}
 
-	else if (App->scene->currentLevel == MAIN_MENU) 
-		camera.x-=2;
+	else if (App->scene->currentLevel == MAIN_MENU) {
+		camera.y = 0;
+		camera.x -= 2;
+	}
 	
 
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);

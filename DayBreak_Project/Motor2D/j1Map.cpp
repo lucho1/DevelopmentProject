@@ -106,14 +106,13 @@ void j1Map::Draw(MapData &data)
 						}
 						else if (App->scene->currentLevel == MAIN_MENU) {
 							if (layer->name == ("Foreground"))
-								App->render->Blit(tileset->texture, pos.x, (pos.y - 250), &r);
+								App->render->Blit(tileset->texture, pos.x, (pos.y - 650), &r);
 
 							else if (layer->name == ("Background"))
-								App->render->Blit(tileset->texture, pos.x, pos.y - 400, &r, 0.14);
+								App->render->Blit(tileset->texture, pos.x, pos.y-600, &r, 0.14);
 
 							else if (layer->name == ("Title"))
-								App->render->Blit(tileset->texture, pos.x, pos.y, &r, false);
-
+								App->render->Blit(tileset->texture, pos.x-500, pos.y-350, &r, false);
 						}
 
 					}

@@ -161,12 +161,23 @@ void j1Enemy::DestroyEnemy(j1Enemy *Enemy) {
 	while (item != nullptr) {
 
 		if (item->data == Enemy) {
-
 			App->entity_manager->entities_list.del(item);
-			RELEASE(item->data);
 			break;
 		}
 
 		item = item->next;
 	}
+}
+void j1Enemy::CleanUp() {
+
+	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
+
+	while (item != nullptr) {
+		if (item->data->type == ENTITY_TYPE::ENEMY_ENT){
+			App->entity_manager->entities_list.del(item);
+			break;
+		}
+		item = item->next;
+	}
+
 }

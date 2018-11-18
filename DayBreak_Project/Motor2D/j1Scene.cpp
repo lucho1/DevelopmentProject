@@ -22,8 +22,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Main_Menu = false;
-	Level1 = true;
+	Main_Menu = true;
+	Level1 = false;
 	Level2 = false;
 }
 
@@ -45,20 +45,20 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 
-	
-
 	pugi::xml_parse_result result = SceneDocument.load_file("config.xml");
 	music_node = SceneDocument.child("config").child("music");
 
 	if (result == NULL)
 		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
-	
+
+	App->map->Load("Main_Menu.tmx", Intro_map);
 	App->map->Load("Level1.tmx", Level1_map);
 	App->map->Load("Level2.tmx", Level2_map);
+	App->map->Load("Level1_WalkabilityMap.tmx", Level1_pathfinding_map);
+
 
 	if (Main_Menu == true) {
 
-		App->map->Load("Main_Menu.tmx", Intro_map);
 		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
 
@@ -94,7 +94,7 @@ bool j1Scene::Start()
 
 	else if (Level2 == true) {
 
-		App->collisions->AssignMapColliders("Level1.tmx");
+		App->collisions->AssignMapColliders("Level2.tmx");
 		LoadObjects("Level2.tmx");
 
 		if (Player == nullptr)
@@ -135,14 +135,14 @@ bool j1Scene::Start()
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
 
-	Enemy1 = Enemy1->CreateEnemy(iPoint(1000, 1270), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
-	Enemy2 = Enemy2->CreateEnemy(iPoint(300, 1430), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+	//Enemy1 = Enemy1->CreateEnemy(iPoint(1000, 1270), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+	//Enemy2 = Enemy2->CreateEnemy(iPoint(300, 1430), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
 
 	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
 	if (result4 == NULL)
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
-	Enemy3 = Enemy3->CreateEnemy(iPoint(300, 1270), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+	//Enemy3 = Enemy3->CreateEnemy(iPoint(300, 1270), WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 
 
 	return true;
@@ -166,7 +166,6 @@ bool j1Scene::Update(float dt)
 		App->fade->Fade(2.0f);
 
 		if (App->fade->current_step == App->fade->fade_from_black) {
-
 			ChangeLevel(currentLevel);
 			Change_Level = false;
 		}
@@ -191,7 +190,6 @@ bool j1Scene::Update(float dt)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && !changing_same_Level) {
-
 		//App->fade->Fade(2.0f);
 		App->map->TriggerActive = false;
 		changing_same_Level = true;
@@ -211,7 +209,11 @@ bool j1Scene::Update(float dt)
 		App->cap = !App->cap;
 
 	App->map->Draw(current_map);
-
+	if (Player != nullptr) {
+		if (Player->life <= 0) {
+			ChangeLevel(LEVEL2+1);
+		}
+	}
 	return true;
 }
 
@@ -231,6 +233,7 @@ bool j1Scene::PostUpdate()
 // Called before quitting
 bool j1Scene::CleanUp()
 {
+
 	LOG("Freeing scene");
 
 	return true;
@@ -238,28 +241,37 @@ bool j1Scene::CleanUp()
 
 void j1Scene::ChangeLevel(int level_change) {
 	
-	
+	App->entity_manager->DesrtroyEnemies();
+	if(Player!=nullptr)
+		Player->entity_collider->to_delete = true;
+	App->entity_manager->DestroyEntity(Player);
+	RELEASE(Player);
 	LEVELS aux = currentLevel;
 	if (level_change != NO_CHANGE) {
 		App->collisions->CleanUp();
-		Player->CleanUp();
 		IterateLevel(level_change);
 	}
 
 	if (currentLevel == LEVEL1) {
+		App->render->camera.x = -7;
+		App->render->camera.y = -1242;
+		Player = Player->CreatePlayer(iPoint(580, 1400));
+		Player->LoadPlayer("Character_tileset.png");
 
-		App->LoadGame("Level_1_settings.xml");
-		//App->collisions->AssignMapColliders("Level1.tmx");
 	
 	}
 	if (currentLevel == LEVEL2) {
+		App->render->camera.x = -7;
+		App->render->camera.y = -903;
+		Player = Player->CreatePlayer(iPoint(200, 1116));
+		Player->LoadPlayer("Character_tileset.png");
 
-		App->LoadGame("Level_2_settings.xml");
-		//App->collisions->AssignMapColliders("Level2.tmx");
 	}
-
+	if (currentLevel == MAIN_MENU) {
+		App->collisions->CleanUp();
+	}
 	if (currentLevel!=aux) {
-		Player->Start();
+		LoadObjects(current_map.Filename.GetString());
 		App->collisions->AssignMapColliders(current_map.Filename.GetString());
 	}
 }
@@ -280,6 +292,7 @@ void j1Scene::IterateLevel(int level_change) {
 		Level2 = false;
 		Level1 = false;
 		currentLevel = MAIN_MENU;
+		current_map = Intro_map;
 		
 	}
 

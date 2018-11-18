@@ -30,6 +30,7 @@ public:
 
 	j1Entity *CreateEntity(ENTITY_TYPE eType);
 	void DestroyEntity(j1Entity *Entity);
+	void DesrtroyEnemies();
 
 public:
 

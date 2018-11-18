@@ -59,6 +59,14 @@ public:
 		return(r);
 	}
 
+	//p2Point operator * (const float &v) {
+
+	//	r.x = x * v;
+	//	r.y = y * v;
+
+	//	return(r);
+	//}
+
 	const p2Point& operator -=(const p2Point &v)
 	{
 		x -= v.x;
@@ -71,6 +79,22 @@ public:
 	{
 		x += v.x;
 		y += v.y;
+
+		return(*this);
+	}
+
+	const p2Point& operator *= (const p2Point &v) {
+
+		x *= v.x;
+		y *= v.y;
+
+		return(*this);
+	}
+
+	const p2Point& operator *= (const float &v) {
+
+		x *= v;
+		y *= v;
 
 		return(*this);
 	}

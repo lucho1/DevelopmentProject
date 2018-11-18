@@ -8,6 +8,8 @@
 #include "j1Player.h"
 #include "j1Window.h"
 
+#include "Brofiler/Brofiler.h"
+
 j1Fade::j1Fade()
 {
 	
@@ -29,6 +31,8 @@ bool j1Fade::Start()
 // Update: draw background
 bool j1Fade::Update(float dt)
 {
+	BROFILER_CATEGORY("Fade Update", Profiler::Color::PaleVioletRed);
+
 	bool ret = true;
 
 

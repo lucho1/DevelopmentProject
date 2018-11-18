@@ -5,6 +5,7 @@
 #include "j1Scene.h"
 #include "j1Map.h"
 
+#include "Brofiler/Brofiler.h"
 
 j1Collisions::j1Collisions()
 {
@@ -62,6 +63,8 @@ bool j1Collisions::Start() {
 
 bool j1Collisions::PreUpdate() {
 
+	BROFILER_CATEGORY("Collisions PreUpdate", Profiler::Color::GreenYellow);
+
 	bool ret = true;
 
 	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
@@ -73,12 +76,13 @@ bool j1Collisions::PreUpdate() {
 		}
 	}
 
-
 	return ret;
 }
 
 
 bool j1Collisions::Update(float dt) {
+
+	BROFILER_CATEGORY("Collisions Update", Profiler::Color::PaleVioletRed);
 	
 	Collider *c1;
 	Collider *c2;
@@ -116,6 +120,7 @@ bool j1Collisions::Update(float dt) {
 
 bool j1Collisions::PostUpdate() {
 
+	BROFILER_CATEGORY("Collisions PostUpdate", Profiler::Color::YellowGreen);
 	DebugDraw();
 	return true;
 }

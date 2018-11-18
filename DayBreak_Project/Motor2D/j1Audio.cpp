@@ -172,3 +172,10 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 
 	return ret;
 }
+
+void j1Audio::ControlVolume(int vol) {
+
+	Mix_Volume(-1, vol);
+	Mix_VolumeMusic(vol);
+
+}

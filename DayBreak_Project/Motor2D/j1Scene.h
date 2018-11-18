@@ -78,9 +78,6 @@ public:
 	j1Enemy *Enemy2 = nullptr;
 	j1Enemy *Enemy3 = nullptr;
 
-	
-	//Player->CreateEnemy(iPoint(800, 1400), FLYER, "maps/Enemy2_Tileset.png", EnemiesDocument);
-
 private:
 
 	MapData Intro_map;

@@ -44,6 +44,14 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
+
+	
+
+	pugi::xml_parse_result result = SceneDocument.load_file("config.xml");
+	music_node = SceneDocument.child("config").child("music");
+
+	if (result == NULL)
+		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
 	
 	App->map->Load("Level1.tmx", Level1_map);
 	App->map->Load("Level2.tmx", Level2_map);
@@ -53,6 +61,8 @@ bool j1Scene::Start()
 		App->map->Load("Main_Menu.tmx", Intro_map);
 		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
+
+		App->audio->PlayMusic(music_node.attribute("intro2").as_string());
 
 		pathfinding = false;
 	}
@@ -78,6 +88,8 @@ bool j1Scene::Start()
 
 		if(!App->collisions->active)
 			App->collisions->Start();
+
+		App->audio->PlayMusic(music_node.attribute("level").as_string());
 	}
 
 	else if (Level2 == true) {
@@ -101,8 +113,11 @@ bool j1Scene::Start()
 
 		if (!App->collisions->active)
 			App->collisions->Start();
+
+		App->audio->PlayMusic(music_node.attribute("level").as_string());
 	}
-  
+
+	App->audio->ControlVolume(20);
 	App->render->ResetCamera();
 
 	if (pathfinding) {
@@ -113,17 +128,6 @@ bool j1Scene::Start()
 
 		RELEASE_ARRAY(data);
 	}
-
-	pugi::xml_parse_result result = SceneDocument.load_file("config.xml");
-	music_node = SceneDocument.child("config").child("music");
-
-	if (result == NULL)
-		LOG("The xml file containing the music fails. Pugi error: %s", result.description());
-
-	//Need to play more than one track (or merge them). Just comment/uncomment to change music
-	//App->audio->PlayMusic(music_node.attribute("level1_mus").as_string());
-	//App->audio->PlayMusic(music_node.attribute("back_music").as_string());
-
 	
 	pugi::xml_parse_result result3 = EnemiesDocument.load_file("Enemy2_Settings.xml");
 
@@ -132,7 +136,7 @@ bool j1Scene::Start()
 
 
 	Enemy1 = Enemy1->CreateEnemy(iPoint(1000, 1270), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
-	//Enemy2 = Enemy2->CreateEnemy(iPoint(300, 1430), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+	Enemy2 = Enemy2->CreateEnemy(iPoint(300, 1430), FLYER, "Enemy2_Tileset.png", EnemiesDocument);
 
 	pugi::xml_parse_result result4 = EnemiesDocument.load_file("Enemy1_Settings.xml");
 	if (result4 == NULL)
@@ -147,12 +151,16 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
+	BROFILER_CATEGORY("Scene PreUpdate", Profiler::Color::GreenYellow);
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+
+	BROFILER_CATEGORY("Scene Update", Profiler::Color::PaleVioletRed);
+
 	if (Change_Level) {
 
 		App->fade->Fade(2.0f);
@@ -182,7 +190,7 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN&&!changing_same_Level) {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && !changing_same_Level) {
 
 		//App->fade->Fade(2.0f);
 		App->map->TriggerActive = false;
@@ -190,43 +198,19 @@ bool j1Scene::Update(float dt)
 		//ChangeLevel(currentLevel);
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN&&!Change_Level) {
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && !Change_Level) {
 
 		Change_Level = true;
 		App->map->TriggerActive = false;
 	}
 
-	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN&&!Change_Level)
+	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level)
 		Change_Level = true;
 	
+	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+		App->cap = !App->cap;
+
 	App->map->Draw(current_map);
-
-	//int x, y;
-	//App->input->GetMousePosition(x, y);
-
-	//iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_pathfinding_map);
-	//iPoint mc2 = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y, current_map);
-
-	//iPoint mapatW = App->map->MapToWorld(mc2.x, mc2.y, current_map);
-	//iPoint pl_pos = App->map->WorldToMap(Player->player_position.x, App->player->position.y, current_map);
-	//iPoint en_pos = App->map->WorldToMap(App->player->Enemy.x, App->player->Enemy.y, current_map);
-
-	//
-	//iPoint pathtoworld = App->map->MapToWorld(map_coordinates.x, map_coordinates.y, current_pathfinding_map);
-	////iPoint pathtomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
-	////iPoint pathftomap = App->map->MapToWorld(pathtomap.x, pathtomap.y, current_map);
-	////iPoint pathftomap = App->map->WorldToMap(pathtoworld.x, pathtoworld.y, current_map);
-
-	//p2SString title("PFMapC: %d,%d (%d,%d) MapC: %d,%d(%d,%d) PlayerPos: %d,%d (%d,%d) Enemy: %d,%d (%d,%d)", map_coordinates.x, map_coordinates.y, pathtoworld.x, pathtoworld.y,
-	//	mc2.x, mc2.y, mapatW.x, mapatW.y, App->player->position.x, App->player->position.y, pl_pos.x, pl_pos.y, App->player->Enemy.x, App->player->Enemy.y, en_pos.x, en_pos.y);
-
-	///*p2SString title("%s v0.1 Info: Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d", App->GetTitle(),
-	//	current_pathfinding_map.width, current_pathfinding_map.height,
-	//	current_pathfinding_map.tile_width, current_pathfinding_map.tile_height,
-	//	current_pathfinding_map.tilesets.count(),
-	//	map_coordinates.x, map_coordinates.y);*/
-
-	//App->win->SetTitle(title.GetString());
 
 	return true;
 }
@@ -234,6 +218,8 @@ bool j1Scene::Update(float dt)
 // Called each loop iteration
 bool j1Scene::PostUpdate()
 {
+
+	BROFILER_CATEGORY("Scene PostUpdate", Profiler::Color::YellowGreen);
 	bool ret = true;
 
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)

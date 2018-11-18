@@ -58,6 +58,10 @@ public:
 	void SaveGame(const char* file) const;
 	void GetSaveGames(p2List<p2SString>& list_to_fill) const;
 
+	bool cap = true;
+	bool using_VSYNC = false;
+	uint32 frame_cap;
+
 private:
 
 	// Load config file
@@ -81,6 +85,7 @@ private:
 	// Load / Save
 	bool LoadGameNow();
 	bool SavegameNow() const;
+
 
 public:
 
@@ -116,14 +121,13 @@ private:
 	j1PerfTimer			ptimer;
 
 	j1Timer				startup_time;
-	j1Timer				frame_time;
+	j1PerfTimer			frame_time;
 	j1Timer				last_sec_frame_time;
 
 	uint64				frame_count = 0;
 	uint32				last_sec_frame_count = 0;
 	uint32				prev_last_sec_frame_count = 0;
 
-	uint32				frame_cap;
 	uint32				capped_ms;
 	float				dt;
 };

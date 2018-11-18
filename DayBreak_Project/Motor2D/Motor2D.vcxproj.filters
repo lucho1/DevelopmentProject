@@ -67,7 +67,9 @@
     <ClCompile Include="j1Player.cpp">
       <Filter>Entities\General</Filter>
     </ClCompile>
-    <ClCompile Include="j1Objects.cpp" />
+    <ClCompile Include="j1Objects.cpp">
+      <Filter>Entities\General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -160,7 +162,9 @@
     <ClInclude Include="j1Player.h">
       <Filter>Entities\General</Filter>
     </ClInclude>
-    <ClInclude Include="j1Objects.h" />
+    <ClInclude Include="j1Objects.h">
+      <Filter>Entities\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

@@ -22,8 +22,8 @@
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
-	Main_Menu = true;
-	Level1 = false;
+	Main_Menu = false;
+	Level1 = true;
 	Level2 = false;
 }
 
@@ -63,7 +63,7 @@ bool j1Scene::Start()
 		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
 
-		App->audio->PlayMusic(music_node.attribute("intro2").as_string());
+	//	App->audio->PlayMusic(music_node.attribute("intro2").as_string());
 
 		pathfinding = false;
 	}
@@ -74,15 +74,15 @@ bool j1Scene::Start()
 		LoadObjects("Level1.tmx");
 	
 		if (Player == nullptr)
-			Player = Player->CreatePlayer(iPoint(200, 1080));
+			//Player = Player->CreatePlayer(iPoint(200, 1080));
 
 		current_map = Level1_map;
 		currentLevel = LEVEL1;
 
 		pathfinding = true;
 
-		if(Player->active)
-			Player->Start();
+		/*if(Player->active)
+			Player->Start();*/
 
 		if(!App->collisions->active)
 			App->collisions->Start();
@@ -94,8 +94,8 @@ bool j1Scene::Start()
 		App->collisions->AssignMapColliders("Level2.tmx");
 		LoadObjects("Level2.tmx");
 
-		if (Player == nullptr)
-			Player = Player->CreatePlayer(iPoint(580, 1400));
+		/*if (Player == nullptr)
+			Player = Player->CreatePlayer(iPoint(580, 1400));*/
 
 		current_map = Level2_map;
 		//current_pathfinding_map = Level2_pathfinding_map;
@@ -103,8 +103,8 @@ bool j1Scene::Start()
 
 		pathfinding = false;
 
-		if (Player->active)
-			Player->Start();
+		/*if (Player->active)
+			Player->Start();*/
 
 		if (!App->collisions->active)
 			App->collisions->Start();
@@ -188,10 +188,11 @@ bool j1Scene::Update(float dt)
 
 	App->map->Draw(current_map);
 	if (Player != nullptr) {
-		if (Player->life <= 0) {
+
+		/*if (Player->life <= 0) {
 			if(Player->Dead.Finished())
 			ChangeLevel(LEVEL2+1);
-		}
+		}*/
 	}
 	return true;
 }
@@ -220,13 +221,13 @@ bool j1Scene::CleanUp()
 
 void j1Scene::ChangeLevel(int level_change) {
 	
-	App->entity_manager->DesrtroyEnemies();
+//	App->entity_manager->DesrtroyEnemies();
 
-	if(Player!=nullptr)
+	/*if(Player!=nullptr)
 		Player->entity_collider->to_delete = true;
 
 	App->entity_manager->DestroyEntity(Player);
-	RELEASE(Player);
+	RELEASE(Player);*/
 	LEVELS aux = currentLevel;
 
 
@@ -246,11 +247,11 @@ void j1Scene::ChangeLevel(int level_change) {
 
 	if (currentLevel == LEVEL1) {
 
-		App->audio->PlayMusic(music_node.attribute("level").as_string());
+		//App->audio->PlayMusic(music_node.attribute("level").as_string());
 		App->render->camera.x = -7;
 		App->render->camera.y = -1242;
-		Player = Player->CreatePlayer(iPoint(580, 1400));
-		Player->LoadPlayer("Character_tileset.png");
+		/*Player = Player->CreatePlayer(iPoint(580, 1400));
+		Player->LoadPlayer("Character_tileset.png");*/
 
 
 		//LOAD SCENE ENEMIES
@@ -262,7 +263,7 @@ void j1Scene::ChangeLevel(int level_change) {
 		pugi::xml_parse_result enemies_pos_result = EnemiesPositions.load_file("Enemy_Positions.xml");
 		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy2");
 
-		App->entity_manager->LoadSceneEnemeies(en_pos, FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+		//App->entity_manager->LoadSceneEnemeies(en_pos, FLYER, "Enemy2_Tileset.png", EnemiesDocument);
 
 		//Load enemy Walkers
 		pugi::xml_parse_result Enemies_doc_res2 = EnemiesDocument.load_file("Enemy1_Settings.xml");
@@ -271,17 +272,17 @@ void j1Scene::ChangeLevel(int level_change) {
 
 		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy1");
 
-		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+		//App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 
 	
 	}
 	if (currentLevel == LEVEL2) {
 
-		App->audio->PlayMusic(music_node.attribute("level").as_string());
+		//App->audio->PlayMusic(music_node.attribute("level").as_string());
 		App->render->camera.x = -7;
 		App->render->camera.y = -903;
-		Player = Player->CreatePlayer(iPoint(200, 1116));
-		Player->LoadPlayer("Character_tileset.png");
+		/*Player = Player->CreatePlayer(iPoint(200, 1116));
+		Player->LoadPlayer("Character_tileset.png");*/
 
 		//LOAD SCENE ENEMIES
 		//Load Enemy Flyers
@@ -292,7 +293,7 @@ void j1Scene::ChangeLevel(int level_change) {
 		pugi::xml_parse_result enemies_pos_result = EnemiesPositions.load_file("Enemy_Positions.xml");
 		en_pos = EnemiesPositions.child("config").child("Level2").child("Enemy2");
 
-		App->entity_manager->LoadSceneEnemeies(en_pos, FLYER, "Enemy2_Tileset.png", EnemiesDocument);
+		//App->entity_manager->LoadSceneEnemeies(en_pos, FLYER, "Enemy2_Tileset.png", EnemiesDocument);
 
 		//Load enemy Walkers
 		pugi::xml_parse_result Enemies_doc_res2 = EnemiesDocument.load_file("Enemy1_Settings.xml");
@@ -301,7 +302,7 @@ void j1Scene::ChangeLevel(int level_change) {
 
 		en_pos = EnemiesPositions.child("config").child("Level2").child("Enemy1");
 
-		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+		//App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 
 	}
 	if (currentLevel == MAIN_MENU) {
@@ -386,8 +387,8 @@ bool j1Scene::LoadObjects(const char*file_name) {
 				int y = collider.attribute("y").as_int();
 
 				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSH);
-				j1Objects* object = nullptr;
-				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::PUSHON);
+			//	j1Objects* object = nullptr;
+				//object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::PUSHON);
 
 
 			}
@@ -398,8 +399,8 @@ bool j1Scene::LoadObjects(const char*file_name) {
 				int y = collider.attribute("y").as_int();
 
 				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_PUSHOFF);
-				j1Objects* object = nullptr;
-				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::PUSHOFF);
+				/*j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::PUSHOFF);*/
 
 			}
 
@@ -409,8 +410,8 @@ bool j1Scene::LoadObjects(const char*file_name) {
 				int y = collider.attribute("y").as_int();
 
 				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::TRIGGER_WIN);
-				j1Objects* object = nullptr;
-				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::WIN);
+				/*j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::WIN);*/
 			}
 
 			if (strcmp(collidertype, "Bloc_Colliders") == 0) {
@@ -419,8 +420,8 @@ bool j1Scene::LoadObjects(const char*file_name) {
 				int y = collider.attribute("y").as_int();
 
 				App->collisions->AddCollider({ x, y, collider.attribute("width").as_int(),collider.attribute("height").as_int() }, COLLIDER_TYPE::COLLIDER_BLINKING);
-				j1Objects* object = nullptr;
-				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::BLINK_BLOCK);
+				/*j1Objects* object = nullptr;
+				object = object->CreateObject(iPoint(x, y), OBJECT_TYPE::BLINK_BLOCK);*/
 
 			}
 		}

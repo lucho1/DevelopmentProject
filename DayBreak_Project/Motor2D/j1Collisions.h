@@ -32,13 +32,13 @@ struct Collider {
 	bool to_delete = false;
 	COLLIDER_TYPE type = COLLIDER_NONE;
 	j1Module *callback = nullptr;
-	j1Entity *callback2 = nullptr;
+//	j1Entity *callback2 = nullptr;
 
 	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Module *callback = nullptr) :
 		rect(rect), type(type), callback(callback) {}
 
-	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *callback = nullptr) :
-		rect(rect), type(type), callback2(callback) {}
+//	Collider(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *callback = nullptr) :
+//		rect(rect), type(type), callback2(callback) {}
 	
 	void SetPos(int x, int y) { rect.x = x; rect.y = y; }
 	bool CheckCollision(const SDL_Rect &r) const;
@@ -75,7 +75,7 @@ public:
 
 	void DebugDraw();
 	Collider* AddCollider(SDL_Rect r, COLLIDER_TYPE type, j1Module*callback = nullptr);
-	Collider* AddColliderEntity(SDL_Rect r, COLLIDER_TYPE type, j1Entity*callback = nullptr);
+	//Collider* AddColliderEntity(SDL_Rect r, COLLIDER_TYPE type, j1Entity*callback = nullptr);
 	void AssignMapColliders(const char* file_name);
 
 	bool debug = false;

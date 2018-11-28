@@ -82,14 +82,14 @@ bool j1Collisions::PreUpdate() {
 
 	bool ret = true;
 
-	/*for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
 
 		if (colliders[i] != nullptr && colliders[i]->to_delete) {
 
 			delete colliders[i];
 			colliders[i] = nullptr;
 		}
-	}*/
+	}
 
 	return ret;
 }
@@ -122,10 +122,10 @@ bool j1Collisions::Update(float dt) {
 					if (matrix[c2->type][c1->type] && c2->callback)
 						c2->callback->OnCollision(c2, c1);
 
-					if (matrix[c1->type][c2->type] && c1->callback2)
+					/*if (matrix[c1->type][c2->type] && c1->callback2)
 						c1->callback2->OnCollision(c1, c2);
 					if (matrix[c2->type][c1->type] && c2->callback2)
-						c2->callback2->OnCollision(c2, c1);
+						c2->callback2->OnCollision(c2, c1);*/
 			}
 		}
 	}
@@ -224,20 +224,20 @@ Collider* j1Collisions::AddCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Module 
 	return ret;
 }
 
-Collider* j1Collisions::AddColliderEntity(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *callback) {
-
-	Collider *ret = nullptr;
-
-	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
-
-		if (colliders[i] == nullptr) {
-
-			ret = colliders[i] = new Collider(rect, type, callback);
-			break;
-		}
-	}
-	return ret;
-}
+//Collider* j1Collisions::AddColliderEntity(SDL_Rect rect, COLLIDER_TYPE type, j1Entity *callback) {
+//
+//	Collider *ret = nullptr;
+//
+//	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+//
+//		if (colliders[i] == nullptr) {
+//
+//			ret = colliders[i] = new Collider(rect, type, callback);
+//			break;
+//		}
+//	}
+//	return ret;
+//}
 
 
 bool Collider::CheckCollision(const SDL_Rect &r) const {

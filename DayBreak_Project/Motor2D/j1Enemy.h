@@ -57,7 +57,7 @@ public:
 
 	ENEMY_TYPE type;
 	Direction Current_Direction;
-	Collider* Last_collided;
+	Collider* Last_collided = nullptr;
 	iPoint Detect_Range;
 	
 

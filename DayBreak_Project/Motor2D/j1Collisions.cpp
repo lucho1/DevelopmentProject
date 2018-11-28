@@ -82,14 +82,14 @@ bool j1Collisions::PreUpdate() {
 
 	bool ret = true;
 
-	for (uint i = 0; i < MAX_COLLIDERS; ++i) {
+	/*for (uint i = 0; i < MAX_COLLIDERS; ++i) {
 
 		if (colliders[i] != nullptr && colliders[i]->to_delete) {
 
 			delete colliders[i];
 			colliders[i] = nullptr;
 		}
-	}
+	}*/
 
 	return ret;
 }

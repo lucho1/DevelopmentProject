@@ -28,12 +28,8 @@ public:
 
 	SDL_Rect& GetCurrentFrame(float dt)
 	{
-
-		//if (App->cap) 
-		dt = App->frame_cap;
 		
-		current_frame += (speed * (dt / App->frame_cap));
-
+		current_frame += speed;
 
 		if (current_frame >= last_frame) {
 

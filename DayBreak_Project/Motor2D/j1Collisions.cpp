@@ -10,6 +10,10 @@
 j1Collisions::j1Collisions()
 {
 
+	for (int i = 0; i < MAX_COLLIDERS; i++) 
+		colliders[i] = nullptr;
+	
+
 	//Set all matrix positions to false
 	for (int i = 0; i < COLLIDER_MAX; i++) {
 		for (int j = 0; j < COLLIDER_MAX; j++)

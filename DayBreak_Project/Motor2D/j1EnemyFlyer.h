@@ -17,6 +17,7 @@ public:
 	void FixUpdate(float dt) override;
 	void Draw(float dt);
 
+
 	bool Detect_Area() override;
 	bool Exploding_Area();
 	bool Start_exploding = false;
@@ -25,7 +26,7 @@ public:
 
 public:
 
-	p2DynArray<iPoint>* enemy_path;
+	p2DynArray<iPoint>* enemy_path = nullptr;
 	
 	SDL_Rect pathrect;
 

@@ -74,10 +74,6 @@ public:
 	//Player
 	j1Player *Player = nullptr;
 
-	j1Enemy *Enemy1 = nullptr;
-	j1Enemy *Enemy2 = nullptr;
-	j1Enemy *Enemy3 = nullptr;
-
 private:
 
 	MapData Intro_map;

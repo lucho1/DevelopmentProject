@@ -76,7 +76,7 @@ public:
 
 	int life;
 	ENTITY_TYPE type;
-	Collider* entity_collider;
+	Collider* entity_collider = nullptr;
 
 };
 

@@ -24,7 +24,6 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
 	Animation_node = EnemiesDocument.child("config").child("AnimationCoords").child("Dead");
 	LoadPushbacks(Animation_node, Dead);
 
-	falling = true;
 	Current_Direction = LEFT;
 	current_animation = &Idle;
 
@@ -102,7 +101,7 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 
 	Current_Direction = App->pathfinding->current_Direction(path);
 
-	if (App->cap)
+	//if (App->cap)
 		dt = App->frame_cap;
 
 	enemy_velocity *= (dt / App->frame_cap);

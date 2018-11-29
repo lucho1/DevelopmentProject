@@ -67,21 +67,18 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 
 	p2List_item<j1Entity*>* item = App->entity_manager->entities_list.start;
 
-
 	for (; item != nullptr; item = item->next) {
 
 		if (c1->type == COLLIDER_ENEMY && c2->type == COLLIDER_PLAYER_BULLET) {
-			if (Last_collided == c2) {
+
+			if (Last_collided == c2) 
 				return;
-			}
+			
 			life -= 5;
 			Last_collided = c2;
-				App->particles->AddParticle(App->particles->Blood, enemy_position.x, enemy_position.y, COLLIDER_NONE, iPoint(0, 0), 1.5f, SDL_FLIP_NONE);
-			
+			App->particles->AddParticle(App->particles->Blood, enemy_position.x, enemy_position.y, COLLIDER_NONE, iPoint(0, 0), 1.5f, SDL_FLIP_NONE);	
 		}
-
-
-		if (item->data->type == ENTITY_TYPE::ENEMY_ENT && c1 == item->data->entity_collider) {
+		if (item->data->type == ENTITY_TYPE::ENEMY_ENT ) {
 
 			if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
 
@@ -94,21 +91,19 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 					error_margin = (c2->rect.x + c2->rect.w) - c1->rect.x;
 
 				//If the enemy falls less than a pixel over a collider, it falls (and it looks ok)
-				if (error_margin > 2) {
+				//Checking Y Axis Collisions
+				if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - enemy_velocity.y) {
 
-					//Checking Y Axis Collisions
-					if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - enemy_velocity.y) {
-
-						enemy_velocity.y = 0;
-						enemy_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
-					}
-					else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + enemy_velocity.y) {
-						falling = false;
-						enemy_velocity.y = 0;
-						enemy_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
-					}
+					enemy_velocity.y = 0;
+					enemy_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 				}
+				else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + enemy_velocity.y) {
+					onGround = true;
+					enemy_velocity.y = 0;
+					enemy_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 
+				}
+			
 				//Checking X Axis Collisions
 				if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + enemy_velocity.x) { //Colliding Left (going right)
 
@@ -154,30 +149,17 @@ j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path
 	return Enemy;
 }
 
-void j1Enemy::DestroyEnemy(j1Enemy *Enemy) {
 
-	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
-
-	while (item != nullptr) {
-
-		if (item->data == Enemy) {
-			App->entity_manager->entities_list.del(item);
-			break;
-		}
-
-		item = item->next;
-	}
-}
-void j1Enemy::CleanUp() {
-
-	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
-
-	while (item != nullptr) {
-		if (item->data->type == ENTITY_TYPE::ENEMY_ENT){
-			App->entity_manager->entities_list.del(item);
-			break;
-		}
-		item = item->next;
-	}
-
-}
+//void j1Enemy::CleanUp() {
+//
+//	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
+//
+//	while (item != nullptr) {
+//		if (item->data->type == ENTITY_TYPE::ENEMY_ENT){
+//			App->entity_manager->entities_list.del(item);
+//			break;
+//		}
+//		item = item->next;
+//	}
+//
+//}

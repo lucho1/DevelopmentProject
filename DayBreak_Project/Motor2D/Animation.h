@@ -6,12 +6,15 @@
 
 class Animation
 {
+
 public:
 
 	bool loop = true;
 	float speed = 1.0f;
 	SDL_Rect frames[MAX_FRAMES];
+
 private:
+
 	float current_frame;
 	int last_frame = 0;
 	int loops = 0;
@@ -26,8 +29,8 @@ public:
 	SDL_Rect& GetCurrentFrame(float dt)
 	{
 
-		if (App->cap) 
-			dt = App->frame_cap;
+		//if (App->cap) 
+		dt = App->frame_cap;
 		
 		current_frame += (speed * (dt / App->frame_cap));
 

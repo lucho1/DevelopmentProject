@@ -25,10 +25,8 @@ public:
 	
 public:
 
-	//Create/Destroy an Enemy
+	//Create an Enemy
 	j1Enemy* CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path, pugi::xml_document &EnemiesDocument); //Remember to put maps/ at path
-	
-	void DestroyEnemy(j1Enemy *Enemy);
 
 	void j1Enemy::OnCollision(Collider *c1, Collider *c2) override;
 
@@ -39,25 +37,22 @@ public:
 
 	//Pushbacks loading
 	void LoadPushbacks(pugi::xml_node node, Animation &animation);
-
 	virtual bool Shoot_Area() { return true; };
 	
-	void CleanUp();
+	//void CleanUp();
 
 	virtual bool Detect_Area() { return true; };
-
 	virtual void Patrol(float dt) {};
-
 	virtual void Shoot() {};
 
 public:
 
-	bool falling = false;;
 	bool Path_Found = false;
+	bool onGround;
 
 	ENEMY_TYPE type;
 	Direction Current_Direction;
-	Collider* Last_collided;
+	Collider* Last_collided = nullptr;
 	iPoint Detect_Range;
 	
 

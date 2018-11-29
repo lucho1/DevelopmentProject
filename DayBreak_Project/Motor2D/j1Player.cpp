@@ -194,13 +194,11 @@ void j1Player::FixUpdate(float dt) {
 			LOG("GOD MODE ACTIVE");
 			jump = true;
 			fall = false;
-			life += 20;
+			//life += 20;
 
 		}
 		else {
-
 			fall = true;
-			life = 40;
 		}
 	}
 
@@ -208,7 +206,8 @@ void j1Player::FixUpdate(float dt) {
 
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
-		App->entity_manager->DestroyEntity(this);
+		if(Dead.Finished())
+			App->entity_manager->DestroyEntity(this);
 
 	}
 	LOG("%d", life);
@@ -244,7 +243,7 @@ void j1Player::Draw(float dt) {
 
 void j1Player::HandleInput(float dt) {
 
-	if (App->cap)
+	//if (App->cap)
 		dt = App->frame_cap;
 		
 	player_velocity *= (dt / App->frame_cap);
@@ -405,15 +404,17 @@ bool j1Player::Save(pugi::xml_node& data) const
 void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	if (c2->type == COLLIDER_ENEMY_BULLET) {
-		if (Last_collided == c2) {
+
+		if (Last_collided == c2) 
 			return;
-		}
+		
 		if (App->render->DoCameraShake == false) {
 			App->render->DoCameraShake = true;
 			App->render->power = 3.0f;
 			App->render->Time_Doing_Shake = 0.3f;
 			PERF_START(App->render->CameraShake_Time);
 		}
+
 		life -= 5;
 		LOG("%d", life);
 		Last_collided = c2;
@@ -422,7 +423,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	}
 	//Checking collision with walls
 	if (c2->type == COLLIDER_STATIC || (c2->type == COLLIDER_BLINKING && App->map->TriggerActive == true)) {
-
 		
 		//Calculating an error margin of collision to avoid problems with colliders corners
 		int error_margin = 0;
@@ -484,9 +484,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
 		App->map->TriggerActive = true;
 
-		
-	
-
 	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
 		App->map->TriggerActive = false;
 
@@ -546,7 +543,6 @@ void j1Player::LoadPlayer(const char *file_name) {
 	LoadPushbacks(Animation_node, Gun_Run);
 	Animation_node = PlayerDocument.child("config").child("AnimationCoords").child("Gun").child("Shoot");
 	LoadPushbacks(Animation_node, Gun_Shot);
-
 
 
 	PlayerSettings = PlayerDocument.child("config");

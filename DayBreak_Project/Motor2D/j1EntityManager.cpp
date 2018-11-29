@@ -96,9 +96,11 @@ bool j1EntityManager::CleanUp() {
 	item = entities_list.start;
 
 	while (item != nullptr) {
+
 		if (item->data->entity_collider != nullptr) {
 			item->data->entity_collider->to_delete = true;
 		}
+
 		RELEASE(item->data);
 		item = item->next;
 	}

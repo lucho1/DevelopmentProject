@@ -63,7 +63,7 @@ bool j1Scene::Start()
 		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
 
-		App->audio->PlayMusic(music_node.attribute("intro2").as_string());
+	//	App->audio->PlayMusic(music_node.attribute("intro2").as_string());
 
 		pathfinding = false;
 	}
@@ -98,7 +98,7 @@ bool j1Scene::Start()
 			Player = Player->CreatePlayer(iPoint(580, 1400));
 
 		current_map = Level2_map;
-		//current_pathfinding_map = Level2_pathfinding_map;
+		current_pathfinding_map = Level2_pathfinding_map;
 		currentLevel = LEVEL2;
 
 		pathfinding = false;
@@ -174,15 +174,27 @@ bool j1Scene::Update(float dt)
 	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level)
 		Change_Level = true;
 	
-	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN) {
+
 		App->cap = !App->cap;
 
-	App->map->Draw(current_map);
+		if(App->cap)
+			App->frame_cap = 30;
+		else 
+			App->frame_cap = 60;
+		
+		App->capped_ms = 1000 / App->frame_cap;
+	}
+
 	if (Player != nullptr) {
+
 		if (Player->life <= 0) {
+			if(Player->Dead.Finished())
 			ChangeLevel(LEVEL2+1);
 		}
 	}
+
+	App->map->Draw(current_map);
 	return true;
 }
 
@@ -204,7 +216,6 @@ bool j1Scene::CleanUp()
 {
 
 	LOG("Freeing scene");
-
 	return true;
 }
 
@@ -236,7 +247,7 @@ void j1Scene::ChangeLevel(int level_change) {
 
 	if (currentLevel == LEVEL1) {
 
-		App->audio->PlayMusic(music_node.attribute("level").as_string());
+		//App->audio->PlayMusic(music_node.attribute("level").as_string());
 		App->render->camera.x = -7;
 		App->render->camera.y = -1242;
 		Player = Player->CreatePlayer(iPoint(580, 1400));
@@ -267,7 +278,7 @@ void j1Scene::ChangeLevel(int level_change) {
 	}
 	if (currentLevel == LEVEL2) {
 
-		App->audio->PlayMusic(music_node.attribute("level").as_string());
+		//App->audio->PlayMusic(music_node.attribute("level").as_string());
 		App->render->camera.x = -7;
 		App->render->camera.y = -903;
 		Player = Player->CreatePlayer(iPoint(200, 1116));

@@ -8,8 +8,8 @@
 
 #include "Brofiler/Brofiler.h"
 
-j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(enemy_position, ENEMY_TYPE::FLYER) {
-	
+j1EnemyWalker::j1EnemyWalker(iPoint pos, const char* path, pugi::xml_document &EnemiesDocument) : j1Enemy(enemy_position, ENEMY_TYPE::FLYER) {
+
 	enemy_position = pos;
 	LoadEnemy(path, EnemiesDocument);
 
@@ -23,7 +23,7 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos,const char* path, pugi::xml_document &En
 	LoadPushbacks(Animation_node, Dead);
 
 	current_animation = &Idle;
-	falling = true;
+	onGround = false;
 	Patrol_Range[2] = {};
 	Able_to_Shoot = true;
 	
@@ -116,7 +116,7 @@ void j1EnemyWalker::Patrol(float dt) {
 
 	current_animation = &Run;
 
-	if (App->cap)
+	//if (App->cap)
 		dt = App->frame_cap;
 
 	Patrol_velocity *= (dt / App->frame_cap);
@@ -213,8 +213,12 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 	//}
 	//else if (falling == false)
 	//	enemy_velocity.y = 0;
+	if (onGround == false) {
+		enemy_velocity.y = 4;
+		enemy_position.y += enemy_velocity.y;
+	}
 
-	if (App->cap)
+	//if(App->cap)
 		dt = App->frame_cap;
 
 	enemy_velocity *= (dt / App->frame_cap);
@@ -222,7 +226,7 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 	Run.speed = 0.15f;
 
 	Current_Direction = App->pathfinding->current_Direction(path);
-	
+	enemy_velocity.x = 5.5;
 	switch (Current_Direction) {
 
 	case RIGHT:
@@ -247,6 +251,7 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 		break;
 	}
 
+	onGround = false;
 	//falling = true;
 
 }

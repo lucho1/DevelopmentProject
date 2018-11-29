@@ -229,11 +229,9 @@ void j1App::FinishUpdate()
 	sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i   Av.FPS: %.2f   Last Frame Ms: %02u || VSYNC: %s   Framerate Cap: %s ",
 		frames_on_last_update, avg_fps, last_frame_ms, vsync_, cap_string);
 
-
-
 	App->win->SetTitle(title);
 
-	if (cap && last_frame_ms < capped_ms)
+	if (last_frame_ms < capped_ms)
 		SDL_Delay(capped_ms - last_frame_ms);
 
 }
@@ -388,9 +386,11 @@ bool j1App::LoadGameNow()
 
 		p2List_item<j1Module*>* item = modules.start;
 		ret = true;
+
 		p2List_item<j1Entity*>* item2 = entity_manager->entities_list.start;
+
 		while (item2 != NULL && ret == true) {
-			ret= item2->data->Load(root.child(item->data->name.GetString()));
+			ret = item2->data->Load(root.child(item->data->name.GetString()));
 			item2 = item2->next;
 		}
 

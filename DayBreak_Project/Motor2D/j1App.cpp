@@ -35,9 +35,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	map = new j1Map();
 	pathfinding = new j1PathFinding();
 	collisions = new j1Collisions();
-	//particles = new j1Particles();
+	particles = new j1Particles();
 	fade = new j1Fade();
-	//entity_manager = new j1EntityManager();
+	entity_manager = new j1EntityManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -50,8 +50,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(pathfinding);
 	
 	AddModule(scene);
-//	AddModule(entity_manager);
-	//AddModule(particles);
+	AddModule(entity_manager);
+	AddModule(particles);
 	AddModule(collisions);
 	AddModule(fade);
 
@@ -387,12 +387,12 @@ bool j1App::LoadGameNow()
 		p2List_item<j1Module*>* item = modules.start;
 		ret = true;
 
-		//p2List_item<j1Entity*>* item2 = entity_manager->entities_list.start;
+		p2List_item<j1Entity*>* item2 = entity_manager->entities_list.start;
 
-		/*while (item2 != NULL && ret == true) {
-			ret= item2->data->Load(root.child(item->data->name.GetString()));
+		while (item2 != NULL && ret == true) {
+			ret = item2->data->Load(root.child(item->data->name.GetString()));
 			item2 = item2->next;
-		}*/
+		}
 
 		while(item != NULL && ret == true)
 		{

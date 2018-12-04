@@ -61,8 +61,8 @@ public:
 
 	bool cap = true;
 	bool using_VSYNC = false;
-	uint32				frame_cap;
-	uint32				capped_ms = -1;
+	uint32 frame_cap;
+	uint32				capped_ms;
 
 private:
 

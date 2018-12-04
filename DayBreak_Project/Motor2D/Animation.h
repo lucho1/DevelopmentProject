@@ -29,7 +29,7 @@ public:
 	SDL_Rect& GetCurrentFrame(float dt)
 	{
 		
-		current_frame += speed*dt;
+		current_frame += speed;
 
 		if (current_frame >= last_frame) {
 

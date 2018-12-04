@@ -58,11 +58,10 @@ void j1Player::Start() {
 void j1Player::FixUpdate(float dt) {
 
 	BROFILER_CATEGORY("Player FixUpdate", Profiler::Color::IndianRed);
+	HandleInput(dt);
 
 	if (life > 0) {
 
-		HandleInput(dt);
-		
 		//Gun Handle
 		if ((!jump || !fall) && state != pl_RUN) {
 
@@ -91,29 +90,30 @@ void j1Player::FixUpdate(float dt) {
 		}
 
 
-		//if (desaccelerating == true) {
+		if (desaccelerating == true) {
 
-		//	if (acceleration.x > 0) {
+			if (acceleration.x > 0) {
 
-		//		acceleration.x -= acceleration.x; //?? Original: 0.2f
+				acceleration.x -= acceleration.x; //?? Original: 0.2f
 
-		//		if (direction_x == pl_RIGHT)
-		//			player_position.x += acceleration.x;
+				if (direction_x == pl_RIGHT)
+					player_position.x += acceleration.x;
 
-		//		else if (direction_x == pl_LEFT)
-		//			player_position.x -= acceleration.x;
-		//	}
-		//	else
-		//		desaccelerating = false;
+				else if (direction_x == pl_LEFT)
+					player_position.x -= acceleration.x;
+			}
+			else
+				desaccelerating = false;
 
-		//}
+		}
 
 		//JUMP
-		if (jump) {
+		if (jump || doublejump) {
 
+			if (jump)
 				current_animation = &Jump;
 
-			if (player_velocity.y >= 0) {
+			if (player_velocity.y >= 0 && !jump_falling) {
 
 				if (direction_x == pl_RIGHT) {
 
@@ -133,29 +133,31 @@ void j1Player::FixUpdate(float dt) {
 						angle -= 1;
 
 				}
-				
-				//player_velocity.y = player_velocity.y /*- acceleration.y* dt /2*/; //?a
-				player_position.y -= (player_velocity.y) *dt;
+
 				fall = false;
+				player_position.y -= player_velocity.y;
+				player_velocity.y -= (acceleration.x * 2); //Original: 0.43f
 			}
 
 			else if (player_velocity.y < 0) {
-				jump = false;
-				fall = true;
-			}
 
-		
+				jump_falling = true;
+				fall = true;
+
+			}
 		}
 
-	
+		if (!jump)
+			doublejump = true;
+
 
 		//FALL
 		if (fall) {
 
 			Jump.Reset();
-			current_animation = &Fall;
 
-			if (player_velocity.y <= MaxVelocity.y*dt) {
+			current_animation = &Fall;
+			if (player_velocity.y < initial_vel.y) {
 
 				if (direction_x == pl_RIGHT) {
 
@@ -177,10 +179,11 @@ void j1Player::FixUpdate(float dt) {
 
 				}
 
-				/*player_velocity.y += acceleration.y*dt;*/ //?a
+				player_velocity.y += acceleration.y;
+				acceleration.y += acceleration.x; //?? original: 0.2f
 			}
 
-			player_position.y += (player_velocity.y)*dt; //?a
+			player_position.y += player_velocity.y;
 		}
 
 
@@ -206,7 +209,7 @@ void j1Player::FixUpdate(float dt) {
 			App->entity_manager->DestroyEntity(this);
 
 	}
-	LOG("Velocity in x: %f, Velocity in y: %f  ", player_velocity.x,player_velocity.y);
+	LOG("%d", life);
 
 }
 
@@ -233,16 +236,15 @@ void j1Player::Draw(float dt) {
 		entity_collider->SetPos(player_position.x, player_position.y);
 		App->render->Blit(Player_texture, player_position.x, player_position.y, &(current_animation->GetCurrentFrame(dt)), 1, 0, 0, 0, SDL_FLIP_HORIZONTAL, 0.4f);
 		App->render->Blit(Player_texture, player_position.x + Adjusting_Gun_position.x - 30, player_position.y + Adjusting_Gun_position.y, &(Gun_current_animation->GetCurrentFrame(dt)), 1, angle, 60, 0, SDL_FLIP_HORIZONTAL, 0.4f);
-	
 	}
 
 }
 
 void j1Player::HandleInput(float dt) {
-
-	//player_velocity *= dt;
-	//acceleration *= dt;
-	//initial_vel *= dt;
+		
+	player_velocity *= dt;
+	acceleration *= dt;
+	initial_vel *= dt;
 	
 
 	//God mode
@@ -256,14 +258,14 @@ void j1Player::HandleInput(float dt) {
 		state = State::pl_RUN;
 
 		desaccelerating = false;
-
+		//player_velocity.x = player_velocity.x; //??
 
 		direction_x = pl_RIGHT;
 
-		player_position.x += (player_velocity.x * dt);
+		player_position.x += (player_velocity.x + acceleration.x);
 
-		/*if (player_velocity.x <= MaxVelocity.x) //?a
-			player_velocity.x += acceleration.x;*/
+		if (acceleration.x <= MaxVelocity.x)
+			acceleration.x += acceleration.x; //?? WATCHOUT HERE 0.2f was the original
 
 
 		Gun_current_animation = &Gun_Run;
@@ -277,22 +279,26 @@ void j1Player::HandleInput(float dt) {
 			angle = 0;
 	}
 
-	/*else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP && !jump && !desaccelerating)
+	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP && !jump && !desaccelerating)
 		desaccelerating = true;
-*/
+
+	else
+		state = State::pl_IDLE;
 
 	//LEFT
-	else if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
 
 		state = State::pl_RUN;
 
 		desaccelerating = false;
+		//player_velocity.x = player_velocity.x; //??
+
 		direction_x = pl_LEFT;
 
-		player_position.x -= player_velocity.x* dt;
+		player_position.x -= player_velocity.x + acceleration.x;
 
-		/*if (player_velocity.x <= MaxVelocity.x) //?a
-			player_velocity.x += acceleration.x;*/
+		if (acceleration.x < MaxVelocity.x)
+			acceleration.x += acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
 
 		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
@@ -306,41 +312,44 @@ void j1Player::HandleInput(float dt) {
 
 	}
 
-	else {
-		state = State::pl_IDLE;
-			player_velocity.x =50*dt; //?a
-	}
-
-	//if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP && !jump && !desaccelerating)
-	//	desaccelerating = true;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP && !jump && !desaccelerating)
+		desaccelerating = true;
 
 	if (!God) {
 
 		//Y axis Movement (UP)
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
-			player_velocity.y = 325*dt; //?a
-			jump = true;
 
+			jump = true;
+			jump_falling = false;
+
+			acceleration.y = acceleration.x; //?? Same than upwards, original: 0.2f
+			auxY = player_position.y;
+			player_velocity.y = initial_vel.y;
 		}
 
-		else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && (jump||fall) && doublejump && !God) {
-			jump = true;
-			player_velocity.y = 300*dt;  //?a
+		else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
+
 			doublejump = false;
+			jump_falling = false;
+
+			acceleration.y = acceleration.x; //?? Same
+			auxY = player_position.y;
+			player_velocity.y = initial_vel.y;
 		}
 	}
 	else {
 
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 
-			player_velocity.y = initial_vel.y/** dt*/; //?a
-			player_position.y -= player_velocity.y* dt;
+			player_velocity.y = initial_vel.y;
+			player_position.y -= player_velocity.y;
 		}
 
 		else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
 
-			player_velocity.y = initial_vel.y/** dt*/;  //?a
-			player_position.y += player_velocity.y* dt;
+			player_velocity.y = initial_vel.y;
+			player_position.y += player_velocity.y;
 		}
 
 	}
@@ -353,13 +362,13 @@ void j1Player::HandleInput(float dt) {
 		if (direction_x == pl_RIGHT) {
 
 			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, fPoint(1000, 0), 0.8f); //Original speed 16, 0
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x /*+ acceleration.x*/, 0), 1.1f); //?a
+			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x + acceleration.x, 0), 1.1f);
 		}
 
 		else if (direction_x == pl_LEFT) {
 
 			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, fPoint(-1000, 0), 0.8f, SDL_FLIP_HORIZONTAL); //Original speed 16, 0
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x /*- acceleration.x*/, 0), 1.1f); //?a
+			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
 		}
 
 		Mix_PlayChannel(-1, shoot_pl, 0);
@@ -422,39 +431,38 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		if (error_margin > 1) {
 
 			//Checking Y Axis Collisions
-			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - player_velocity.y*App->GetDT() /*- acceleration.y*App->GetDT()*/) { //Colliding down (jumping) //?a
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - player_velocity.y - acceleration.y) { //Colliding down (jumping)
 			
 				fall = false;
-				
+				doublejump = false;
 				player_velocity.y = 0.0f;
-				//acceleration.y = acceleration.x; //?? Same than upwards
+				acceleration.y = acceleration.x; //?? Same than upwards
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
-			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y*App->GetDT() /*+ acceleration.y*App->GetDT()*/) { //Colliding Up (falling) //?a
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y + acceleration.y) { //Colliding Up (falling)
 				
 				fall = false;
 				jump = false;
-				doublejump = true;
 				player_velocity.y = 0.0f;
-				//acceleration.y = acceleration.x; //?? Same
+				acceleration.y = acceleration.x; //?? Same
 				player_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
 		}
 
 		//Checking X Axis Collisions
-		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + player_velocity.x*App->GetDT() /*+ acceleration.x*App->GetDT()*/) { //Colliding Left (going right) //?a
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + player_velocity.x + acceleration.x) { //Colliding Left (going right)
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
-			//acceleration.x /= 1.1f; //??
+			acceleration.x /= 1.1f; //??
 			player_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 1;
 
 		}
-		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - player_velocity.x*App->GetDT() /*-acceleration.x*App->GetDT()*/) { //Colliding Right (going left)
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - player_velocity.x-acceleration.x) { //Colliding Right (going left)
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
-			//acceleration.x /= 1.1f; //??
+			acceleration.x /= 1.1f; //??
 			player_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 1;
 
 		}
@@ -544,12 +552,8 @@ void j1Player::LoadPlayer(const char *file_name) {
 	acceleration.y = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.y").as_float();
 
 	MaxVelocity.x = initial_vel.x = PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.x").as_float();
-	MaxVelocity.y = initial_vel.y = PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.y").as_float();
-
 	initial_vel.x = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.x").as_float();
 	initial_vel.y = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.y").as_float();
-	initial_vel *= App->GetDT();
-	player_velocity = initial_vel;
 	direction_x = pl_RIGHT;
 
 	if (App->scene->currentLevel == LEVEL1) {

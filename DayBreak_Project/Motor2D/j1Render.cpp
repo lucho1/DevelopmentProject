@@ -126,10 +126,10 @@ bool j1Render::PostUpdate()
 		}
 
 		if (App->scene->Player->player_position.x <= -(camera.x - camera.w / 4) && camera.x < 0)
-			camera.x += App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
+			camera.x += floor(App->scene->Player->player_velocity.x*App->GetDT()) ;
 
 		else if (App->scene->Player->player_position.x >= -(camera.x - camera.w + camera.w / 2.5f))
-			camera.x -= App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
+			camera.x -= floor(App->scene->Player->player_velocity.x*App->GetDT()) ;
 
 
 		camera.y = -(App->scene->Player->player_position.y - (App->win->screen_surface->h / 3));

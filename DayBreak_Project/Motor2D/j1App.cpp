@@ -181,6 +181,10 @@ void j1App::PrepareUpdate()
 	last_sec_frame_count++;
 
 	dt = frame_time.ReadSec();
+
+	if (dt > capped_ms)
+		dt = capped_ms;
+
 	frame_time.Start();
 
 }
@@ -231,7 +235,7 @@ void j1App::FinishUpdate()
 
 	App->win->SetTitle(title);
 
-	if (last_frame_ms < capped_ms)
+	if (last_frame_ms < capped_ms && capped_ms > 0 && cap)
 		SDL_Delay(capped_ms - last_frame_ms);
 
 }

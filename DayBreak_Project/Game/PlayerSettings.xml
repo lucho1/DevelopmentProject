@@ -5,15 +5,16 @@
 
 
   <PlayerSettings>
-    
+
     <StartingPose>
-      <Level1 position.x="580" position.y="1400" />
+      <Level1 position.x="580" position.y="1455" />
       <Level2 position.x="200" position.y="1080" />
     </StartingPose>
+
     <Life life="70"/>
-    <Velocity velocity.x="6" velocity.y="7"/>
-    <MaxVelocity velocity.x="7" velocity.y="8"/>
-    <Acceleration a.x="0.0" a.y="0.2"/>
+    <Velocity velocity.x="0" velocity.y="0"/>
+    <MaxVelocity velocity.x="250" velocity.y="350"/>
+    <Acceleration a.x="15" a.y="50"/>
     
   </PlayerSettings>
 

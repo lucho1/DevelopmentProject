@@ -85,6 +85,11 @@ public:
 	iPoint Gun_position;
 	iPoint Adjusting_Gun_position;
 
+	float AdjustPositionDT_Left;
+	float AdjustPositionDT_Right;
+	float AdjustPositionDT_Down;
+	float AdjustPositionDT_Up;
+
 	int direction_x;
 
 	fPoint player_velocity;

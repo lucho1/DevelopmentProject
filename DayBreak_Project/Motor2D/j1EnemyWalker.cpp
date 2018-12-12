@@ -116,10 +116,7 @@ void j1EnemyWalker::Patrol(float dt) {
 
 	current_animation = &Run;
 
-	//if (App->cap)
-		dt = App->frame_cap;
-
-	Patrol_velocity *= (dt / App->frame_cap);
+	Patrol_velocity *= dt;
 
 	if (!Path_Found) {
 
@@ -213,16 +210,13 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 	//}
 	//else if (falling == false)
 	//	enemy_velocity.y = 0;
+
 	if (onGround == false) {
 		enemy_velocity.y = 4;
 		enemy_position.y += enemy_velocity.y;
 	}
 
-	//if(App->cap)
-		dt = App->frame_cap;
-
-	enemy_velocity *= (dt / App->frame_cap);
-
+	enemy_velocity *= dt;
 	Run.speed = 0.15f;
 
 	Current_Direction = App->pathfinding->current_Direction(path);
@@ -264,10 +258,10 @@ void j1EnemyWalker::Shoot() {
 
 		switch (Current_Direction) {
 		case RIGHT:
-			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x +40, enemy_position.y +36, COLLIDER_ENEMY_BULLET, iPoint(15, 0), 0.8);
+			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x +40, enemy_position.y +36, COLLIDER_ENEMY_BULLET, fPoint(937.5, 0), 0.8, SDL_FLIP_NONE); //Original speed = 15, 0
 			break;
 		case LEFT:
-			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x, enemy_position.y +36, COLLIDER_ENEMY_BULLET, iPoint(-15, 0), 0.8, SDL_FLIP_HORIZONTAL);
+			App->particles->AddParticle(App->particles->Enemy_Shoot, enemy_position.x, enemy_position.y +36, COLLIDER_ENEMY_BULLET, fPoint(-937.5, 0), 0.8, SDL_FLIP_HORIZONTAL); //Same 15, 0
 			break;
 		}
 

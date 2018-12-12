@@ -75,9 +75,9 @@ bool j1Particles::Update(float dt) {
 
 		Particle *p = active[i];
 
-		if (p == nullptr) {
+		if (p == nullptr) 
 			continue;
-		}
+		
 
 		if (p->Update() == false) {
 
@@ -98,7 +98,7 @@ bool j1Particles::Update(float dt) {
 	return ret;
 }
 
-void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, iPoint speed,float scale, SDL_RendererFlip Flip, Uint32 delay, float dt) {
+void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, fPoint speed,float scale, SDL_RendererFlip Flip, Uint32 delay) {
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) {
 		if (active[i] == nullptr) {
@@ -108,12 +108,12 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 			p->Position.x = x;
 			p->Position.y = y;
 			p->Sprites = particle.Sprites;
-			p->Speed.x = speed.x * dt;
-			p->Speed.y = speed.y * dt;
+			p->Speed.x = speed.x * App->GetDT();
+			p->Speed.y = speed.y * App->GetDT();
 			p->Flip = Flip;
 			p->scale = scale;
 			if (collider_type != COLLIDER_NONE && p->collider==nullptr) {
-					p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(dt), collider_type, this);
+					p->collider = App->collisions->AddCollider(p->Anim.GetCurrentFrame(App->GetDT()), collider_type, this);
 			}
 			active[i] = p;
 			break;

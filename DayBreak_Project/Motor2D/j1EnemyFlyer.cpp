@@ -101,11 +101,8 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 
 	Current_Direction = App->pathfinding->current_Direction(path);
 
-	//if (App->cap)
-		dt = App->frame_cap;
-
-	enemy_velocity *= (dt / App->frame_cap);
-	initial_velocity *= (dt / App->frame_cap);
+	enemy_velocity *= dt;
+	initial_velocity *= dt;
 
 	if (CollidingX && Detect_Area() && (RIGHT || LEFT || UP_RIGHT || UP_LEFT)) {
 
@@ -176,9 +173,9 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 				App->scene->Player->life -= 20;
 			}
 
-			App->particles->AddParticle(App->particles->Plasma_Explosion,enemy_position.x-90,enemy_position.y-70,COLLIDER_NONE,iPoint(0,0),1.5f);
-			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 150, enemy_position.y - 160, COLLIDER_NONE, iPoint(0, 0), 1.9f, SDL_FLIP_NONE, 350.0f);
-			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 70, enemy_position.y - 200, COLLIDER_NONE, iPoint(0, 0), 1.9f,SDL_FLIP_NONE,200.0f);
+			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 90, enemy_position.y - 70, COLLIDER_NONE, fPoint(0,0), 1.5f, SDL_FLIP_NONE);
+			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 150, enemy_position.y - 160, COLLIDER_NONE, fPoint(0, 0), 1.9f, SDL_FLIP_NONE, 350.0f);
+			App->particles->AddParticle(App->particles->Plasma_Explosion, enemy_position.x - 70, enemy_position.y - 200, COLLIDER_NONE, fPoint(0, 0), 1.9f,SDL_FLIP_NONE,200.0f);
 		}
 	}
 

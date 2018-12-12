@@ -58,7 +58,6 @@ void j1Player::Start() {
 void j1Player::FixUpdate(float dt) {
 
 	BROFILER_CATEGORY("Player FixUpdate", Profiler::Color::IndianRed);
-
 	HandleInput(dt);
 
 	if (life > 0) {
@@ -95,7 +94,7 @@ void j1Player::FixUpdate(float dt) {
 
 			if (acceleration.x > 0) {
 
-				acceleration.x -= 0.2f;
+				acceleration.x -= acceleration.x; //?? Original: 0.2f
 
 				if (direction_x == pl_RIGHT)
 					player_position.x += acceleration.x;
@@ -137,7 +136,7 @@ void j1Player::FixUpdate(float dt) {
 
 				fall = false;
 				player_position.y -= player_velocity.y;
-				player_velocity.y -= 0.43f;
+				player_velocity.y -= (acceleration.x * 2); //Original: 0.43f
 			}
 
 			else if (player_velocity.y < 0) {
@@ -181,7 +180,7 @@ void j1Player::FixUpdate(float dt) {
 				}
 
 				player_velocity.y += acceleration.y;
-				acceleration.y += 0.02f;
+				acceleration.y += acceleration.x; //?? original: 0.2f
 			}
 
 			player_position.y += player_velocity.y;
@@ -242,13 +241,10 @@ void j1Player::Draw(float dt) {
 }
 
 void j1Player::HandleInput(float dt) {
-
-	//if (App->cap)
-		dt = App->frame_cap;
 		
-	player_velocity *= (dt / App->frame_cap);
-	acceleration *= (dt / App->frame_cap);
-	initial_vel *= (dt / App->frame_cap);
+	player_velocity *= dt;
+	acceleration *= dt;
+	initial_vel *= dt;
 	
 
 	//God mode
@@ -266,10 +262,10 @@ void j1Player::HandleInput(float dt) {
 
 		direction_x = pl_RIGHT;
 
-		player_position.x += player_velocity.x + acceleration.x;
+		player_position.x += (player_velocity.x + acceleration.x);
 
 		if (acceleration.x <= MaxVelocity.x)
-			acceleration.x += 0.2f;
+			acceleration.x += acceleration.x; //?? WATCHOUT HERE 0.2f was the original
 
 
 		Gun_current_animation = &Gun_Run;
@@ -302,7 +298,7 @@ void j1Player::HandleInput(float dt) {
 		player_position.x -= player_velocity.x + acceleration.x;
 
 		if (acceleration.x < MaxVelocity.x)
-			acceleration.x += 0.2f;
+			acceleration.x += acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
 
 		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
@@ -327,7 +323,7 @@ void j1Player::HandleInput(float dt) {
 			jump = true;
 			jump_falling = false;
 
-			acceleration.y = 0.2f;
+			acceleration.y = acceleration.x; //?? Same than upwards, original: 0.2f
 			auxY = player_position.y;
 			player_velocity.y = initial_vel.y;
 		}
@@ -337,7 +333,7 @@ void j1Player::HandleInput(float dt) {
 			doublejump = false;
 			jump_falling = false;
 
-			acceleration.y = 0.2f;
+			acceleration.y = acceleration.x; //?? Same
 			auxY = player_position.y;
 			player_velocity.y = initial_vel.y;
 		}
@@ -365,14 +361,14 @@ void j1Player::HandleInput(float dt) {
 
 		if (direction_x == pl_RIGHT) {
 
-			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(16, 0), 0.8f);
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x + acceleration.x, 0), 1.1f);
+			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, fPoint(1000, 0), 0.8f); //Original speed 16, 0
+			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x + acceleration.x, 0), 1.1f);
 		}
 
 		else if (direction_x == pl_LEFT) {
 
-			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, iPoint(-16, 0), 0.8f, SDL_FLIP_HORIZONTAL);
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, iPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
+			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, fPoint(-1000, 0), 0.8f, SDL_FLIP_HORIZONTAL); //Original speed 16, 0
+			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
 		}
 
 		Mix_PlayChannel(-1, shoot_pl, 0);
@@ -416,9 +412,8 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		}
 
 		life -= 5;
-		LOG("%d", life);
 		Last_collided = c2;
-		App->particles->AddParticle(App->particles->Blood, player_position.x-35, player_position.y-30, COLLIDER_NONE, iPoint(0, 0), 1.5f, SDL_FLIP_NONE);
+		App->particles->AddParticle(App->particles->Blood, player_position.x-35, player_position.y-30, COLLIDER_NONE, fPoint(0, 0), 1.5f, SDL_FLIP_NONE);
 
 	}
 	//Checking collision with walls
@@ -440,16 +435,16 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			
 				fall = false;
 				doublejump = false;
-				player_velocity.y = 0;
-				acceleration.y = 0.2f;
+				player_velocity.y = 0.0f;
+				acceleration.y = acceleration.x; //?? Same than upwards
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y + acceleration.y) { //Colliding Up (falling)
 				
 				fall = false;
 				jump = false;
-				player_velocity.y = 0;
-				acceleration.y = 0.2f;
+				player_velocity.y = 0.0f;
+				acceleration.y = acceleration.x; //?? Same
 				player_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
 		}
@@ -458,16 +453,16 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + player_velocity.x + acceleration.x) { //Colliding Left (going right)
 			
 			desaccelerating = false;
-			player_velocity.x = 0;
-			acceleration.x /= 1.1f;
-			player_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x+1;
+			player_velocity.x = 0.0f;
+			acceleration.x /= 1.1f; //??
+			player_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 1;
 
 		}
 		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - player_velocity.x-acceleration.x) { //Colliding Right (going left)
 			
 			desaccelerating = false;
-			player_velocity.x = 0;
-			acceleration.x /= 1.1f;
+			player_velocity.x = 0.0f;
+			acceleration.x /= 1.1f; //??
 			player_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 1;
 
 		}

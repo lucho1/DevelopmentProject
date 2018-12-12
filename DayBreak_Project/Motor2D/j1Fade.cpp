@@ -35,7 +35,6 @@ bool j1Fade::Update(float dt)
 
 	bool ret = true;
 
-
 	if (current_step != fade_step::none) {
 		Uint32 now = SDL_GetTicks() - start_time;
 		float normalized = MIN(1.0f, (float)now / (float)total_time);
@@ -71,7 +70,7 @@ bool j1Fade::Update(float dt)
 }
 
  //Fade to black. At mid point deactivate one module, then activate the other
-bool j1Fade::Fade( float time)
+bool j1Fade::Fade(float time)
 {
 	bool ret = false;
 

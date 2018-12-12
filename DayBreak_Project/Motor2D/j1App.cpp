@@ -180,7 +180,7 @@ void j1App::PrepareUpdate()
 	frame_count++;
 	last_sec_frame_count++;
 
-	dt = (float)frame_time.ReadMs();
+	dt = frame_time.ReadSec();
 	frame_time.Start();
 
 }
@@ -207,7 +207,7 @@ void j1App::FinishUpdate()
 	//TITLE STUFF
 	float avg_fps = float(frame_count) / startup_time.ReadSec();
 	float seconds_since_startup = startup_time.ReadSec();
-	uint32 last_frame_ms = frame_time.ReadMs();
+	uint32 last_frame_ms = frame_time.ReadSec();
 	uint32 frames_on_last_update = prev_last_sec_frame_count;
 
 	static char title[256];
@@ -226,7 +226,7 @@ void j1App::FinishUpdate()
 		cap_string = "OFF";
 	
 
-	sprintf_s(title, 256, "DayBreak v0.5 || Last sec frames: %i   Av.FPS: %.2f   Last Frame Ms: %02u || VSYNC: %s   Framerate Cap: %s ",
+	sprintf_s(title, 256, "DayBreak v0.5 dt: %.3f || Last sec frames: %i   Av.FPS: %.2f   Last Frame Ms: %02u || VSYNC: %s   Framerate Cap: %s ", dt,
 		frames_on_last_update, avg_fps, last_frame_ms, vsync_, cap_string);
 
 	App->win->SetTitle(title);
@@ -333,6 +333,11 @@ const char* j1App::GetArgv(int index) const
 		return args[index];
 	else
 		return NULL;
+}
+
+float j1App::GetDT() const {
+
+	return dt;
 }
 
 // ---------------------------------------

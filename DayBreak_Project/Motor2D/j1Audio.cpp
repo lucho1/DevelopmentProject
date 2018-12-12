@@ -134,16 +134,17 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 }
 
 // Load WAV
-unsigned int j1Audio::LoadFx(const char* path, Mix_Chunk *chunk)
+unsigned int j1Audio::LoadFx(const char* path)
 {
+	Mix_Chunk *chunk = nullptr;
 	unsigned int ret = 0;
 
-	if(!active)
+	if (!active)
 		return 0;
 
 	chunk = Mix_LoadWAV(path);
 
-	if(chunk == NULL)
+	if (chunk == NULL)
 	{
 		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
 	}
@@ -176,6 +177,18 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 void j1Audio::ControlVolume(int vol) {
 
 	Mix_Volume(-1, vol);
+
+}
+
+void j1Audio::ControlMUSVolume(int vol) {
+
 	Mix_VolumeMusic(vol);
+
+}
+
+void j1Audio::ControlSFXVolume(int vol) {
+
+	for (int i = 0; i < fx.count(); i++)
+		Mix_VolumeChunk(fx[i], vol);
 
 }

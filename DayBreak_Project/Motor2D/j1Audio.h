@@ -27,14 +27,16 @@ public:
 	bool PlayMusic(const char* path, float fade_time = DEFAULT_MUSIC_FADE_TIME);
 
 	// Load a WAV in memory
-	unsigned int LoadFx(const char* path, Mix_Chunk *chunk);
+	unsigned int LoadFx(const char* path);
 
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
-	_Mix_Music*			music = NULL;
-
 	void ControlVolume(int vol);
+	void ControlMUSVolume(int vol);
+	void ControlSFXVolume(int vol);
+
+	_Mix_Music*			music = NULL;
 
 private:
 

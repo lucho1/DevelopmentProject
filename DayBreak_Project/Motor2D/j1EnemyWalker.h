@@ -50,7 +50,7 @@ private:
 	Animation Run;
 	Animation Shoot_animation;
 	Animation Dead;
-	Mix_Chunk *shoot;
+	uint shoot;
 };
 
 #endif

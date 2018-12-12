@@ -103,8 +103,9 @@ public:
 
 private:
 
-	Mix_Chunk *shoot_pl;
-
+	uint shoot_pl;
+	uint button_wav;
+	uint ray_touched_wav;
 
 public:
 

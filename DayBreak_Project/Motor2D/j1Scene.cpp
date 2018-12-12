@@ -63,7 +63,7 @@ bool j1Scene::Start()
 		current_map = Intro_map;
 		currentLevel = MAIN_MENU;
 
-	//	App->audio->PlayMusic(music_node.attribute("intro2").as_string());
+		App->audio->PlayMusic(music_node.attribute("intro2").as_string());
 
 		pathfinding = false;
 	}
@@ -111,7 +111,8 @@ bool j1Scene::Start()
 
 	}
 
-	App->audio->ControlVolume(10);
+	App->audio->ControlMUSVolume(30);
+	App->audio->ControlSFXVolume(30);
 	App->render->ResetCamera();
 
 	return true;
@@ -247,7 +248,7 @@ void j1Scene::ChangeLevel(int level_change) {
 
 	if (currentLevel == LEVEL1) {
 
-		//App->audio->PlayMusic(music_node.attribute("level").as_string());
+		App->audio->PlayMusic(music_node.attribute("level").as_string());
 		App->render->camera.x = -7;
 		App->render->camera.y = -1242;
 		Player = Player->CreatePlayer(iPoint(580, 1400));
@@ -278,7 +279,7 @@ void j1Scene::ChangeLevel(int level_change) {
 	}
 	if (currentLevel == LEVEL2) {
 
-		//App->audio->PlayMusic(music_node.attribute("level").as_string());
+		App->audio->PlayMusic(music_node.attribute("level").as_string());
 		App->render->camera.x = -7;
 		App->render->camera.y = -903;
 		Player = Player->CreatePlayer(iPoint(200, 1116));

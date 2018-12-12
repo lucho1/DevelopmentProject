@@ -35,7 +35,7 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos, const char* path, pugi::xml_document &E
 	Patrol_velocity.x = EnemySettings.child("EnemySettings").child("Velocity").attribute("patrol_x").as_int();
 	Patrol_velocity.y = EnemySettings.child("EnemySettings").child("Velocity").attribute(" patrol_y").as_int();
 
-	shoot = Mix_LoadWAV("audio/fx/Shoot2.wav");
+	shoot = App->audio->LoadFx("audio/fx/Shoot2.wav");
 
 }
 
@@ -265,7 +265,7 @@ void j1EnemyWalker::Shoot() {
 			break;
 		}
 
-		Mix_PlayChannel(-1, shoot, 0);
+		App->audio->PlayFx(shoot);
 		Able_to_Shoot = false;
 	}
 	if (Shoot_animation.Finished()) {

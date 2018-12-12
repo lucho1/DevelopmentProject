@@ -40,7 +40,7 @@ private:
 	Animation Idle;
 	Animation Exploding;
 	Animation Dead;
-	Mix_Chunk *explosion;
+	uint explosion;
 
 };
 

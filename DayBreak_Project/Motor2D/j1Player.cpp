@@ -26,7 +26,11 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 		LOG("The xml file containing the player tileset fails. Pugi error: %s", result.description());
 
 	PlayerSettings = PlayerDocument.child("config");
-	shoot_pl = Mix_LoadWAV("audio/fx/Shoot.wav");
+	
+	shoot_pl = App->audio->LoadFx("audio/fx/Shoot.wav");
+	button_wav = App->audio->LoadFx("audio/fx/Button.wav");
+	ray_touched_wav = App->audio->LoadFx("audio/fx/Ray_touched.wav");
+
 	life = 40;
 	
 }
@@ -358,6 +362,7 @@ void j1Player::HandleInput(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && !Shooting) {
 
 		angle = 0;
+		App->audio->PlayFx(shoot_pl);
 
 		if (direction_x == pl_RIGHT) {
 
@@ -371,7 +376,6 @@ void j1Player::HandleInput(float dt) {
 			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
 		}
 
-		Mix_PlayChannel(-1, shoot_pl, 0);
 		Shooting = true;
 	}
 }
@@ -476,11 +480,17 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 	}
 
 	//Check if touched button or end level door
-	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) //Trigger push = button
+	if (c1->type == TRIGGER_PUSH || c2->type == TRIGGER_PUSH) { //Trigger push = button
+		
 		App->map->TriggerActive = true;
+		App->audio->PlayFx(button_wav);
+	}
 
-	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) //Ray that makes blinking platforms unactive
+	if (c1->type == TRIGGER_PUSHOFF || c2->type == TRIGGER_PUSHOFF) { //Ray that makes blinking platforms unactive
+	
 		App->map->TriggerActive = false;
+		App->audio->PlayFx(ray_touched_wav);
+	}
 
 	if (c1->type == TRIGGER_WIN || c2->type == TRIGGER_WIN) {
 

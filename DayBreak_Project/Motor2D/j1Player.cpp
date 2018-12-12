@@ -484,9 +484,12 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 	if (c1->type == TRIGGER_WIN || c2->type == TRIGGER_WIN) {
 
-		int level_switch = App->scene->currentLevel + 1;
+		App->scene->Change_Level = true;
+		App->map->TriggerActive = false;
+
+		/*int level_switch = App->scene->currentLevel + 1;
 		App->fade->Fade(2.0f);
-		App->scene->ChangeLevel(level_switch);
+		App->scene->ChangeLevel(level_switch);*/
 
 	}
 }

@@ -101,25 +101,25 @@ void j1Player::FixUpdate(float dt) {
 		}
 
 
-		//if (desaccelerating == true) {
+		if (desaccelerating == true) {
 
-		//	if (acceleration.x > 0) {
+			if (acceleration.x > 0) {
 
-		//		acceleration.x -= acceleration.x; //?? Original: 0.2f
+				acceleration.x -= acceleration.x; //?? Original: 0.2f
 
-		//		if (direction_x == pl_RIGHT)
-		//			player_position.x += acceleration.x;
+				if (direction_x == pl_RIGHT)
+					player_position.x += acceleration.x;
 
-		//		else if (direction_x == pl_LEFT)
-		//			player_position.x -= acceleration.x;
-		//	}
-		//	else
-		//		desaccelerating = false;
+				else if (direction_x == pl_LEFT)
+					player_position.x -= acceleration.x;
+			}
+			else
+				desaccelerating = false;
 
-		//}
+		}
 
 		//JUMP
-		if (jump) {
+		if (jump || doublejump) {
 
 			if (jump)
 				current_animation = &Jump;
@@ -304,8 +304,8 @@ void j1Player::HandleInput(float dt) {
 			angle = 0;
 	}
 
-	//else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP && !jump && !desaccelerating)
-	//	desaccelerating = true;
+	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP && !jump && !desaccelerating)
+		desaccelerating = true;
 
 	else
 		state = State::pl_IDLE;
@@ -344,25 +344,27 @@ void j1Player::HandleInput(float dt) {
 
 	}
 
-	//if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP && !jump && !desaccelerating)
-	//	desaccelerating = true;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP && !jump && !desaccelerating)
+		desaccelerating = true;
 
 	if (!God) {
 
 		//Y axis Movement (UP)
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
-			player_velocity.y = 300;
+			player_velocity.y = 100*dt;
 			jump = true;
 			jump_falling = false;
 		}
 
-		//else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
+		else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
 
-		//	doublejump = false;
-		//	jump_falling = false;
-		//	auxY = player_position.y;
-		//	player_velocity.y = initial_vel.y;
-		//}
+			doublejump = false;
+			jump_falling = false;
+
+			acceleration.y = acceleration.x; //?? Same
+			auxY = player_position.y;
+			player_velocity.y = initial_vel.y;
+		}
 	}
 	else {
 
@@ -465,7 +467,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 
 			}
-			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y) { //Colliding Up (falling)
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y*App->GetDT()) { //Colliding Up (falling)
 				
 				fall = false;
 				jump = false;
@@ -479,7 +481,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
-			//acceleration.x /= 1.1f; //??
+			acceleration.x /= 1.1f; //??
 			player_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 1;
 
 		}
@@ -487,7 +489,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
-			//acceleration.x /= 1.1f; //??
+			acceleration.x /= 1.1f; //??
 			player_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 1;
 
 		}

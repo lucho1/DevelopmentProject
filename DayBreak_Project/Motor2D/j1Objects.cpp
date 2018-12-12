@@ -4,7 +4,7 @@
 #include "j1Map.h"
 #include "p2Log.h"
 
-j1Objects::j1Objects(iPoint pos, OBJECT_TYPE objType) : j1Entity (ENTITY_TYPE::OBJECT_ENT) {}
+j1Objects::j1Objects(iPoint pos, OBJECT_TYPE objType) : j1Entity(ENTITY_TYPE::OBJECT_ENT) { name.create("Objects"); }
 
 j1Objects::~j1Objects() {}
 

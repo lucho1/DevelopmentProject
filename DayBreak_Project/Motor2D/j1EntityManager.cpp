@@ -165,6 +165,7 @@ void j1EntityManager::DesrtroyEnemies() {
 	}
 }
 
+
 void j1EntityManager::LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, const char* path, pugi::xml_document &EnemiesDocument) {
 
 	pugi::xml_node pos;
@@ -177,4 +178,53 @@ void j1EntityManager::LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, 
 		j1Enemy* Enemy = nullptr;
 		Enemy->CreateEnemy(iPoint(x, y), type, path, EnemiesDocument);
 	}
+}
+
+
+bool j1EntityManager::LoadGame(const char* file) {
+
+	bool ret = true;
+	pugi::xml_document data;
+	pugi::xml_node root;
+
+	pugi::xml_parse_result result = data.load_file(App->get_load_game().GetString());
+
+
+	if (result != NULL) {
+
+		root = data.child("game_state").child("entities");
+
+		p2List_item<j1Entity*>* item2 = entities_list.start;
+		ret = true;
+
+		while (item2 != NULL && ret == true) {
+			item2->data->Load(root.child(item2->data->name.GetString()));
+			item2 = item2->next;
+		}
+	}
+
+	else
+		LOG("Could not parse game state xml file %s. pugi error: %s", App->get_load_game().GetString(), result.description());
+	return ret;
+}
+
+
+bool j1EntityManager::SaveGame(const char* file) const {
+
+	bool ret = true;
+	pugi::xml_document data;
+	pugi::xml_node root;
+
+	root = data.child("game_state").append_child("entities");
+
+	p2List_item<j1Entity*>* item2 = entities_list.start;
+	ret = true;
+
+	while (item2 != NULL && ret == true) {
+		item2->data->Save(root.child(item2->data->name.GetString()));
+		item2 = item2->next;
+	}
+
+	data.save_file(App->get_save_game().GetString());
+	return ret;
 }

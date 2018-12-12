@@ -20,6 +20,7 @@
 
 j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_position(pos) {
   
+	name.create("player");
 	pugi::xml_parse_result result = PlayerDocument.load_file("PlayerSettings.xml");
 
 	if (result == NULL)
@@ -213,7 +214,7 @@ void j1Player::FixUpdate(float dt) {
 			App->entity_manager->DestroyEntity(this);
 
 	}
-	LOG("%d", life);
+	//LOG("%d", life);
 
 }
 

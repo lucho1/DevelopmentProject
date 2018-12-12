@@ -77,6 +77,7 @@ public:
 	int life;
 	ENTITY_TYPE type;
 	Collider* entity_collider = nullptr;
+	p2SString name;
 
 };
 

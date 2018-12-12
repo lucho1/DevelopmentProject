@@ -14,6 +14,7 @@
 
 j1Enemy::j1Enemy(iPoint pos, ENEMY_TYPE type_) : j1Entity(ENTITY_TYPE::ENEMY_ENT), enemy_position(pos)
 {
+	name.create("Enemy");
 }
 
 bool j1Enemy::LoadEnemy(const char*file_name, pugi::xml_document &EnemiesDocument) {

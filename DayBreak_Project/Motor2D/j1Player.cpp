@@ -62,17 +62,6 @@ void j1Player::FixUpdate(float dt) {
 
 	if (life > 0) {
 
-
-
-		if (state == pl_RUN) {
-
-			if (direction_x == pl_RIGHT) {
-
-
-			}
-		}
-
-
 		//Gun Handle
 		if ((!jump || !fall) && state != pl_RUN) {
 
@@ -146,18 +135,11 @@ void j1Player::FixUpdate(float dt) {
 				}
 
 				fall = false;
-
-				AdjustPositionDT_Up += player_velocity.y*dt;
-
-				if (AdjustPositionDT_Up > 1.1f) {
-					player_position.y -= AdjustPositionDT_Up;
-					AdjustPositionDT_Up -= AdjustPositionDT_Up;
-				}
-				player_velocity.y -= acceleration.y;
-
+				player_position.y -= player_velocity.y;
+				player_velocity.y -= (acceleration.x * 2); //Original: 0.43f
 			}
 
-			else if (player_velocity.y <= 0) {
+			else if (player_velocity.y < 0) {
 
 				jump_falling = true;
 				fall = true;
@@ -165,8 +147,8 @@ void j1Player::FixUpdate(float dt) {
 			}
 		}
 
-		//if (!jump)
-		//	doublejump = true;
+		if (!jump)
+			doublejump = true;
 
 
 		//FALL
@@ -175,7 +157,7 @@ void j1Player::FixUpdate(float dt) {
 			Jump.Reset();
 
 			current_animation = &Fall;
-			if (player_velocity.y < MaxVelocity.y) {
+			if (player_velocity.y < initial_vel.y) {
 
 				if (direction_x == pl_RIGHT) {
 
@@ -196,17 +178,12 @@ void j1Player::FixUpdate(float dt) {
 						angle += 1;
 
 				}
+
 				player_velocity.y += acceleration.y;
-
+				acceleration.y += acceleration.x; //?? original: 0.2f
 			}
 
-			AdjustPositionDT_Down += player_velocity.y*dt;
-
-			if (AdjustPositionDT_Down > 1.1f) {
-				player_position.y += AdjustPositionDT_Down;
-				AdjustPositionDT_Down -= AdjustPositionDT_Down;
-			}
-
+			player_position.y += player_velocity.y;
 		}
 
 
@@ -265,10 +242,10 @@ void j1Player::Draw(float dt) {
 
 void j1Player::HandleInput(float dt) {
 		
-	/*player_velocity *= dt;
+	player_velocity *= dt;
 	acceleration *= dt;
 	initial_vel *= dt;
-	*/
+	
 
 	//God mode
 	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
@@ -279,19 +256,17 @@ void j1Player::HandleInput(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 
 		state = State::pl_RUN;
+
+		desaccelerating = false;
+		//player_velocity.x = player_velocity.x; //??
+
 		direction_x = pl_RIGHT;
 
-		player_velocity.x += acceleration.x;
-		
-		if (player_velocity.x <= MaxVelocity.x)
-			player_velocity.x += acceleration.x;
+		player_position.x += (player_velocity.x + acceleration.x);
 
-		AdjustPositionDT_Right += player_velocity.x*dt;
+		if (acceleration.x <= MaxVelocity.x)
+			acceleration.x += acceleration.x; //?? WATCHOUT HERE 0.2f was the original
 
-		if (AdjustPositionDT_Right > 1.1f) {
-			player_position.x += AdjustPositionDT_Right;
-			AdjustPositionDT_Right -= AdjustPositionDT_Right;
-		}
 
 		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
@@ -320,17 +295,10 @@ void j1Player::HandleInput(float dt) {
 
 		direction_x = pl_LEFT;
 
-		player_velocity.x += acceleration.x;
+		player_position.x -= player_velocity.x + acceleration.x;
 
-		if (player_velocity.x <= MaxVelocity.x)
-			player_velocity.x += acceleration.x;
-
-		AdjustPositionDT_Left += player_velocity.x*dt;
-
-		if (AdjustPositionDT_Left > 1.1f) {
-			player_position.x -= AdjustPositionDT_Left;
-			AdjustPositionDT_Left -= AdjustPositionDT_Left;
-		}
+		if (acceleration.x < MaxVelocity.x)
+			acceleration.x += acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
 
 		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
@@ -351,9 +319,13 @@ void j1Player::HandleInput(float dt) {
 
 		//Y axis Movement (UP)
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !jump && !God && !fall) {
-			player_velocity.y = 100*dt;
+
 			jump = true;
 			jump_falling = false;
+
+			acceleration.y = acceleration.x; //?? Same than upwards, original: 0.2f
+			auxY = player_position.y;
+			player_velocity.y = initial_vel.y;
 		}
 
 		else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && jump&& doublejump && !God) {
@@ -459,25 +431,26 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 		if (error_margin > 1) {
 
 			//Checking Y Axis Collisions
-			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - player_velocity.y*App->GetDT()) { //Colliding down (jumping)
+			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - player_velocity.y - acceleration.y) { //Colliding down (jumping)
 			
 				fall = false;
 				doublejump = false;
 				player_velocity.y = 0.0f;
+				acceleration.y = acceleration.x; //?? Same than upwards
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
-
 			}
-			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y*App->GetDT()) { //Colliding Up (falling)
+			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y + acceleration.y) { //Colliding Up (falling)
 				
 				fall = false;
 				jump = false;
 				player_velocity.y = 0.0f;
+				acceleration.y = acceleration.x; //?? Same
 				player_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
 		}
 
 		//Checking X Axis Collisions
-		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + player_velocity.x*App->GetDT()) { //Colliding Left (going right)
+		if (c1->rect.x + c1->rect.w >= c2->rect.x && c1->rect.x + c1->rect.w <= c2->rect.x + player_velocity.x + acceleration.x) { //Colliding Left (going right)
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
@@ -485,7 +458,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			player_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 1;
 
 		}
-		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - player_velocity.x*App->GetDT()) { //Colliding Right (going left)
+		else if (c1->rect.x <= c2->rect.x + c2->rect.w && c1->rect.x >= c2->rect.x + c2->rect.w - player_velocity.x-acceleration.x) { //Colliding Right (going left)
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
@@ -579,7 +552,6 @@ void j1Player::LoadPlayer(const char *file_name) {
 	acceleration.y = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.y").as_float();
 
 	MaxVelocity.x = initial_vel.x = PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.x").as_float();
-	MaxVelocity.y = initial_vel.y = PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.y").as_float();
 	initial_vel.x = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.x").as_float();
 	initial_vel.y = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.y").as_float();
 	direction_x = pl_RIGHT;

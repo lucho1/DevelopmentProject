@@ -231,7 +231,7 @@ void j1App::FinishUpdate()
 
 	App->win->SetTitle(title);
 
-	if (capped_ms > 0 && last_frame_ms < capped_ms && cap)
+	if (last_frame_ms < capped_ms)
 		SDL_Delay(capped_ms - last_frame_ms);
 
 }

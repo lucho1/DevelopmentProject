@@ -11,6 +11,7 @@
 
 j1Particles::j1Particles() {
 
+	name.create("Particles");
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i) 
 		active[i] = nullptr;
 }

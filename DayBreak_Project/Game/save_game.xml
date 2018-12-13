@@ -7,10 +7,36 @@
 	<map />
 	<pathfinding />
 	<scene />
-	<entities />
-	<:anonymous />
-	<:anonymous />
-	<:anonymous />
+	<entities>
+		<player>
+			<player x="580" y="1400" life="70" />
+		</player>
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Enemy />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+	</entities>
+	<Particles />
+	<Collisions />
+	<Fade />
 	<renderer>
 		<camera x="-7" y="-1187" />
 	</renderer>

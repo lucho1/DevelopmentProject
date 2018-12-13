@@ -9,6 +9,7 @@
 
 j1Collisions::j1Collisions()
 {
+	name.create("Collisions");
 
 	for (int i = 0; i < MAX_COLLIDERS; i++) 
 		colliders[i] = nullptr;

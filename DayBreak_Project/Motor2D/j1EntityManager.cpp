@@ -181,50 +181,35 @@ void j1EntityManager::LoadSceneEnemeies(pugi::xml_node &Enemy, ENEMY_TYPE type, 
 }
 
 
-bool j1EntityManager::LoadGame(const char* file) {
+bool j1EntityManager::Load(pugi::xml_node &data) {
 
 	bool ret = true;
-	pugi::xml_document data;
-	pugi::xml_node root;
+	
+	p2List_item<j1Entity*>* item2 = entities_list.start;
+	ret = true;
 
-	pugi::xml_parse_result result = data.load_file(App->get_load_game().GetString());
+	while (item2 != NULL && ret == true) {
 
-
-	if (result != NULL) {
-
-		root = data.child("game_state").child("entities");
-
-		p2List_item<j1Entity*>* item2 = entities_list.start;
-		ret = true;
-
-		while (item2 != NULL && ret == true) {
-			item2->data->Load(root.child(item2->data->name.GetString()));
-			item2 = item2->next;
-		}
+		item2->data->Load(data.child(item2->data->name.GetString()));
+		item2 = item2->next;
 	}
-
-	else
-		LOG("Could not parse game state xml file %s. pugi error: %s", App->get_load_game().GetString(), result.description());
+	
 	return ret;
 }
 
 
-bool j1EntityManager::SaveGame(const char* file) const {
+bool j1EntityManager::Save(pugi::xml_node &data) const {
 
-	bool ret = true;
-	pugi::xml_document data;
-	pugi::xml_node root;
-
-	root = data.child("game_state").append_child("entities");
+	bool ret = false;
 
 	p2List_item<j1Entity*>* item2 = entities_list.start;
 	ret = true;
 
 	while (item2 != NULL && ret == true) {
-		item2->data->Save(root.child(item2->data->name.GetString()));
+
+		item2->data->Save(data.append_child(item2->data->name.GetString()));
 		item2 = item2->next;
 	}
 
-	data.save_file(App->get_save_game().GetString());
 	return ret;
 }

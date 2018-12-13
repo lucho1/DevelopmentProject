@@ -151,16 +151,17 @@ j1Enemy* j1Enemy::CreateEnemy(iPoint pos, ENEMY_TYPE enemyType, const char* path
 }
 
 
-//void j1Enemy::CleanUp() {
-//
-//	p2List_item<j1Entity*>*item = App->entity_manager->entities_list.start;
-//
-//	while (item != nullptr) {
-//		if (item->data->type == ENTITY_TYPE::ENEMY_ENT){
-//			App->entity_manager->entities_list.del(item);
-//			break;
-//		}
-//		item = item->next;
-//	}
-//
-//}
+bool j1Enemy::Load(pugi::xml_node& data) {
+	
+	enemy_position.x = data.attribute("posX").as_int();
+	enemy_position.y = data.attribute("posY").as_int();
+	return true;
+}
+
+
+bool j1Enemy::Save(pugi::xml_node& data) const {
+
+	data.append_attribute("posX") = enemy_position.x;
+	data.append_attribute("posY") = enemy_position.y;
+	return true;
+}

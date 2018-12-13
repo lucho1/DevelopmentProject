@@ -216,7 +216,7 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 		enemy_position.y += enemy_velocity.y;
 	}
 
-	enemy_velocity *= dt;
+	//enemy_velocity *= dt;
 	Run.speed = 0.15f;
 
 	Current_Direction = App->pathfinding->current_Direction(path);

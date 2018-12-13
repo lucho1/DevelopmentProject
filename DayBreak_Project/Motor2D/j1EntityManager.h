@@ -25,8 +25,8 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
-	bool LoadGame(const char* file);
-	bool SaveGame(const char* file) const;
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
 
 public:
 

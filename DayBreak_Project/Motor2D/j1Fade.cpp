@@ -12,9 +12,8 @@
 
 j1Fade::j1Fade()
 {
-	
+	name.create("Fade");
 	screen = { 0, 0, 1000,500 };
-
 }
 
 j1Fade::~j1Fade()

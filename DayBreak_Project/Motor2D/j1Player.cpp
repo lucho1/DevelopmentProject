@@ -99,7 +99,7 @@ void j1Player::FixUpdate(float dt) {
 
 			if (acceleration.x > 0) {
 
-				acceleration.x -= acceleration.x; //?? Original: 0.2f
+				acceleration.x -= 0.2f;// acceleration.x; //?? Original: 0.2f
 
 				if (direction_x == pl_RIGHT)
 					player_position.x += acceleration.x;
@@ -141,7 +141,7 @@ void j1Player::FixUpdate(float dt) {
 
 				fall = false;
 				player_position.y -= player_velocity.y;
-				player_velocity.y -= (acceleration.x * 2); //Original: 0.43f
+				player_velocity.y -= 0.32f;//(acceleration.x * 2); //Original: 0.43f
 			}
 
 			else if (player_velocity.y < 0) {
@@ -185,7 +185,7 @@ void j1Player::FixUpdate(float dt) {
 				}
 
 				player_velocity.y += acceleration.y;
-				acceleration.y += acceleration.x; //?? original: 0.2f
+				acceleration.y += 0.2f; // acceleration.x; //?? original: 0.2f
 			}
 
 			player_position.y += player_velocity.y;
@@ -247,9 +247,9 @@ void j1Player::Draw(float dt) {
 
 void j1Player::HandleInput(float dt) {
 		
-	player_velocity *= dt;
-	acceleration *= dt;
-	initial_vel *= dt;
+	//player_velocity *= dt;
+	//acceleration *= dt;
+	//initial_vel *= dt;
 	
 
 	//God mode
@@ -270,7 +270,7 @@ void j1Player::HandleInput(float dt) {
 		player_position.x += (player_velocity.x + acceleration.x);
 
 		if (acceleration.x <= MaxVelocity.x)
-			acceleration.x += acceleration.x; //?? WATCHOUT HERE 0.2f was the original
+			acceleration.x += 0.2f;// acceleration.x; //?? WATCHOUT HERE 0.2f was the original
 
 
 		Gun_current_animation = &Gun_Run;
@@ -303,7 +303,7 @@ void j1Player::HandleInput(float dt) {
 		player_position.x -= player_velocity.x + acceleration.x;
 
 		if (acceleration.x < MaxVelocity.x)
-			acceleration.x += acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
+			acceleration.x += 0.2f;// acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
 
 		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
@@ -328,7 +328,7 @@ void j1Player::HandleInput(float dt) {
 			jump = true;
 			jump_falling = false;
 
-			acceleration.y = acceleration.x; //?? Same than upwards, original: 0.2f
+			acceleration.y = 0.2f; // acceleration.x; //?? Same than upwards, original: 0.2f
 			auxY = player_position.y;
 			player_velocity.y = initial_vel.y;
 		}
@@ -338,7 +338,7 @@ void j1Player::HandleInput(float dt) {
 			doublejump = false;
 			jump_falling = false;
 
-			acceleration.y = acceleration.x; //?? Same
+			acceleration.y = 0.2f; // acceleration.x; //?? Same
 			auxY = player_position.y;
 			player_velocity.y = initial_vel.y;
 		}
@@ -441,7 +441,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				fall = false;
 				doublejump = false;
 				player_velocity.y = 0.0f;
-				acceleration.y = acceleration.x; //?? Same than upwards
+				acceleration.y = 0.2f;// acceleration.x; //?? Same than upwards
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y + acceleration.y) { //Colliding Up (falling)
@@ -449,7 +449,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				fall = false;
 				jump = false;
 				player_velocity.y = 0.0f;
-				acceleration.y = acceleration.x; //?? Same
+				acceleration.y = 0.2f; // acceleration.x; //?? Same
 				player_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
 		}

@@ -134,6 +134,7 @@ bool j1App::Start()
 		item = item->next;
 	}
 
+	GetSaves("save_game.xml");
 	return ret;
 }
 
@@ -367,10 +368,24 @@ void j1App::SaveGame(const char* file) const
 	save_game.create(file);
 }
 
-// ---------------------------------------
-void j1App::GetSaveGames(p2List<p2SString>& list_to_fill) const
+bool j1App::GetSaves(const char* path) const
 {
-	// need to add functionality to file_system module for this to work
+
+	bool ret = false;
+
+	pugi::xml_document data;
+	pugi::xml_parse_result result = data.load_file(path);
+
+	if (result != NULL) {
+
+		LOG("SAVES FOUND");
+		ret = true;
+	}
+	else
+		LOG("saves NOT found");
+
+	data.reset();
+	return ret;
 }
 
 bool j1App::LoadGameNow()

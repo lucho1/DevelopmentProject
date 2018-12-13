@@ -101,8 +101,8 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 
 	Current_Direction = App->pathfinding->current_Direction(path);
 
-	enemy_velocity *= dt;
-	initial_velocity *= dt;
+	//enemy_velocity *= dt;
+	//initial_velocity *= dt;
 
 	if (CollidingX && Detect_Area() && (RIGHT || LEFT || UP_RIGHT || UP_LEFT)) {
 

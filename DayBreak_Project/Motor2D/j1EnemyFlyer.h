@@ -21,6 +21,7 @@ public:
 	bool Detect_Area() override;
 	bool Exploding_Area();
 	bool Start_exploding = false;
+	bool exploded = false;
 
 	void Move(p2DynArray<iPoint>&path, float dt);
 

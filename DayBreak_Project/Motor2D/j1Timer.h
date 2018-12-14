@@ -16,6 +16,8 @@ public:
 
 private:
 	uint32	started_at;
+	uint32 advanced_time = 0;
+
 };
 
 #endif //__j1TIMER_H__

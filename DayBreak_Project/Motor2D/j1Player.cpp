@@ -386,6 +386,8 @@ bool j1Player::Load(pugi::xml_node& data)
 	player_position.x = data.child("player").attribute("x").as_int();
 	player_position.y = data.child("player").attribute("y").as_int();
 	life = data.child("player").attribute("life").as_int();
+	App->entity_manager->score = data.child("player").attribute("score").as_int();
+	App->entity_manager->coins = data.child("player").attribute("coins").as_int();
 
 	return true;
 }
@@ -398,6 +400,8 @@ bool j1Player::Save(pugi::xml_node& data) const
 	pl.append_attribute("x") = player_position.x;
 	pl.append_attribute("y") = player_position.y;
 	pl.append_attribute("life") = life;
+	pl.append_attribute("score") = App->entity_manager->score;
+	pl.append_attribute("coins") = App->entity_manager->coins;
 
 	return true;
 }

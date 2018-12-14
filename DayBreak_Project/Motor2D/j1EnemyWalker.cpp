@@ -75,10 +75,14 @@ void j1EnemyWalker::Update(float dt) {
 	BROFILER_CATEGORY("EnemyWalker Update", Profiler::Color::DarkOrange);
   
 	if (life <= 0) {
-		current_animation = &Dead;
-		if(Dead.Finished())
-			App->entity_manager->DestroyEntity(this);
 
+		current_animation = &Dead;
+		if (Dead.Finished()) {
+
+			App->entity_manager->coins++;
+			App->entity_manager->score += 10;
+			App->entity_manager->DestroyEntity(this);
+		}
 	}
 
 	if (enemy_path != nullptr && App->collisions->debug) {
@@ -116,28 +120,26 @@ void j1EnemyWalker::Patrol(float dt) {
 
 	current_animation = &Run;
 
-	//Patrol_velocity *= dt;
-
 	if (!Path_Found) {
 
 		iPoint cell;
-		Run.speed = 0.08;
+		Run.speed = 0.08f;
 
 		// South-Right
 		if (!Limit_Right_Reached) {
-			
-			cell=(App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map));
+
+			cell = (App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map));
 			cell.x += 1;
 			cell.y += 1;
 
 			if (App->pathfinding->IsWalkable(cell)) {
-				
+
 				Limit_Right_Reached = true;
 				Patrol_Range[0] = enemy_position.x;
 				Current_Direction = LEFT;
 			}
-			else if (!App->pathfinding->IsWalkable(iPoint(cell.x,cell.y-1))) {
-				
+			else if (!App->pathfinding->IsWalkable(iPoint(cell.x, cell.y - 1))) {
+
 				Limit_Right_Reached = true;
 				Patrol_Range[0] = enemy_position.x;
 				Current_Direction = LEFT;
@@ -146,60 +148,58 @@ void j1EnemyWalker::Patrol(float dt) {
 				enemy_position.x += Patrol_velocity.x;
 		}
 
+		else if (!Limit_Left_Reached) {
+
+			//South-Left
+			cell = (App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map));
+			cell.x -= 1;
+			cell.y += 1;;
+
+			if (App->pathfinding->IsWalkable(cell)) {
+
+				Limit_Left_Reached = true;
+				(Patrol_Range[1] = enemy_position.x);
+				Path_Found = true;
+				Current_Direction = RIGHT;
+			}
+			else if (!App->pathfinding->IsWalkable(iPoint(cell.x, cell.y - 1))) {
+
+				Limit_Right_Reached = true;
+				Patrol_Range[1] = enemy_position.x - 60;
+				Current_Direction = RIGHT;
+				Path_Found = true;
+			}
+			else
+				enemy_position.x -= Patrol_velocity.x;
+
+
+		}
 		else {
-			
-			if (!Limit_Left_Reached) {
-				
-				//South-Left
-				cell = (App->map->WorldToMap(enemy_position.x, (enemy_position.y + 30), App->scene->current_pathfinding_map));
-				cell.x -= 1;
-				cell.y += 1;;
-				
-				if (App->pathfinding->IsWalkable(cell)) {
-					
-					Limit_Left_Reached = true;
-					(Patrol_Range[1] = enemy_position.x);
-					Path_Found = true;
-					Current_Direction = RIGHT;
-				}
-				else if (!App->pathfinding->IsWalkable(iPoint(cell.x, cell.y - 1))) {
-				
-					Limit_Right_Reached = true;
-					Patrol_Range[1] = enemy_position.x-60;
-					Current_Direction = RIGHT;
-					Path_Found = true;
-				}
-				else
+
+			switch (Current_Direction) {
+			case RIGHT:
+
+				if (enemy_position.x < Patrol_Range[0])
+					enemy_position.x += Patrol_velocity.x;
+
+				else if (enemy_position.x >= Patrol_Range[0])
+					Current_Direction = LEFT;
+
+				break;
+
+			case LEFT:
+
+				if (enemy_position.x > Patrol_Range[1])
 					enemy_position.x -= Patrol_velocity.x;
-				
+
+				else if (enemy_position.x <= (Patrol_Range[1]))
+					Current_Direction = RIGHT;
+
+				break;
 			}
 		}
 	}
-	else {
-
-		switch (Current_Direction) {
-		case RIGHT:
-
-			if (enemy_position.x < Patrol_Range[0])
-				enemy_position.x += Patrol_velocity.x;
-			
-			else if (enemy_position.x >= Patrol_Range[0])
-				Current_Direction = LEFT;
-
-			break;
-
-		case LEFT:
-
-			if (enemy_position.x > Patrol_Range[1]) 
-				enemy_position.x -= Patrol_velocity.x;
-		
-			else if (enemy_position.x <=( Patrol_Range[1]))
-				Current_Direction = RIGHT;
-
-			break;
-		}	
-	}
-};
+}
 
 void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 
@@ -220,7 +220,7 @@ void j1EnemyWalker::Move(p2DynArray<iPoint>&path, float dt) {
 	Run.speed = 0.15f;
 
 	Current_Direction = App->pathfinding->current_Direction(path);
-	enemy_velocity.x = 5.5;
+	enemy_velocity.x = 5.5f;
 	switch (Current_Direction) {
 
 	case RIGHT:

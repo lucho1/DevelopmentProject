@@ -29,13 +29,14 @@ public:
 	j1Objects* CreateObject(iPoint pos, OBJECT_TYPE objType);
 
 	//Pushbacks loading
-	//void LoadPushbacks(pugi::xml_node node, Animation &animation);
+	void LoadPushbacks(pugi::xml_node node, Animation &animation);
 
 
 public:
 
 	OBJECT_TYPE type;
 	SDL_Texture *Obj_tex = nullptr;
+	Animation pushoff_anim;
 
 };
 

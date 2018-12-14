@@ -116,7 +116,7 @@ void j1EnemyWalker::Patrol(float dt) {
 
 	current_animation = &Run;
 
-	Patrol_velocity *= dt;
+	//Patrol_velocity *= dt;
 
 	if (!Path_Found) {
 

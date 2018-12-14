@@ -190,8 +190,30 @@ bool j1EntityManager::Load(pugi::xml_node &data) {
 
 	while (item2 != NULL && ret == true) {
 
-		item2->data->Load(data.child(item2->data->name.GetString()));
+		if (item2->data->type != ENTITY_TYPE::ENEMY_ENT) {
+
+			item2->data->Load(data.child(item2->data->name.GetString()));
+			item2 = item2->next;
+
+		}
+
 		item2 = item2->next;
+	}
+
+	p2List_item<j1Entity*>* enemy_item = entities_list.start;
+	ret = true;
+	pugi::xml_node node = data.child("Enemy");
+	
+	while (enemy_item != NULL && ret == true) {
+	
+		if (enemy_item->data->type == ENTITY_TYPE::ENEMY_ENT) {
+
+			enemy_item->data->Load(node);
+			node = node.next_sibling("Enemy");
+
+		}
+
+		enemy_item = enemy_item->next;
 	}
 	
 	return ret;

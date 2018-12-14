@@ -45,6 +45,10 @@ public:
 	virtual void Patrol(float dt) {};
 	virtual void Shoot() {};
 
+	bool Load(pugi::xml_node& data);
+	bool Save(pugi::xml_node& data) const;
+	
+
 public:
 
 	bool Path_Found = false;

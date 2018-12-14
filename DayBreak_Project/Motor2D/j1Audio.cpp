@@ -174,19 +174,19 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 	return ret;
 }
 
-void j1Audio::ControlVolume(int vol) {
+void j1Audio::ControlVolume(int vol) { //Range: 0-128
 
 	Mix_Volume(-1, vol);
 
 }
 
-void j1Audio::ControlMUSVolume(int vol) {
+void j1Audio::ControlMUSVolume(int vol) { //Range: 0-128
 
 	Mix_VolumeMusic(vol);
 
 }
 
-void j1Audio::ControlSFXVolume(int vol) {
+void j1Audio::ControlSFXVolume(int vol) { //Range: 0-128
 
 	for (int i = 0; i < fx.count(); i++)
 		Mix_VolumeChunk(fx[i], vol);

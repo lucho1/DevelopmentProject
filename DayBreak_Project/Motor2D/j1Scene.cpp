@@ -15,7 +15,9 @@
 #include "j1EntityManager.h"
 #include "j1Enemy.h"
 #include "j1Player.h"
+#include "j1Fonts.h"
 #include "j1Objects.h"
+#include "j1Gui.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -115,6 +117,49 @@ bool j1Scene::Start()
 	App->audio->ControlSFXVolume(30);
 	App->render->ResetCamera();
 
+	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(270, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
+
+	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, DRAG, { 254, 88, 242, 76 }, { 254, 0, 242, 76 });
+	labelPlayButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, playButton, "PLAY");
+
+	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, DRAG, { 254, 88, 242, 76 }, { 254, 0, 242, 76 });
+	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, continueButton, "CONTINE");
+
+
+	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 });
+	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsButton, "SETTINGS");
+
+	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 200), { 0, 657, 698, 365 }, NONE_LOGIC);
+	settingsPanel->isActive = false;
+
+	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, None, settingsPanel);
+
+	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(22, 22), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, closeWinButon);
+
+
+	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(150, 690), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 });
+	iconWebPageButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(40, 22), { 269, 404, 32, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, webPageButton);
+
+
+	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel);
+	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel);
+	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel, "MUSIC");
+	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel, "SFX");
+
+	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, None, slideMusic);
+
+	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, None, slideSFX);
+
+	UI_Elements_List.add(playButton);
+	UI_Elements_List.add(continueButton);
+	UI_Elements_List.add(settingsButton);
+	UI_Elements_List.add(webPageButton);
+	UI_Elements_List.add(settingsPanel);
+	UI_Elements_List.add(closeWinButon);
+	UI_Elements_List.add(thumbMusic);
+	UI_Elements_List.add(thumbSFX);
+
+
 	return true;
 }
 
@@ -122,6 +167,54 @@ bool j1Scene::Start()
 bool j1Scene::PreUpdate()
 {
 	BROFILER_CATEGORY("Scene PreUpdate", Profiler::Color::GreenYellow);
+
+	lastMousePos = newMousePos;
+	App->input->GetMousePosition(newMousePos.x, newMousePos.y);
+	p2List_item<UI_Element*>*UI_Item = UI_Elements_List.end;
+	for (; UI_Item != nullptr; UI_Item = UI_Item->prev) {
+		if (UI_Item->data->isActive) {
+			if (UI_Item->data->Logic == DRAG) {
+				if (UI_Item->data->Clicked()) {
+					UI_Item->data->Drag();
+					break;
+				}
+			}
+			if (UI_Item->data->Logic == ACTIVEWIN) {
+				if (UI_Item->data->Clicked()) {
+					if (UI_Item->data == settingsButton) {
+						UI_Item->data->Active(settingsPanel);
+					}
+				}
+			}
+			if (UI_Item->data->Logic == CLOSEWIN) {
+				if (UI_Item->data->Clicked()) {
+					if (UI_Item->data == closeWinButon) {
+						UI_Item->data->Deactive(settingsPanel);
+					}
+				}
+			}
+			if (UI_Item->data->Logic == DRAGVOLUME) {
+
+				if (UI_Item->data->Clicked()) {
+					UI_Item->data->VolumeControl(newMousePos, lastMousePos);
+				}
+			}
+			if (UI_Item->data->Logic == WEB) {
+				if (UI_Item->data->Clicked())
+					UI_Item->data->goWeb();
+			}
+			if (UI_Item->data->Logic == QUIT) {
+				if (UI_Item->data->Clicked()) {
+					SDL_Quit();
+				}
+			}
+
+		}
+	}
+
+
+
+
 	return true;
 }
 

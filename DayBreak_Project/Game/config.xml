@@ -18,6 +18,8 @@
     <fullscreen_window value="false"/>
   </window>
 
+
+
   <file_system>
     <path>data.zip</path>
   </file_system>
@@ -27,5 +29,9 @@
   </map>
 
   <music intro1="audio\music\Intro.ogg" intro2="audio\music\Intro2.ogg" level="audio\music\stage_music.ogg"/>
+
+  <gui>
+    <atlas file="gui/UI_Daybreak.png"/>
+  </gui>
 
 </config>

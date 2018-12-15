@@ -6,9 +6,11 @@
 #include "j1Player.h"
 #include "j1Enemy.h"
 
+
 struct SDL_Texture;
 struct MapData;
 class j1Player;
+class UI_Element;
 
 enum LEVELS {
 
@@ -74,8 +76,49 @@ public:
 	//Player
 	j1Player *Player = nullptr;
 
-private:
+	UI_Element* gameName=nullptr;
 
+	UI_Element* playButton = nullptr;
+	UI_Element* labelPlayButton = nullptr;
+
+	UI_Element* continueButton = nullptr;
+	UI_Element* labelContinueButton = nullptr;
+
+	UI_Element* quitButton = nullptr;
+	UI_Element* labelQuitButton = nullptr;
+
+	UI_Element* webPageButton = nullptr;
+	UI_Element* iconWebPageButton = nullptr;
+
+	UI_Element* settingsButton = nullptr;
+	UI_Element* labelSettingsButton = nullptr;
+
+	UI_Element* settingsPanel = nullptr;
+	UI_Element* labelSettingsPanel = nullptr;
+
+	UI_Element* closeWinButon = nullptr;
+	UI_Element* iconCloseWinButton = nullptr;
+
+	UI_Element* creditButton = nullptr;
+	UI_Element* labelcreditButton = nullptr;
+
+	UI_Element* slideMusic = nullptr;
+	UI_Element* slideSFX = nullptr;
+
+	UI_Element* thumbMusic = nullptr;
+	UI_Element* thumbSFX = nullptr;
+
+
+	UI_Element* labelMusic = nullptr;
+	UI_Element* labelSFX = nullptr;
+
+	p2List<UI_Element*> UI_Elements_List;
+
+	iPoint lastMousePos = { 0,0 };
+	iPoint newMousePos = { 0,0 };
+
+private:
+	SDL_Color None = { 255,255,255,255 };
 	MapData Intro_map;
 	MapData Level1_map;
 	MapData Level2_map;

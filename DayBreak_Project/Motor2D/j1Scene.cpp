@@ -116,41 +116,43 @@ bool j1Scene::Start()
 	App->audio->ControlMUSVolume(30);
 	App->audio->ControlSFXVolume(30);
 	App->render->ResetCamera();
+	float scale = 0.8;
+	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
 
-	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(270, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
+	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, PLAY, { 254, 88, 242, 76 }, { 254, 0, 242, 76 },scale);
+	labelPlayButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, playButton, "PLAY");
 
-	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, DRAG, { 254, 88, 242, 76 }, { 254, 0, 242, 76 });
-	labelPlayButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, playButton, "PLAY");
-
-	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, DRAG, { 254, 88, 242, 76 }, { 254, 0, 242, 76 });
-	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, continueButton, "CONTINE");
+	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, CONTINUE, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, continueButton, "CONTINE");
 
 
-	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 });
-	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsButton, "SETTINGS");
+	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsButton, "SETTINGS");
 
-	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 200), { 0, 657, 698, 365 }, NONE_LOGIC);
+	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
 	settingsPanel->isActive = false;
 
-	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, None, settingsPanel);
-
-	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(22, 22), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, closeWinButon);
-
-
-	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(150, 690), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 });
-	iconWebPageButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(40, 22), { 269, 404, 32, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, webPageButton);
+	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670*scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
+	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
 
 
-	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel);
-	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel);
-	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel, "MUSIC");
-	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, None, settingsPanel, "SFX");
+	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(770,400), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 }, scale);
+	iconWebPageButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(30, 20), { 269, 404, 32, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, webPageButton);
 
-	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, None, slideMusic);
+	quitButton = App->gui->Add_UIElement(BUTTON, iPoint(15,430), { 0, 178, 242, 76 },QUIT, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, scale);
+	labelQuitButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, quitButton, "QUIT");
 
-	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, None, slideSFX);
+	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
+	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
+	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "MUSIC");
+	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "SFX");
+
+	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideMusic);
+
+	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideSFX);
 
 	UI_Elements_List.add(playButton);
+	UI_Elements_List.add(quitButton);
 	UI_Elements_List.add(continueButton);
 	UI_Elements_List.add(settingsButton);
 	UI_Elements_List.add(webPageButton);
@@ -208,7 +210,6 @@ bool j1Scene::PreUpdate()
 					SDL_Quit();
 				}
 			}
-
 		}
 	}
 

@@ -19,6 +19,8 @@ enum UI_Type {
 };
 enum Button_Logic {
 	QUIT,
+	PLAY,
+	CONTINUE,
 	DRAG,
 	WRITE,
 	ACTIVEWIN,
@@ -115,8 +117,8 @@ public:
 	}
 
 	virtual void Draw() {
-		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false);
-		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false);
+		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false,0,0,0,SDL_FLIP_NONE,scale);
+		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false,scale);
 	}
 
 	void goWeb() {
@@ -126,12 +128,12 @@ public:
 	}
 	void VolumeControl(iPoint newMousePos, iPoint lastMousePos) {
 
-		if (Position.x >= Parent->Position.x&&Position.x + UI_Rect.w < (Parent->Position.x + Parent->UI_Rect.w))
+		if (Position.x >= Parent->Position.x&&Position.x + UI_Rect.w*scale < (Parent->Position.x + Parent->UI_Rect.w*scale))
 			initialPosition.x += newMousePos.x - lastMousePos.x;
 		else if (Position.x < Parent->Position.x)
 			initialPosition.x = 0;
 		else
-			initialPosition.x = Parent->UI_Rect.w - UI_Rect.w - 1;
+			initialPosition.x = Parent->UI_Rect.w*scale - UI_Rect.w*scale - 1;
 
 	}
 
@@ -140,7 +142,7 @@ public:
 		int x;
 
 		App->input->GetMousePosition(x, y);
-		if (x >= Position.x&&x < Position.x + UI_Rect.w&&y >= Position.y&&y <= Position.y + UI_Rect.h)
+		if (x >= Position.x&&x < Position.x + UI_Rect.w*scale&&y >= Position.y&&y <= Position.y + UI_Rect.h*scale)
 			return true;
 		else
 			return false;
@@ -178,6 +180,7 @@ public:
 
 	p2List<UI_Element*> Child_List;
 	UI_Element* Parent = nullptr;
+	float scale=1.0f;
 
 	bool isClicked = false;;
 	bool isActive = true;
@@ -219,7 +222,7 @@ public:
 	iPoint lastMousePos = { 0,0 };
 	iPoint newMousePos = { 0,0 };
 
-	UI_Element* Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_Rect, Button_Logic = NONE_LOGIC, SDL_Rect Image_Rect_Active = NULL_RECT, SDL_Rect ButtonPush = NULL_RECT, SDL_Color Color = { 255,255,255,255 }, UI_Element* Parent = nullptr, const char* Text = nullptr);
+	UI_Element* Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_Rect, Button_Logic = NONE_LOGIC, SDL_Rect Image_Rect_Active = NULL_RECT, SDL_Rect ButtonPush = NULL_RECT,float scale=1.0f, SDL_Color Color = { 255,255,255,255 }, UI_Element* Parent = nullptr, const char* Text = nullptr);
 
 	//UI_Element* Add_UIElement(UI_Type type, iPoint position, const char* Text = nullptr, UI_Element* Parent = nullptr);
 

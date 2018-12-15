@@ -49,7 +49,6 @@ bool j1Gui::PostUpdate()
 	p2List_item<UI_Element*>* Item = UI_Elements_List.start;
 	for (; Item != nullptr; Item = Item->next) {
 
-
 		Item->data->Update();
 		if (Item->data->isActive) {
 			Item->data->onTop();
@@ -75,7 +74,7 @@ SDL_Texture* j1Gui::GetAtlas() const
 }
 
 UI_Element* j1Gui::Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_Rect,
-	Button_Logic logic, SDL_Rect Image_Rect_Active, SDL_Rect ButtonPush, SDL_Color Color,
+	Button_Logic logic, SDL_Rect Image_Rect_Active, SDL_Rect ButtonPush, float scale, SDL_Color Color,
 	UI_Element* Parent, const char* Text) {
 
 	UI_Element* ret = nullptr;
@@ -116,6 +115,7 @@ UI_Element* j1Gui::Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_R
 			Parent->Child_List.add(ret);
 		}
 	}
+	ret->scale = scale;
 	ret->isActive = true;
 	return ret;
 

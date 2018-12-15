@@ -117,6 +117,8 @@ bool j1Scene::Start()
 	App->audio->ControlSFXVolume(30);
 	App->render->ResetCamera();
 	float scale = 0.8;
+
+	//MAIN MENU
 	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
 
 	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, PLAY, { 254, 88, 242, 76 }, { 254, 0, 242, 76 },scale);
@@ -125,15 +127,8 @@ bool j1Scene::Start()
 	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, CONTINUE, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
 	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, continueButton, "CONTINE");
 
-
 	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
 	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsButton, "SETTINGS");
-
-	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
-	settingsPanel->isActive = false;
-
-	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670*scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
-	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
 
 
 	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(770,400), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 }, scale);
@@ -142,13 +137,44 @@ bool j1Scene::Start()
 	quitButton = App->gui->Add_UIElement(BUTTON, iPoint(15,430), { 0, 178, 242, 76 },QUIT, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, scale);
 	labelQuitButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, quitButton, "QUIT");
 
+	//IN GAME UI
+
+	pauseButton= App->gui->Add_UIElement(BUTTON, iPoint(780,10), { 94,438,75,78 }, ACTIVEWIN, { 94,349,75,78 }, { 94,258,75,78 }, scale);
+	iconPauseButton= App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(20, 20), { 201, 301, 31,31 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, pauseButton);
+	pauseButton->isActive = false;
+
+	lifeBarBackground= App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(10, 10), {6, 525, 345, 87 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	lifeBarBackground->isActive = false;
+	lifeBar = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(67,18), { 513, 481, 254, 40 }, LIFE, NULL_RECT,NULL_RECT, scale,None,lifeBarBackground);
+
+	pausePanel = App->gui->Add_UIElement(PANEL, iPoint(310,80), { 776, 479, 247, 382 }, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.98);
+	pausePanel->isActive = false;
+	
+	closePauseButon = App->gui->Add_UIElement(BUTTON, iPoint(200, -20), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, pausePanel);
+	iconClosePauseButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closePauseButon);
+
+	settingsButton2 = App->gui->Add_UIElement(BUTTON, iPoint(55, 120), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7,None,pausePanel);
+	labelSettingsButton2 = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, settingsButton2, "SETTINGS");
+
+	returnMainMenuButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 280), { 254, 178, 242, 76 }, RETURN_MAIN_MENU, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelreturnMainMenuButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, returnMainMenuButton, "QUIT");
+
+	//GENERAL UI
+	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	settingsPanel->isActive = false;
+
+
+	//settingsPanel->isActive = false;
+
+	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670 * scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
+	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
+
 	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
 	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
 	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "MUSIC");
 	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "SFX");
 
 	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideMusic);
-
 	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideSFX);
 
 	UI_Elements_List.add(playButton);
@@ -157,9 +183,14 @@ bool j1Scene::Start()
 	UI_Elements_List.add(settingsButton);
 	UI_Elements_List.add(webPageButton);
 	UI_Elements_List.add(settingsPanel);
+	UI_Elements_List.add(settingsButton2);
 	UI_Elements_List.add(closeWinButon);
+	UI_Elements_List.add(returnMainMenuButton);
+	UI_Elements_List.add(pauseButton);
 	UI_Elements_List.add(thumbMusic);
 	UI_Elements_List.add(thumbSFX);
+	UI_Elements_List.add(lifeBar);
+	UI_Elements_List.add(closePauseButon);
 
 
 	return true;
@@ -170,6 +201,13 @@ bool j1Scene::PreUpdate()
 {
 	BROFILER_CATEGORY("Scene PreUpdate", Profiler::Color::GreenYellow);
 
+	return true;
+}
+
+// Called each loop iteration
+bool j1Scene::Update(float dt)
+{
+	
 	lastMousePos = newMousePos;
 	App->input->GetMousePosition(newMousePos.x, newMousePos.y);
 	p2List_item<UI_Element*>*UI_Item = UI_Elements_List.end;
@@ -183,15 +221,21 @@ bool j1Scene::PreUpdate()
 			}
 			if (UI_Item->data->Logic == ACTIVEWIN) {
 				if (UI_Item->data->Clicked()) {
-					if (UI_Item->data == settingsButton) {
+					if (UI_Item->data == settingsButton || UI_Item->data == settingsButton2) {
 						UI_Item->data->Active(settingsPanel);
+					}
+					else if (UI_Item->data == pauseButton) {
+						UI_Item->data->Active(pausePanel);
 					}
 				}
 			}
 			if (UI_Item->data->Logic == CLOSEWIN) {
-				if (UI_Item->data->Clicked()) {
+				if (UI_Item->data->Clicked()&&!onAction) {
 					if (UI_Item->data == closeWinButon) {
 						UI_Item->data->Deactive(settingsPanel);
+					}
+					else if (UI_Item->data == closePauseButon) {
+						UI_Item->data->Deactive(pausePanel);
 					}
 				}
 			}
@@ -199,6 +243,7 @@ bool j1Scene::PreUpdate()
 
 				if (UI_Item->data->Clicked()) {
 					UI_Item->data->VolumeControl(newMousePos, lastMousePos);
+					onAction = true;
 				}
 			}
 			if (UI_Item->data->Logic == WEB) {
@@ -209,20 +254,50 @@ bool j1Scene::PreUpdate()
 				if (UI_Item->data->Clicked()) {
 					SDL_Quit();
 				}
+
+			}
+			if (UI_Item->data->Logic == PLAY) {
+				if (UI_Item->data->Clicked()) {
+					Change_Level = true;
+					//Desactive al Main menu
+					if (currentLevel == MAIN_MENU) {
+						UI_Item->data->Deactive(playButton);
+						UI_Item->data->Deactive(quitButton);
+						UI_Item->data->Deactive(continueButton);
+						UI_Item->data->Deactive(settingsButton);
+						UI_Item->data->Deactive(webPageButton);
+						UI_Item->data->Deactive(gameName);
+						//active inGame UI
+						UI_Item->data->Active(pauseButton);
+						UI_Item->data->Active(lifeBarBackground);
+
+					}
+				}
+			}
+			if (UI_Item->data->Logic == RETURN_MAIN_MENU) {
+				if (UI_Item->data->Clicked()&&!onAction) {
+					if (currentLevel == LEVEL1) {
+
+						currentLevel = LEVEL2;
+						Change_Level = true;
+					}
+					else
+						Change_Level = true;
+					UI_Item->data->Active(playButton);
+					UI_Item->data->Active(quitButton);
+					UI_Item->data->Active(continueButton);
+					UI_Item->data->Active(settingsButton);
+					UI_Item->data->Active(webPageButton);
+					UI_Item->data->Active(gameName);
+					UI_Item->data->Deactive(pauseButton);
+					UI_Item->data->Deactive(lifeBarBackground);
+					UI_Item->data->Deactive(pausePanel);
+
+				}
 			}
 		}
 	}
-
-
-
-
-	return true;
-}
-
-// Called each loop iteration
-bool j1Scene::Update(float dt)
-{
-
+	onAction = false;
 	BROFILER_CATEGORY("Scene Update", Profiler::Color::PaleVioletRed);
 
 	if (Change_Level) {

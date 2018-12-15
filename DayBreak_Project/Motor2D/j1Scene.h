@@ -93,11 +93,17 @@ public:
 	UI_Element* settingsButton = nullptr;
 	UI_Element* labelSettingsButton = nullptr;
 
+	UI_Element* settingsButton2 = nullptr;
+	UI_Element* labelSettingsButton2 = nullptr;
+
 	UI_Element* settingsPanel = nullptr;
 	UI_Element* labelSettingsPanel = nullptr;
 
 	UI_Element* closeWinButon = nullptr;
 	UI_Element* iconCloseWinButton = nullptr;
+
+	UI_Element* closePauseButon = nullptr;
+	UI_Element* iconClosePauseButton = nullptr;
 
 	UI_Element* creditButton = nullptr;
 	UI_Element* labelcreditButton = nullptr;
@@ -112,10 +118,25 @@ public:
 	UI_Element* labelMusic = nullptr;
 	UI_Element* labelSFX = nullptr;
 
+
+	UI_Element* lifeBar = nullptr;
+	UI_Element* lifeBarBackground = nullptr;
+
+	UI_Element* pauseButton = nullptr;
+	UI_Element* iconPauseButton = nullptr;
+
+	UI_Element* returnMainMenuButton = nullptr;
+	UI_Element* labelreturnMainMenuButton = nullptr;
+
+	UI_Element* pausePanel = nullptr;
+
 	p2List<UI_Element*> UI_Elements_List;
+	p2List<UI_Element*> UI_Elements_List_Playing;
+
 
 	iPoint lastMousePos = { 0,0 };
 	iPoint newMousePos = { 0,0 };
+	bool onAction = false;
 
 private:
 	SDL_Color None = { 255,255,255,255 };

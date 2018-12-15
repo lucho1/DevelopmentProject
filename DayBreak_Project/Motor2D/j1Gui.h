@@ -19,6 +19,8 @@ enum UI_Type {
 };
 enum Button_Logic {
 	QUIT,
+	LIFE,
+	RETURN_MAIN_MENU,
 	PLAY,
 	CONTINUE,
 	DRAG,
@@ -53,8 +55,8 @@ public:
 			Position.x = Parent->Position.x + initialPosition.x;
 			Position.y = Parent->Position.y + initialPosition.y;
 		}
-
 	};
+
 public:
 
 	bool isParent() {
@@ -63,6 +65,7 @@ public:
 		else
 			return true;
 	}
+
 	virtual void Drag() {
 		if (Clicked()) {
 			int x = 0;
@@ -81,7 +84,6 @@ public:
 	}
 
 	virtual void Update() {
-
 		if (isParent()) {
 			Position.x = Parent->Position.x + initialPosition.x;
 			Position.y = Parent->Position.y + initialPosition.y;
@@ -117,7 +119,7 @@ public:
 	}
 
 	virtual void Draw() {
-		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false,0,0,0,SDL_FLIP_NONE,scale);
+		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false,angle,0,0,SDL_FLIP_NONE,scale);
 		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false,scale);
 	}
 
@@ -181,9 +183,10 @@ public:
 	p2List<UI_Element*> Child_List;
 	UI_Element* Parent = nullptr;
 	float scale=1.0f;
-
+	float angle = 0.0f;
 	bool isClicked = false;;
 	bool isActive = true;
+	bool toDesactive = false;
 
 
 };

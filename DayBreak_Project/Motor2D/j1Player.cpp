@@ -46,7 +46,7 @@ void j1Player::CleanUp() {
 
 	if (current_animation != nullptr)
 		current_animation = nullptr;
-
+	
 	App->tex->UnLoad(Player_texture);
 	active = false;
 
@@ -66,7 +66,7 @@ void j1Player::FixUpdate(float dt) {
 	HandleInput(dt);
 
 	if (life > 0) {
-
+		
 		//Gun Handle
 		if ((!jump || !fall) && state != pl_RUN) {
 

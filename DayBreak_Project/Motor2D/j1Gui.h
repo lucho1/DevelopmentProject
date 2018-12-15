@@ -21,6 +21,9 @@ enum Button_Logic {
 	QUIT,
 	LIFE,
 	RETURN_MAIN_MENU,
+	RESUME_GAME,
+	LIFE_ALERT,
+	LOAD,
 	PLAY,
 	CONTINUE,
 	DRAG,
@@ -110,7 +113,20 @@ public:
 			}
 		}
 	}
-
+	void Alert(SDL_Texture* texture,int& alpha) {
+		if (alpha <= 255&&alphaReach) {
+			alpha -= 7;
+		}
+		else if (alpha >= 90) {
+			alphaReach = false;
+			alpha += 2;
+			if (alpha >= 255) {
+				alphaReach = true;
+			}
+		}
+		//SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+		SDL_SetTextureAlphaMod(texture, alpha);
+	}
 	virtual void Active(UI_Element* toActive) {
 		toActive->isActive = true;
 	}
@@ -136,7 +152,6 @@ public:
 			initialPosition.x = 0;
 		else
 			initialPosition.x = Parent->UI_Rect.w*scale - UI_Rect.w*scale - 1;
-
 	}
 
 	bool onTop() {
@@ -187,6 +202,9 @@ public:
 	bool isClicked = false;;
 	bool isActive = true;
 	bool toDesactive = false;
+
+	bool alphaReach = true;
+	int alpha=255;
 
 
 };

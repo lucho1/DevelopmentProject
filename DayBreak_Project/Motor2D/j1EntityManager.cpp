@@ -4,6 +4,8 @@
 #include "j1Scene.h"
 #include "j1Collisions.h"
 
+
+
 #include "Brofiler/Brofiler.h"
 
 j1EntityManager::j1EntityManager()
@@ -65,7 +67,8 @@ bool j1EntityManager::Update(float dt) {
 		p2List_item<j1Entity*>*item = entities_list.start;
 		for (; item != nullptr; item = item->next)
 			if(item->data->type != ENTITY_TYPE::ENEMY_ENT)
-				item->data->FixUpdate(dt);
+				if(App->scene->pausedGame==false)
+					item->data->FixUpdate(dt);
 	
 	}
 
@@ -74,7 +77,8 @@ bool j1EntityManager::Update(float dt) {
 		p2List_item<j1Entity*>*item = entities_list.start;
 		for (; item != nullptr; item = item->next)
 			if (item->data->type == ENTITY_TYPE::ENEMY_ENT)
-				item->data->FixUpdate(dt);
+				if (App->scene->pausedGame == false)
+					item->data->FixUpdate(dt);
 
 	}
 

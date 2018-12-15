@@ -49,7 +49,7 @@ bool j1Scene::Start()
   
 	pugi::xml_parse_result load_scenedoc_res = SceneDocument.load_file("config.xml");
 	music_node = SceneDocument.child("config").child("music");
-
+	bloodTex =  App->tex->Load("gui/Blood.png");
 	if (load_scenedoc_res == NULL)
 		LOG("The xml file containing the music fails. Pugi error: %s", load_scenedoc_res.description());
 	
@@ -150,21 +150,28 @@ bool j1Scene::Start()
 	pausePanel = App->gui->Add_UIElement(PANEL, iPoint(310,80), { 776, 479, 247, 382 }, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.98);
 	pausePanel->isActive = false;
 	
-	closePauseButon = App->gui->Add_UIElement(BUTTON, iPoint(200, -20), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, pausePanel);
-	iconClosePauseButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closePauseButon);
-
-	settingsButton2 = App->gui->Add_UIElement(BUTTON, iPoint(55, 120), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7,None,pausePanel);
+	settingsButton2 = App->gui->Add_UIElement(BUTTON, iPoint(55, 160), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7,None,pausePanel);
 	labelSettingsButton2 = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, settingsButton2, "SETTINGS");
 
-	returnMainMenuButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 280), { 254, 178, 242, 76 }, RETURN_MAIN_MENU, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	returnMainMenuButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 280), { 0, 178, 242, 76 }, RETURN_MAIN_MENU, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, 0.7, None, pausePanel);
 	labelreturnMainMenuButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, returnMainMenuButton, "QUIT");
+
+	resumeButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 30), { 254, 178, 242, 76 }, RESUME_GAME, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelResumeButton= App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, resumeButton, "RESUME");
+
+	loadButton= App->gui->Add_UIElement(BUTTON, iPoint(55,95), { 254, 178, 242, 76 }, LOAD, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelLoadButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, loadButton, "LOAD");
+	
+	BloodAlert = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(0, 0), { 0, 0, 900, 500 }, LIFE_ALERT, NULL_RECT, NULL_RECT);
+	BloodAlert->texture = bloodTex;
+	BloodAlert->isActive = false;
+
+	SDL_SetTextureBlendMode(bloodTex, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(bloodTex, 200);
 
 	//GENERAL UI
 	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
 	settingsPanel->isActive = false;
-
-
-	//settingsPanel->isActive = false;
 
 	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670 * scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
 	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
@@ -185,12 +192,14 @@ bool j1Scene::Start()
 	UI_Elements_List.add(settingsPanel);
 	UI_Elements_List.add(settingsButton2);
 	UI_Elements_List.add(closeWinButon);
+	UI_Elements_List.add(resumeButton);
 	UI_Elements_List.add(returnMainMenuButton);
+	UI_Elements_List.add(loadButton);
 	UI_Elements_List.add(pauseButton);
 	UI_Elements_List.add(thumbMusic);
 	UI_Elements_List.add(thumbSFX);
 	UI_Elements_List.add(lifeBar);
-	UI_Elements_List.add(closePauseButon);
+	UI_Elements_List.add(BloodAlert);
 
 
 	return true;
@@ -219,13 +228,29 @@ bool j1Scene::Update(float dt)
 					break;
 				}
 			}
+			if (UI_Item->data->Logic == LIFE_ALERT) {
+				if (Player != nullptr && Player->life <= 20) {
+					UI_Item->data->Active(BloodAlert);
+					UI_Item->data->Alert(bloodTex, bloodalpha);
+				}
+				else
+					UI_Item->data->Deactive(BloodAlert);
+					
+			}
 			if (UI_Item->data->Logic == ACTIVEWIN) {
 				if (UI_Item->data->Clicked()) {
 					if (UI_Item->data == settingsButton || UI_Item->data == settingsButton2) {
+						if(UI_Item->data == settingsButton)
+							settingsPanel->Position.y = 170;
+						else
+							settingsPanel->Position.y = 60;
+
 						UI_Item->data->Active(settingsPanel);
 					}
 					else if (UI_Item->data == pauseButton) {
+				
 						UI_Item->data->Active(pausePanel);
+						pausedGame = true;
 					}
 				}
 			}
@@ -234,10 +259,10 @@ bool j1Scene::Update(float dt)
 					if (UI_Item->data == closeWinButon) {
 						UI_Item->data->Deactive(settingsPanel);
 					}
-					else if (UI_Item->data == closePauseButon) {
-						UI_Item->data->Deactive(pausePanel);
-					}
 				}
+			}
+			if (UI_Item->data->Logic == LIFE_ALERT) {
+
 			}
 			if (UI_Item->data->Logic == DRAGVOLUME) {
 
@@ -254,7 +279,6 @@ bool j1Scene::Update(float dt)
 				if (UI_Item->data->Clicked()) {
 					SDL_Quit();
 				}
-
 			}
 			if (UI_Item->data->Logic == PLAY) {
 				if (UI_Item->data->Clicked()) {
@@ -270,14 +294,20 @@ bool j1Scene::Update(float dt)
 						//active inGame UI
 						UI_Item->data->Active(pauseButton);
 						UI_Item->data->Active(lifeBarBackground);
-
+						pausedGame = false;
 					}
+				}
+			}
+			if (UI_Item->data->Logic == RESUME_GAME) {
+				if (UI_Item->data->Clicked() && !onAction) {
+					UI_Item->data->Deactive(pausePanel);
+					UI_Item->data->Deactive(settingsPanel);
+					pausedGame = false;
 				}
 			}
 			if (UI_Item->data->Logic == RETURN_MAIN_MENU) {
 				if (UI_Item->data->Clicked()&&!onAction) {
 					if (currentLevel == LEVEL1) {
-
 						currentLevel = LEVEL2;
 						Change_Level = true;
 					}
@@ -292,7 +322,12 @@ bool j1Scene::Update(float dt)
 					UI_Item->data->Deactive(pauseButton);
 					UI_Item->data->Deactive(lifeBarBackground);
 					UI_Item->data->Deactive(pausePanel);
-
+				}
+			}
+			if (UI_Item->data->Logic == LIFE) {
+				if (Player != nullptr) {
+					float initialw = 363;
+					UI_Item->data->UI_Rect.w = initialw*((float)Player->life / 100);
 				}
 			}
 		}

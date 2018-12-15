@@ -122,11 +122,21 @@ public:
 	UI_Element* lifeBar = nullptr;
 	UI_Element* lifeBarBackground = nullptr;
 
+	UI_Element* loadButton = nullptr;
+	UI_Element* labelLoadButton = nullptr;
+
+	UI_Element* resumeButton = nullptr;
+	UI_Element* labelResumeButton = nullptr;
+
 	UI_Element* pauseButton = nullptr;
 	UI_Element* iconPauseButton = nullptr;
 
 	UI_Element* returnMainMenuButton = nullptr;
 	UI_Element* labelreturnMainMenuButton = nullptr;
+
+	UI_Element* BloodAlert = nullptr;
+	int bloodalpha = 255;
+	SDL_Texture* bloodTex=nullptr;
 
 	UI_Element* pausePanel = nullptr;
 
@@ -137,6 +147,8 @@ public:
 	iPoint lastMousePos = { 0,0 };
 	iPoint newMousePos = { 0,0 };
 	bool onAction = false;
+	bool onTopSomething = false;
+	bool pausedGame = false;
 
 private:
 	SDL_Color None = { 255,255,255,255 };

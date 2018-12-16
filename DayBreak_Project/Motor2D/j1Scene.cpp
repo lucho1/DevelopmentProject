@@ -436,21 +436,11 @@ bool j1Scene::Update(float dt)
 	if ((currentLevel == LEVEL1 || currentLevel == LEVEL2) && Player != nullptr) {
 
 		
-		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+			App->entity_manager->coins++;
 
-			if (currentLevel == LEVEL1)
-				pause_time1 = Level1_Timer.Read();
-			else if(currentLevel == LEVEL2)
-				pause_time2 = Level2_Timer.Read();
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
-
-			if (currentLevel == LEVEL1)
-				Level1_Timer.StartFrom(-pause_time1);
-			else if (currentLevel == LEVEL2)
-				Level2_Timer.StartFrom(-pause_time2);
-		}
+		if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+			App->entity_manager->score += 10;
 			
 		if (currentLevel == LEVEL1) {
 

@@ -513,10 +513,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 		App->audio->PlayFx(win_fx);
 
-		/*int level_switch = App->scene->currentLevel + 1;
-		App->fade->Fade(2.0f);
-		App->scene->ChangeLevel(level_switch);*/
-
 	}
 }
 

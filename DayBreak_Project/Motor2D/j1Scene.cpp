@@ -111,8 +111,8 @@ bool j1Scene::Start()
 
 	}
 
-	App->audio->ControlMUSVolume(30);
-	App->audio->ControlSFXVolume(30);
+	App->audio->ControlMUSVolume(0);
+	App->audio->ControlSFXVolume(0);
 	App->render->ResetCamera();
 
 	return true;
@@ -162,7 +162,7 @@ bool j1Scene::Update(float dt)
 		App->LoadGame("save_game.xml");
 	
 
-	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->scene->currentLevel != MAIN_MENU)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && !changing_same_Level) {
@@ -199,6 +199,25 @@ bool j1Scene::Update(float dt)
 			if(Player->Dead.Finished())
 			ChangeLevel(LEVEL2+1);
 		}
+	}
+
+	if ((currentLevel == LEVEL1 || currentLevel == LEVEL2) && Player != nullptr) {
+
+		
+		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) {
+
+			pause_time = Level_Timer.Read();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
+
+			Level_Timer.StartFrom(-pause_time);
+		}
+			
+
+		int sec = (int)Level_Timer.ReadSec() % 60;
+		int minutes = Level_Timer.ReadSec() / 60;
+		LOG("TIME: %02i : %02i", minutes, sec);
 	}
 
 	App->map->Draw(current_map);
@@ -280,7 +299,7 @@ void j1Scene::ChangeLevel(int level_change) {
 		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy1");
 
 		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
-
+		PERF_START(Level_Timer);
 	
 	}
 	if (currentLevel == LEVEL2) {

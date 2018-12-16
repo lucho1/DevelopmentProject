@@ -74,6 +74,9 @@ public:
 	//Player
 	j1Player *Player = nullptr;
 
+	j1Timer Level_Timer;
+	int pause_time = 0;
+
 private:
 
 	MapData Intro_map;
@@ -85,6 +88,8 @@ private:
 
 	bool pathfinding = false;
 
+private:
+
 	pugi::xml_document	EnemiesDocument;
 	pugi::xml_document	SceneDocument;
 	pugi::xml_node		music_node;
@@ -92,7 +97,6 @@ private:
 	pugi::xml_document EnemiesPositions;
 	pugi::xml_node en_pos;
 	
-
 };
 
 #endif // __j1SCENE_H__

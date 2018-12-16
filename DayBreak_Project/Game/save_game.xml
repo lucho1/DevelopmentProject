@@ -8,9 +8,46 @@
 	<pathfinding />
 	<scene />
 	<entities>
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
 		<player>
-			<player x="3124" y="1284" life="10" score="65" coins="1" />
+			<player x="222" y="1116" life="70" score="0" coins="0" paused_time="36312" current_level="2" />
 		</player>
+		<Enemy posX="927" posY="882" />
+		<Enemy posX="2279" posY="633" />
+		<Enemy posX="4157" posY="406" />
+		<Enemy posX="7992" posY="564" />
+		<Enemy posX="9213" posY="1230" />
+		<Enemy posX="10607" posY="1412" />
+		<Enemy posX="12228" posY="1412" />
+		<Enemy posX="12524" posY="588" />
+		<Enemy posX="1876" posY="1270" />
+		<Enemy posX="2950" posY="588" />
+		<Enemy posX="3781" posY="927" />
+		<Enemy posX="5132" posY="1268" />
+		<Enemy posX="4779" posY="757" />
+		<Enemy posX="7263" posY="927" />
+		<Enemy posX="7151" posY="1267" />
+		<Enemy posX="9572" posY="927" />
+		<Enemy posX="11299" posY="1097" />
+		<Enemy posX="14257" posY="2117" />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
+		<Objects />
 		<Objects />
 		<Objects />
 		<Objects />
@@ -28,6 +65,6 @@
 	<Collisions />
 	<Fade />
 	<renderer>
-		<camera x="-2938" y="-1071" />
+		<camera x="-7" y="-903" />
 	</renderer>
 </game_state>

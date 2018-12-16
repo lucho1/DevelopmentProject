@@ -41,7 +41,7 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos, const char* path, pugi::xml_document &E
 
 j1EnemyWalker::~j1EnemyWalker() {}
 
-void j1EnemyWalker::FixUpdate(float dt){
+void j1EnemyWalker::FixUpdate(float dt) {
 
 	BROFILER_CATEGORY("EnemyWalker FixUpdate", Profiler::Color::IndianRed);
 

@@ -216,8 +216,8 @@ void j1Player::FixUpdate(float dt) {
 
 		player_velocity.y += acceleration.y;
 		player_position.y += player_velocity.y;
-
 		}
+
 		App->audio->PlayFx(Shout_Die);
 		App->audio->PlayFx(lose_fx);
 		current_animation = &Dead;
@@ -455,7 +455,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			if (c1->rect.y <= c2->rect.y + c2->rect.h && c1->rect.y >= c2->rect.y + c2->rect.h - player_velocity.y - acceleration.y) { //Colliding down (jumping)
 			
 				fall = false;
-				doublejump = false;
 				player_velocity.y = 0.0f;
 				
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;

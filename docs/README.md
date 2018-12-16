@@ -90,9 +90,9 @@ F5 - Save the Current state
 
 F6 - Load previous state
 
-F9 - View Colliders/Logic and Enemies Pathfinding
-
 F8 - UI Debug mode
+
+F9 - View Colliders/Logic and Enemies Pathfinding
 
 F10- God Mode
 

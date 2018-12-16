@@ -1,10 +1,16 @@
+
 #ifndef __j1GUI_H__
 #define __j1GUI_H__
+#define _CRT_SECURE_NO_WARNINGS
+
 
 #include "j1Module.h"
 #include "j1Textures.h"
 #include "j1Input.h"
-#include "j1App.h"
+#include "j1Fonts.h"
+#include "j1Audio.h"
+
+
 #define CURSOR_WIDTH 2
 
 // TODO 1: Create your structure of classes
@@ -24,8 +30,12 @@ enum Button_Logic {
 	RETURN_MAIN_MENU,
 	RESUME_GAME,
 	LIFE_ALERT,
+	SAVE_REMEMBER,
 	LOAD,
+	COINS,
+	TIME,
 	PLAY,
+	SCORE,
 	CONTINUE,
 	DRAG,
 	WRITE,
@@ -35,7 +45,6 @@ enum Button_Logic {
 	WEB,
 	CLICKTOWRITE,
 	DRAGVOLUME,
-	SCORE,
 	NONE_LOGIC
 };
 
@@ -64,124 +73,25 @@ public:
 
 public:
 
-	bool isParent() {
-		if (Parent == nullptr)
-			return false;
-		else
-			return true;
-	}
+	bool isParent();
+	bool onTop();
+	bool Clicked();
 
-	virtual void Drag() {
-		if (Clicked()) {
-			int x = 0;
-			int y = 0;
-			App->input->GetMouseMotion(x, y);
-			if (isParent()) {
-				initialPosition.x += x;
-				initialPosition.y += y;
-			}
-			else
-			{
-				Position.x += x;
-				Position.y += y;
-			}
-		}
-	}
+	void Score(int score);
+	void Time(int time);
+	void Alert(SDL_Texture* texture, int& alpha);
+	void VolumeControl(iPoint newMousePos, iPoint lastMousePos);
 
-	virtual void Update() {
-		if (isParent()) {
-			Position.x = Parent->Position.x + initialPosition.x;
-			Position.y = Parent->Position.y + initialPosition.y;
-		}
-		if (type == BUTTON) {
-			if (onTop()) {
-				if (Clicked() == false) {
-					CurrentRect = &UI_Rect_Active;
-				}
-				else
-					CurrentRect = &UI_Rect_Pushed;
-			}
-			else {
-				CurrentRect = &UI_Rect;
-			}
-		}
-		if (Child_List.count() > 0) {
-			p2List_item<UI_Element*>* Item = Child_List.start;
-			for (; Item != nullptr; Item = Item->next) {
-				if (isActive)
-					Item->data->isActive = true;
-				else
-					Item->data->isActive = false;
-			}
-		}
-	}
-	void Alert(SDL_Texture* texture,int& alpha) {
-		if (alpha <= 255&&alphaReach) {
-			alpha -= 7;
-		}
-		else if (alpha >= 90) {
-			alphaReach = false;
-			alpha += 2;
-			if (alpha >= 255) {
-				alphaReach = true;
-			}
-		}
-		//SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(texture, alpha);
-	}
-	virtual void Active(UI_Element* toActive) {
-		toActive->isActive = true;
-	}
-	virtual void Deactive(UI_Element* toDeactive) {
-		toDeactive->isActive = false;
-	}
+	void Active(UI_Element* toActive);
+	void Deactive(UI_Element* toDeactive);
+	void goWeb(const char* web);
 
-	virtual void Draw() {
-		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false,angle,0,0,SDL_FLIP_NONE,scale);
-		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false,scale);
-	}
-
-	void goWeb() {
-
-		ShellExecuteA(NULL, "open", "https://lucho1.github.io/DevelopmentProject/", NULL, NULL, SW_SHOWNORMAL);
-
-	}
-	void VolumeControl(iPoint newMousePos, iPoint lastMousePos) {
-
-		if (Position.x >= Parent->Position.x&&Position.x + UI_Rect.w*scale < (Parent->Position.x + Parent->UI_Rect.w*scale))
-			initialPosition.x += newMousePos.x - lastMousePos.x;
-		else if (Position.x < Parent->Position.x)
-			initialPosition.x = 0;
-		else
-			initialPosition.x = Parent->UI_Rect.w*scale - UI_Rect.w*scale - 1;
-	}
-
-	bool onTop() {
-		int y;
-		int x;
-
-		App->input->GetMousePosition(x, y);
-		if (x >= Position.x&&x < Position.x + UI_Rect.w*scale&&y >= Position.y&&y <= Position.y + UI_Rect.h*scale)
-			return true;
-		else
-			return false;
-	}
-	bool Clicked() {
-
-		if (onTop()) {
-			if (App->input->GetMouseButtonDown(KEY_DOWN))
-				return true;
-			else
-				return false;
-		}
-		else
-			return false;
-	}
+	void Update();
+	void Draw();
+	void Drag();
 
 
 public:
-
-
 
 
 	iPoint initialPosition;
@@ -205,6 +115,7 @@ public:
 	bool isActive = true;
 	bool toDesactive = false;
 	bool toActive = false;
+	bool sound = true;
 
 	bool alphaReach = true;
 	int alpha=255;
@@ -252,8 +163,12 @@ public:
 	//UI_Element* Add_UIElement(UI_Type type, iPoint position, const char* Text = nullptr, UI_Element* Parent = nullptr);
 
 	p2List<UI_Element*> UI_Elements_List;
+	UI_Element*last;
 
+	uint32 onTopSFX;
+	uint32 clickSFX;
 
+	bool Debug = false;
 private:
 
 	SDL_Rect a = { 0, 0, 219, 57 };

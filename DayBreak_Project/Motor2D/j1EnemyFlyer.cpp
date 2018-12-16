@@ -32,7 +32,7 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
   
 	explosion = App->audio->LoadFx("audio/fx/Explosion.wav");
 	Start_exploding = false;
-	life = 15;
+	life = 10;
 
 }
 

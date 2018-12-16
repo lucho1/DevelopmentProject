@@ -27,7 +27,7 @@ j1EnemyWalker::j1EnemyWalker(iPoint pos, const char* path, pugi::xml_document &E
 	Patrol_Range[2] = {};
 	Able_to_Shoot = true;
 	
-	life = 20;
+	life = 15;
 
 	Detect_Shoot_Range.x = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_shooting_x").as_int();
 	Detect_Shoot_Range.y = EnemySettings.child("EnemySettings").child("Detection_Range").attribute("det_shooting_y").as_int();

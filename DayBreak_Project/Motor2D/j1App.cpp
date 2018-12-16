@@ -236,8 +236,7 @@ void j1App::FinishUpdate()
 		cap_string = "OFF";
 	
 
-	sprintf_s(title, 256, "DayBreak v0.5 dt: %.3f || Last sec frames: %i   Av.FPS: %.2f   Last Frame Ms: %02u || VSYNC: %s   Framerate Cap: %s ", dt,
-		frames_on_last_update, avg_fps, last_frame_ms, vsync_, cap_string);
+	sprintf_s(title, 256, "DayBreak v1.0");
 
 	App->win->SetTitle(title);
 

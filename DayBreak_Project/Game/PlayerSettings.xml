@@ -20,7 +20,7 @@
 <!--ANIMATIONS-->
   <AnimationCoords>
 
-    <Idle loop="true" speed="0.17">
+    <Idle loop="true" speed="0.7">
       <Pushback x="0" y="0" w="106" h="203"/>
       <Pushback x="106" y="0" w="106" h="203"/>
       <Pushback x="212" y="0" w="106" h="203"/>
@@ -32,7 +32,7 @@
       <Pushback x="0" y="203" w="106" h="203"/>
     </Idle>
 
-    <Run loop="true" speed="0.15">
+    <Run loop="true" speed="0.7">
       <Pushback x="106" y="203" w="106" h="203"/>
       <Pushback x="212" y="203" w="106" h="203"/>
       <Pushback x="318" y="203" w="106" h="203"/>
@@ -40,17 +40,17 @@
       <Pushback x="530" y="203" w="106" h="203"/>
     </Run>
 
-    <Jump loop="false" speed="0.15">
+    <Jump loop="false" speed="0.7">
       <Pushback x="636" y="203" w="106" h="203"/>
    
     </Jump>
    
-    <Fall loop="true" speed="0.15">
+    <Fall loop="true" speed="0.7">
       <Pushback x="743" y="203" w="106" h="203"/>
 
     </Fall>
 	
-    <Dead loop="false" speed="0.15">
+    <Dead loop="false" speed="0.7">
       <Pushback x="0" y="406" w="214" h="203"/>
       <Pushback x="214" y="406" w="214" h="203"/>
       <Pushback x="428" y="406" w="214" h="203"/>
@@ -59,10 +59,10 @@
     </Dead>
 
    <Gun>
-	<None loop="true" speed="0.17">
+	<None loop="true" speed="0.7">
 	<Pushback x="0" y="0" w="1" h="1"/>
 	</None>
-       <Idle loop="true" speed="0.17">
+       <Idle loop="true" speed="0.7">
          <Pushback x="0" y="811" w="182" h="64"/>
          <Pushback x="0" y="875" w="182" h="64"/>
          <Pushback x="0" y="939" w="182" h="64"/>
@@ -74,7 +74,7 @@
          <Pushback x="214" y="929" w="182" h="64"/>
        </Idle>
 
-       <Run loop="true" speed="0.15">
+       <Run loop="true" speed="0.7">
          <Pushback x="397" y="610" w="200" h="88"/>
          <Pushback x="397" y="698" w="200" h="88"/>
          <Pushback x="397" y="786" w="200" h="88"/>
@@ -83,7 +83,7 @@
          <Pushback x="597" y="698" w="200" h="88"/>
       </Run>
 
-      <Shoot loop="true" speed="0.23">
+      <Shoot loop="true" speed="0.7">
          <Pushback x="597" y="786" w="199" h="76"/>
          <Pushback x="597" y="862" w="199" h="76"/>
          <Pushback x="597" y="938" w="199" h="76"/>

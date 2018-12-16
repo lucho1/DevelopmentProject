@@ -20,7 +20,7 @@
 <!--ANIMATIONS-->
   <AnimationCoords>
 
-    <Idle loop="true" speed="0.17">
+    <Idle loop="true" speed="0.7">
       <Pushback x="0" y="0" w="252" h="242"/>
       <Pushback x="252" y="0" w="252" h="242"/>
       <Pushback x="504" y="0" w="252" h="242"/>
@@ -33,7 +33,7 @@
     <Dead loop="true" speed="0.25">
      <Pushback x="504" y="726" w="252" h="242"/>
     </Dead>
-    <Exploding loop="true" speed="0.15">
+    <Exploding loop="true" speed="0.7">
       <Pushback x="0" y="484" w="252" h="242"/>
       <Pushback x="252" y="484" w="252" h="242"/>
       <Pushback x="504" y="484" w="252" h="242"/>

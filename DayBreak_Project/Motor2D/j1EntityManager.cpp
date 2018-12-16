@@ -194,14 +194,14 @@ bool j1EntityManager::Load(pugi::xml_node &data) {
 
 	while (item2 != nullptr && ret == true) {
 
-		if (item2->data->type != ENTITY_TYPE::ENEMY_ENT) {
+		if (item2->data->type != ENTITY_TYPE::ENEMY_ENT && item2->data->type != ENTITY_TYPE::OBJECT_ENT) {
 
 			item2->data->Load(data.child(item2->data->name.GetString()));
 			item2 = item2->next;
 
 		}
-
-		item2 = item2->next;
+		else
+			item2 = item2->next;
 	}
 
 	p2List_item<j1Entity*>* enemy_item = entities_list.start;
@@ -216,7 +216,7 @@ bool j1EntityManager::Load(pugi::xml_node &data) {
 			node = node.next_sibling("Enemy");
 
 		}
-
+		
 		enemy_item = enemy_item->next;
 	}
 	
@@ -233,8 +233,13 @@ bool j1EntityManager::Save(pugi::xml_node &data) const {
 
 	while (item2 != NULL && ret == true) {
 
-		item2->data->Save(data.append_child(item2->data->name.GetString()));
-		item2 = item2->next;
+		if (item2->data->type != ENTITY_TYPE::OBJECT_ENT) {
+
+			item2->data->Save(data.append_child(item2->data->name.GetString()));
+			item2 = item2->next;
+		}
+		else
+			item2 = item2->next;
 	}
 
 	return ret;

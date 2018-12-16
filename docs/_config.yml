@@ -1,4 +1,5 @@
 theme: jekyll-theme-hacker
 show_downloads: true
 github:
-  zip_url: https://github.com/lucho1/DevelopmentProject/raw/master/docs/DayBreak_v1.zip
+  zip_url: https://github.com/lucho1/DevelopmentProject/releases/download/DayBreak-v0.5/Daybreak.v0.5.zip
+  tar_url: https://github.com/lucho1/DevelopmentProject/archive/DayBreak-v0.5.tar.gz

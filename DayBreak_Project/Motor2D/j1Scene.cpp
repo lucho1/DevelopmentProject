@@ -377,6 +377,8 @@ bool j1Scene::Update(float dt)
 
 		App->SaveGame("save_game.xml");
 		App->entity_manager->coins -= 5;
+		Player->life = 70;
+		
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) 

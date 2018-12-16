@@ -173,6 +173,11 @@ bool j1Scene::PreUpdate()
 					UI_Item->data->Position.y = Player->player_position.y-UI_Item->data->UI_Rect.h+10;
 			}
 			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN&&currentLevel!= MAIN_MENU) {
+
+				if (currentLevel == LEVEL1)
+					pause_time1 = Level1_Timer.Read();
+				else if (currentLevel == LEVEL2)
+					pause_time2 = Level2_Timer.Read();
 				UI_Item->data->Active(pausePanel);
 				pausedGame = true;
 			}

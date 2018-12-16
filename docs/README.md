@@ -14,8 +14,6 @@ The game is licensed under an MIT License.
 ![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/Game%20Photo.png)
 
 ### Download the game [here](https://github.com/lucho1/DevelopmentProject/releases)
-
-### TRUE DOWNLOAD [here](https://github.com/lucho1/DevelopmentProject/blob/master/docs/DayBreak_v1.zip)
 #### Github Repo: [DayBreak](https://github.com/lucho1/DevelopmentProject)
 
 ## Developers

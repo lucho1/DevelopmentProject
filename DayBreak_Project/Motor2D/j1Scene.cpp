@@ -140,7 +140,9 @@ bool j1Scene::PreUpdate()
 						App->LoadGame("save_game.xml");
 					
 					if (currentLevel == MAIN_MENU) {
+
 						playButton->isActive = false;
+						creditButton->isActive = false;
 						quitButton->isActive = false;
 						continueButton->isActive= false;
 						settingsButton->isActive= false;
@@ -681,6 +683,8 @@ bool j1Scene::Load(pugi::xml_node& data)
 	pause_time2 = data.child("scene").attribute("paused_time2").as_int();
 	pause_time1 = data.child("scene").attribute("paused_time1").as_int();
 
+	App->map->TriggerActive = data.child("scene").attribute("trigger").as_bool();
+
 	if(currentLevel != level_it)
 		App->scene->ChangeLevel(level_it, 0);
 
@@ -715,6 +719,7 @@ bool j1Scene::Save(pugi::xml_node& data) const
 {
 	pugi::xml_node scene_node = data.append_child("scene");
 	scene_node.append_attribute("current_level") = currentLevel;
+	scene_node.append_attribute("trigger") = App->map->TriggerActive;
 
 	if (currentLevel == 1) {
 

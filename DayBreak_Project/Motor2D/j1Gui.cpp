@@ -7,18 +7,23 @@
 #include "j1Input.h"
 #include "j1Gui.h"
 
+#include "Brofiler/Brofiler.h"
+
 j1Gui::j1Gui() : j1Module()
 {
 	name.create("gui");
 }
 
+
 // Destructor
 j1Gui::~j1Gui()
 {}
 
+
 // Called before render is available
 bool j1Gui::Awake(pugi::xml_node& conf)
 {
+
 	LOG("Loading GUI atlas");
 	bool ret = true;
 
@@ -26,6 +31,7 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	return ret;
 }
+
 
 // Called before the first frame
 bool j1Gui::Start()
@@ -38,19 +44,29 @@ bool j1Gui::Start()
 	return true;
 }
 
+
 // Update all guis
 bool j1Gui::PreUpdate()
 {
 
+	BROFILER_CATEGORY("GUI PreUpdate", Profiler::Color::GreenYellow);
 	return true;
 }
+
+
 bool j1Gui::Update() {
 
+
+	BROFILER_CATEGORY("GUI Update", Profiler::Color::PaleVioletRed);
 	return true;
 }
+
+
 // Called after all Updates
 bool j1Gui::PostUpdate()
 {
+
+	BROFILER_CATEGORY("GUI PostUpdate", Profiler::Color::YellowGreen);
 	p2List_item<UI_Element*>* Item = UI_Elements_List.start;
 	for (; Item != nullptr; Item = Item->next) {
 
@@ -71,6 +87,7 @@ bool j1Gui::PostUpdate()
 	return true;
 }
 
+
 // Called before quitting
 bool j1Gui::CleanUp()
 {
@@ -79,11 +96,13 @@ bool j1Gui::CleanUp()
 	return true;
 }
 
+
 // const getter for atlas
 SDL_Texture* j1Gui::GetAtlas() const
 {
 	return atlas;
 }
+
 
 UI_Element* j1Gui::Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_Rect,
 	Button_Logic logic, SDL_Rect Image_Rect_Active, SDL_Rect ButtonPush, float scale, SDL_Color Color,
@@ -133,6 +152,7 @@ UI_Element* j1Gui::Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_R
 
 }
 
+
 void UI_Element::Draw() {
 
 	App->render->Blit(texture, Position.x, Position.y, CurrentRect, false, angle, 0, 0, SDL_FLIP_NONE, scale);
@@ -140,7 +160,10 @@ void UI_Element::Draw() {
 		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false, scale);
 
 }
+
+
 bool UI_Element::onTop() {
+
 	int y;
 	int x;
 
@@ -159,6 +182,7 @@ bool UI_Element::onTop() {
 	
 }
 
+
 bool UI_Element::Clicked() {
 
 	if (onTop()) {
@@ -173,4 +197,132 @@ bool UI_Element::Clicked() {
 	}
 	else
 		return false;
+}
+
+
+bool UI_Element::isParent() {
+
+	if (Parent == nullptr)
+		return false;
+	else
+		return true;
+}
+
+
+void UI_Element::Score(int score) {
+
+	char score_Text[10];
+	sprintf_s(score_Text, "%d", score); //warning: deprecated
+	App->font->CalcSize(score_Text, UI_Rect.w, UI_Rect.h);
+	texture = App->font->Print(score_Text);
+}
+
+
+void UI_Element::Time(int time) {
+
+	char score_Text[10];
+	sprintf_s(score_Text, "%02i", time); //warning: deprecated
+	App->font->CalcSize(score_Text, UI_Rect.w, UI_Rect.h);
+	texture = App->font->Print(score_Text);
+}
+
+
+void UI_Element::Drag() {
+
+	if (Clicked()) {
+		int x = 0;
+		int y = 0;
+		App->input->GetMouseMotion(x, y);
+		if (isParent()) {
+			initialPosition.x += x;
+			initialPosition.y += y;
+		}
+		else
+		{
+			Position.x += x;
+			Position.y += y;
+		}
+	}
+}
+
+
+void UI_Element::Update() {
+
+	BROFILER_CATEGORY("GUI Elements UPDATE", Profiler::Color::PaleVioletRed);
+
+	if (isParent()) {
+		Position.x = Parent->Position.x + initialPosition.x;
+		Position.y = Parent->Position.y + initialPosition.y;
+	}
+	if (type == BUTTON) {
+		if (onTop()) {
+			if (Clicked() == false) {
+				CurrentRect = &UI_Rect_Active;
+			}
+			else
+				CurrentRect = &UI_Rect_Pushed;
+		}
+		else if ((Logic == LOAD || Logic == CONTINUE) && App->GetSaves("save_game.xml") == false) {
+			CurrentRect = &UI_Rect_Pushed;
+		}
+		else {
+			CurrentRect = &UI_Rect;
+		}
+	}
+	if (Child_List.count() > 0) {
+		p2List_item<UI_Element*>* Item = Child_List.start;
+		for (; Item != nullptr; Item = Item->next) {
+			if (isActive)
+				Item->data->isActive = true;
+			else
+				Item->data->isActive = false;
+		}
+	}
+}
+
+
+void UI_Element::Alert(SDL_Texture* texture, int& alpha) {
+
+	if (alpha <= 255 && alphaReach) {
+		alpha -= 7;
+	}
+	else if (alpha >= 90) {
+		alphaReach = false;
+		alpha += 2;
+		if (alpha >= 255) {
+			alphaReach = true;
+		}
+	}
+	//SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(texture, alpha);
+}
+
+
+void UI_Element::Active(UI_Element* toActive) {
+
+	toActive->isActive = true;
+}
+
+
+void UI_Element::Deactive(UI_Element* toDeactive) {
+
+	toDeactive->isActive = false;
+}
+
+
+void UI_Element::goWeb(const char* web) {
+
+	ShellExecuteA(NULL, "open", web, NULL, NULL, SW_SHOWNORMAL);
+}
+
+
+void UI_Element::VolumeControl(iPoint newMousePos, iPoint lastMousePos) {
+
+	if (Position.x >= Parent->Position.x&&Position.x + UI_Rect.w*scale < (Parent->Position.x + Parent->UI_Rect.w*scale))
+		initialPosition.x += newMousePos.x - lastMousePos.x;
+	else if (Position.x < Parent->Position.x)
+		initialPosition.x = 0;
+	else
+		initialPosition.x = Parent->UI_Rect.w*scale - UI_Rect.w*scale - 1;
+
 }

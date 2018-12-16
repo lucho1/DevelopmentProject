@@ -72,113 +72,22 @@ public:
 
 public:
 
-	bool isParent() {
-		if (Parent == nullptr)
-			return false;
-		else
-			return true;
-	}
-
-	void Score(int score) {
-	char score_Text[10];
-	sprintf_s(score_Text, "%d", score); //warning: deprecated
-	App->font->CalcSize(score_Text, UI_Rect.w, UI_Rect.h);
-	texture = App->font->Print(score_Text);
-	}
-	void Time(int time) {
-		char score_Text[10];
-		sprintf_s(score_Text, "%02i", time); //warning: deprecated
-		App->font->CalcSize(score_Text, UI_Rect.w, UI_Rect.h);
-		texture = App->font->Print(score_Text);
-	}
-	virtual void Drag() {
-		if (Clicked()) {
-			int x = 0;
-			int y = 0;
-			App->input->GetMouseMotion(x, y);
-			if (isParent()) {
-				initialPosition.x += x;
-				initialPosition.y += y;
-			}
-			else
-			{
-				Position.x += x;
-				Position.y += y;
-			}
-		}
-	}
-
-	virtual void Update() {
-		if (isParent()) {
-			Position.x = Parent->Position.x + initialPosition.x;
-			Position.y = Parent->Position.y + initialPosition.y;
-		}
-		if (type == BUTTON) {
-			if (onTop()) {
-				if (Clicked() == false) {
-					CurrentRect = &UI_Rect_Active;
-				}
-				else
-					CurrentRect = &UI_Rect_Pushed;
-			}
-			else if ((Logic == LOAD || Logic == CONTINUE) && App->GetSaves("save_game.xml") == false) {
-				CurrentRect = &UI_Rect_Pushed;
-			}
-			else {
-				CurrentRect = &UI_Rect;
-			}
-		}
-		if (Child_List.count() > 0) {
-			p2List_item<UI_Element*>* Item = Child_List.start;
-			for (; Item != nullptr; Item = Item->next) {
-				if (isActive)
-					Item->data->isActive = true;
-				else
-					Item->data->isActive = false;
-			}
-		}
-	}
-	void Alert(SDL_Texture* texture,int& alpha) {
-		if (alpha <= 255&&alphaReach) {
-			alpha -= 7;
-		}
-		else if (alpha >= 90) {
-			alphaReach = false;
-			alpha += 2;
-			if (alpha >= 255) {
-				alphaReach = true;
-			}
-		}
-		//SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(texture, alpha);
-	}
-	virtual void Active(UI_Element* toActive) {
-		toActive->isActive = true;
-	}
-	virtual void Deactive(UI_Element* toDeactive) {
-		toDeactive->isActive = false;
-	}
-
-	void Draw();
-
-	void goWeb(const char* web) {
-
-		ShellExecuteA(NULL, "open", web, NULL, NULL, SW_SHOWNORMAL);
-
-	}
-	void VolumeControl(iPoint newMousePos, iPoint lastMousePos) {
-
-		if (Position.x >= Parent->Position.x&&Position.x + UI_Rect.w*scale < (Parent->Position.x + Parent->UI_Rect.w*scale))
-			initialPosition.x += newMousePos.x - lastMousePos.x;
-		else if (Position.x < Parent->Position.x)
-			initialPosition.x = 0;
-		else
-			initialPosition.x = Parent->UI_Rect.w*scale - UI_Rect.w*scale - 1;
-	}
-
+	bool isParent();
 	bool onTop();
-
 	bool Clicked();
+
+	void Score(int score);
+	void Time(int time);
+	void Alert(SDL_Texture* texture, int& alpha);
+	void VolumeControl(iPoint newMousePos, iPoint lastMousePos);
+
+	void Active(UI_Element* toActive);
+	void Deactive(UI_Element* toDeactive);
+	void goWeb(const char* web);
+
+	void Update();
+	void Draw();
+	void Drag();
 
 
 public:

@@ -17,10 +17,6 @@ j1Objects* j1Objects::CreateObject(iPoint pos, OBJECT_TYPE objType) {
 
 	if (objType == PUSHOFF) {
 
-		bool a = true;
-		//Obj_tex = App->tex->Load("maps/Particles.png");
-		bool b = true;
-
 		pugi::xml_document doc;
 
 		if(App->scene->currentLevel == LEVEL1)

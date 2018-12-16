@@ -134,8 +134,10 @@ UI_Element* j1Gui::Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_R
 }
 
 void UI_Element::Draw() {
-
-	App->render->Blit(texture, Position.x, Position.y, CurrentRect, false, angle, 0, 0, SDL_FLIP_NONE, scale);
+	if(Logic!=SAVE_REMEMBER)
+		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false, angle, 0, 0, SDL_FLIP_NONE, scale);
+	else
+		App->render->Blit(texture, Position.x, Position.y, CurrentRect, 1.0f, angle, 0, 0, SDL_FLIP_NONE, scale);
 	if (App->gui->Debug == true)
 		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false, scale);
 

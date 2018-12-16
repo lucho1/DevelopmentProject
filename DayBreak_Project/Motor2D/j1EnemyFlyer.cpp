@@ -83,9 +83,7 @@ void j1EnemyFlyer::Update(float dt) {
 	if (life <= 0) {
 
 		current_animation = &Dead;
-		if (Dead.Finished()) {
-
-			
+		if (Dead.Finished()) {		
 
 			if (!exploded) {
 

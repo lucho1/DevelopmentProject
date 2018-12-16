@@ -31,9 +31,6 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 	shoot_pl = App->audio->LoadFx("audio/fx/Shoot.wav");
 	button_wav = App->audio->LoadFx("audio/fx/Button.wav");
 	ray_touched_wav = App->audio->LoadFx("audio/fx/Ray_touched.wav");
-
-
-
 	lose_fx = App->audio->LoadFx("audio/fx/lose.wav");
 	win_fx = App->audio->LoadFx("audio/fx/win.wav");
 
@@ -213,16 +210,27 @@ void j1Player::FixUpdate(float dt) {
 
 	else if (life <= 0) {
 
+		if (fall == false)
+			fall = true;
+
+		else {
+
+		player_velocity.y += acceleration.y;
+		acceleration.y += 0.2f; // acceleration.x; //?? original: 0.2f
+		player_position.y += player_velocity.y;
+
+		}
+
 		App->audio->PlayFx(lose_fx);
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
 
 		if (Dead.Finished())
 			App->entity_manager->DestroyEntity(this);
-		
+
 
 	}
-	//LOG("%d", life);
+	LOG("%d", life);
 
 }
 

@@ -82,6 +82,10 @@ F1 - Start from level 1
 
 F2 - Iterate between screens
 
+F3 - Add 1 coin
+
+F4 - Add 10 score points
+
 F5 - Save the Current state
 
 F6 - Load previous state

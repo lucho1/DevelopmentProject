@@ -52,7 +52,7 @@ This system must be improved and it's on the way.
 
 As you may see in the image, each element has a pointer to its parent, so we set a hierarchy or a tree-like structure.
 
-![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UI_UML.png)
+![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UI_UML2.png)
 
 ### Innovations
 * Platforms that must be activated or deactivated to pass the level

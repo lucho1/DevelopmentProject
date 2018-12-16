@@ -43,7 +43,14 @@ avoid confusing code and build an easier work flow.
 
 ### UI System
 
-![](INSERT UML FOR UI & A DESCRIPTION)
+For the UI system, we have liked to make a system similar to the Entities one, but we didn't had much time and we had to adapt the UI needs to the time we had.
+
+UI system has a base module which works as a manger for all the UI Elements. From here, we build a header to generalize the UI elements that has a UI_Element factory that assigns, from an enumeration, a type (for example, button) and a logic (for instance, play or load) for each element.
+
+The appropiate module (the one that needs to create that UI Element, for example, the scene), will perform element's physical logic knowing it's type and the logic that must do.
+This system must be improved and it's on the way.
+
+![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UI_UML.png)
 
 ### Innovations
 * Platforms that must be activated or deactivated to pass the level

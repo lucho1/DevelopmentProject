@@ -175,6 +175,8 @@ public:
 	UI_Element* githubButonRoger = nullptr;
 	UI_Element* icongitHubButonRoger = nullptr;
 
+	UI_Element* iconToSave = nullptr;
+
 	UI_Element* labelCreatorsofGame = nullptr;
 	UI_Element* labelLuchoAndRoger = nullptr;
 	UI_Element* PathfindingProgramer = nullptr;

@@ -162,6 +162,15 @@ bool j1Scene::PreUpdate()
 				}
 				else
 					UI_Item->data->CurrentRect = &UI_Item->data->UI_Rect_Pushed;
+			}	
+			if (App->entity_manager->coins >= 5) {
+				iconToSave->isActive = true;
+			}
+			else
+				iconToSave->isActive = false;
+			if (UI_Item->data->Logic == SAVE_REMEMBER) {			
+					UI_Item->data->Position.x = Player->player_position.x+10;
+					UI_Item->data->Position.y = Player->player_position.y-UI_Item->data->UI_Rect.h+10;
 			}
 			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN&&currentLevel!= MAIN_MENU) {
 				UI_Item->data->Active(pausePanel);
@@ -849,6 +858,9 @@ void j1Scene::CreateUI_Elements() {
 	License = App->gui->Add_UIElement(LABEL, iPoint(70, 240), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.3, None, creditsPanel, "LICENSED UNDER MIT");
 	//IN GAME UI
 
+	iconToSave = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(0, 0), { 794, 164, 187,117 }, SAVE_REMEMBER , NULL_RECT, NULL_RECT, scale, None);
+	iconToSave->isActive = false;
+
 	pauseButton = App->gui->Add_UIElement(BUTTON, iPoint(780, 10), { 94,438,75,78 }, ACTIVEWIN, { 94,349,75,78 }, { 94,258,75,78 }, scale);
 	iconPauseButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(20, 20), { 201, 301, 31,31 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, pauseButton);
 	pauseButton->isActive = false;
@@ -918,6 +930,7 @@ void j1Scene::CreateUI_Elements() {
 	UI_Elements_List.add(githubButonRoger);
 	UI_Elements_List.add(quitButton);
 	UI_Elements_List.add(continueButton);
+	UI_Elements_List.add(iconToSave);
 	UI_Elements_List.add(settingsButton);
 	UI_Elements_List.add(webPageButton);
 	UI_Elements_List.add(creditButton);

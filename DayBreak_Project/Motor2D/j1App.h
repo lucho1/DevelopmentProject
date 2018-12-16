@@ -22,6 +22,8 @@ class j1Fade;
 class j1PathFinding;
 class j1Particles;
 class j1EntityManager;
+class j1Fonts;
+class j1Gui;
 
 class j1App
 {
@@ -95,18 +97,21 @@ private:
 public:
 
 	// Modules
-	j1Window*			win;
-	j1Input*			input;
-	j1Render*			render;
-	j1Textures*			tex;
-	j1Audio*			audio;
-	j1Scene*			scene;
-	j1Map*				map;
-	j1Collisions*		collisions;
-	j1Fade*				fade;
-	j1PathFinding*		pathfinding;
-	j1Particles*		particles;
-	j1EntityManager*	entity_manager;
+	j1Window*			win=NULL;
+	j1Input*			input = NULL;
+	j1Render*			render = NULL;
+	j1Textures*			tex = NULL;
+	j1Audio*			audio = NULL;
+	j1Scene*			scene = NULL;
+	j1Map*				map = NULL;
+	j1Collisions*		collisions = NULL;
+	j1Fade*				fade = NULL;
+	j1PathFinding*		pathfinding = NULL;
+	j1Particles*		particles = NULL;
+	j1EntityManager*	entity_manager = NULL;
+	j1Fonts*			font = NULL;
+	j1Gui*				gui = NULL;
+
 
 private:
 

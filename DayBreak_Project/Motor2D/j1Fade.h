@@ -7,6 +7,7 @@
 #include "j1Module.h"
 #include "j1App.h"
 
+class UI_Element;
 struct SDL_Rect;
 
 class j1Fade : public j1Module
@@ -17,12 +18,17 @@ public:
 
 	bool Start();
 	bool Update(float dt);
+	bool PostUpdate();
 	bool Fade(float time = 2.0f);
 
 
 
 	//Module* moduleOff = nullptr;
 	//Module* moduleOn = nullptr;
+
+	SDL_Texture* loadingTex;
+
+	SDL_Rect LoadingRect = { 724,903,277,41 };
 
 	enum fade_step
 	{
@@ -31,6 +37,7 @@ public:
 		fade_from_black
 	} current_step = fade_step::none;
 private:
+
 	Uint32 start_time = 0;
 	Uint32 total_time = 0;
 	SDL_Rect screen;

@@ -22,18 +22,18 @@ The game is licensed under an MIT License.
 
 Lucho Suaya
 
-* IA, pathfinding & FPS/time control
+* IA, pathfinding, FPS/time control & Save/Load
 * [Github](https://github.com/lucho1) @lucho1
 
 Roger Leon
 
-* Art, Music, Levels, Game Design, Art 
+* Art, Music, Levels, Game Design, Entities & UI
 * [Github](rleonborras) @rleonborras
 
 ## Game Main Core
 
 The structure was made with modules that manages different elements of the game. Each one has, appart from their own, common methods for
-awake, preupdate, update, postupdte and cleanup. App is a module that manages all the others and it calls all that methods making
+awake, preupdate, update, postupdate and cleanup. App is a module that manages all the others and it calls all that methods making
 each module work when it must.
 
 All regarding to game metadata (paths of assets, character and enemies characteristics...) are loaded with XML files to avoid hardcoding,
@@ -41,11 +41,14 @@ avoid confusing code and build an easier work flow.
 
 ![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UML.png)
 
+### UI System
+
+![](INSERT UML FOR UI & A DESCRIPTION)
+
 ### Innovations
 * Platforms that must be activated or deactivated to pass the level
 * Textures Flipping
 * Player characteristics loaded from XML file.
-* Intro Screen
 * Player and enemies shooting
 * Music made by us from other base music
 
@@ -53,18 +56,22 @@ avoid confusing code and build an easier work flow.
 
 You must pass through each level and get to the door that will take you out!
 
-Move left and right with A and D keys and jump with W.
+Move left and right with A and D keys and jump with W. You can also shoot with SPACEBAR.
+
+Each 2 flyer enemies killed or each walker enemy killed, you have one more coin! Also you can get 5 score points from flyers and 10 from walkers. Can you beat your own record?
+
+Test yourself to pass the level in the minimum time possible with the highest score!
 
 To pass each level, there are some platforms that are unactive. To activate them and be able to pass over them, you must press a button!
 Those platforms can be also obstacles that must be deactivate by passing through the ray in order to pass the level.
 
-From main menu, start with Enter. Quit the game with ESC key.
+ESC key inside the game pauses it and opens an in-game menu (also you can use the button in the corner).
 
 * _Settings for Debug purposes_
 
 F1 - Start from level 1
 
-F2 - Iterate between screens/levels
+F2 - Iterate between screens
 
 F5 - Save the Current state
 
@@ -72,7 +79,11 @@ F6 - Load previous state
 
 F9 - View Colliders/Logic and Enemies Pathfinding
 
+F8 - UI Debug mode
+
 F10- God Mode
+
+F11 - Enable/Disable FPS cap to 30/60
 
 ## License
 

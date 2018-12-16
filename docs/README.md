@@ -43,12 +43,14 @@ avoid confusing code and build an easier work flow.
 
 ### UI System
 
-For the UI system, we have liked to make a system similar to the Entities one, but we didn't had much time and we had to adapt the UI needs to the time we had.
+For the UI system, we would liked to make a system similar to the Entities one, but we didn't had much time and we had to adapt the UI needs to the time we had.
 
-UI system has a base module which works as a manger for all the UI Elements. From here, we build a header to generalize the UI elements that has a UI_Element factory that assigns, from an enumeration, a type (for example, button) and a logic (for instance, play or load) for each element.
+UI system has a base module which works as a manger for all the UI Elements. From here, we build a header to generalize the UI elements that has a UI_Element factory that assigns, from an enumeration, a type (for example, button) and a logic (for instance, play or load) for each element. Then the UI_Elements are created mostly from the Scene module and added to a list of UI_Elements.
 
-The appropiate module (the one that needs to create that UI Element, for example, the scene), will perform element's physical logic knowing it's type and the logic that must do.
+The appropiate module (the one that needs to create a UI Element, for example, the scene), will perform element's physical logic knowing it's type and the logic that must do.
 This system must be improved and it's on the way.
+
+As you may see in the image, each element has a pointer to its parent, so we set a hierarchy or a tree-like structure.
 
 ![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UI_UML.png)
 

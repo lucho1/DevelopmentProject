@@ -178,8 +178,12 @@ bool j1Scene::Update(float dt)
 		App->map->TriggerActive = false;
 	}
 
-	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level)
+	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level) {
+
+		pause_time1 = 0;
 		Change_Level = true;
+	}
+	
 	
 	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN) {
 
@@ -206,18 +210,34 @@ bool j1Scene::Update(float dt)
 		
 		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) {
 
-			pause_time = Level_Timer.Read();
+			if (currentLevel == LEVEL1)
+				pause_time1 = Level1_Timer.Read();
+			else if(currentLevel == LEVEL1)
+				pause_time2 = Level2_Timer.Read();
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
 
-			Level_Timer.StartFrom(-pause_time);
+			if (currentLevel == LEVEL1)
+				Level1_Timer.StartFrom(-pause_time1);
+			else if (currentLevel == LEVEL1)
+				Level2_Timer.StartFrom(-pause_time2);
 		}
 			
+		if (currentLevel == LEVEL1) {
 
-		int sec = (int)Level_Timer.ReadSec() % 60;
-		int minutes = Level_Timer.ReadSec() / 60;
-		LOG("TIME: %02i : %02i", minutes, sec);
+			int sec = (int)Level1_Timer.ReadSec() % 60;
+			int minutes = Level1_Timer.ReadSec() / 60;
+			LOG("PAUSED T1: %i", pause_time1);
+			LOG("TIMER1: %02i : %02i", minutes, sec);
+		}
+		else if (currentLevel == LEVEL2) {
+
+			int sec = (int)Level2_Timer.ReadSec() % 60;
+			int minutes = Level2_Timer.ReadSec() / 60;
+			LOG("PAUSED T2: %i", pause_time2);
+			LOG("TIMER2: %02i : %02i", minutes, sec);
+		}
 	}
 
 	App->map->Draw(current_map);
@@ -245,21 +265,21 @@ bool j1Scene::CleanUp()
 	return true;
 }
 
-void j1Scene::ChangeLevel(int level_change) {
+void j1Scene::ChangeLevel(int level_change, int increment) {
 	
-	App->entity_manager->DesrtroyEnemies();
+	App->entity_manager->CleanUp();
+	/*App->entity_manager->DesrtroyEnemies();
 
 	if(Player!=nullptr)
 		Player->entity_collider->to_delete = true;
 
 	App->entity_manager->DestroyEntity(Player);
-	RELEASE(Player);
+	RELEASE(Player);*/
 	LEVELS aux = currentLevel;
-
 
 	if (level_change != NO_CHANGE) {
 		App->collisions->CleanUp();
-		IterateLevel(level_change);
+		IterateLevel(level_change, increment);
 	}
 
 	if (pathfinding) {
@@ -297,9 +317,13 @@ void j1Scene::ChangeLevel(int level_change) {
 			LOG("The xml file containing the player tileset fails. Pugi error: %s", Enemies_doc_res2.description());
 
 		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy1");
+		LoadObjects(current_map.Filename.GetString());
+		App->collisions->AssignMapColliders(current_map.Filename.GetString());
 
 		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
-		PERF_START(Level_Timer);
+
+	//	PERF_START(Level1_Timer);
+	//	Level1_Timer.StartFrom(-pause_time1);
 	
 	}
 	if (currentLevel == LEVEL2) {
@@ -328,21 +352,52 @@ void j1Scene::ChangeLevel(int level_change) {
 
 		en_pos = EnemiesPositions.child("config").child("Level2").child("Enemy1");
 
+
+		LoadObjects(current_map.Filename.GetString());
+		App->collisions->AssignMapColliders(current_map.Filename.GetString());
+
 		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+
+
+	/*	PERF_START(Level2_Timer);
+		Level2_Timer.StartFrom(-pause_time2);*/
 
 	}
 	if (currentLevel == MAIN_MENU) {
 		App->collisions->CleanUp();
 	}
-	if (currentLevel!=aux) {
+
+	if (currentLevel == 1) {
+
+		if (pause_time1 > 0) {
+
+
+			PERF_START(Level1_Timer);
+			Level1_Timer.StartFrom(-pause_time1);
+		}
+		else
+			PERF_START(Level1_Timer);
+
+	}
+	else if (currentLevel == 2) {
+
+		if (pause_time2 > 0) {
+			PERF_START(Level2_Timer);
+			Level2_Timer.StartFrom(-pause_time2);
+
+		}
+		else
+			PERF_START(Level2_Timer);
+	}
+	/*if (currentLevel!=aux) {
 		LoadObjects(current_map.Filename.GetString());
 		App->collisions->AssignMapColliders(current_map.Filename.GetString());
-	}
+	}*/
 }
 
-void j1Scene::IterateLevel(int level_change) {
+void j1Scene::IterateLevel(int level_change, int increment) {
 
-	level_change++;
+	level_change += increment;
 	LevelIterator = level_change;
 	
 
@@ -382,6 +437,63 @@ void j1Scene::IterateLevel(int level_change) {
 			current_pathfinding_map = Level2_pathfinding_map;
 			pathfinding = true;
 	}
+}
+
+
+bool j1Scene::Load(pugi::xml_node& data)
+{
+
+	int level_it = data.child("scene").attribute("current_level").as_int();
+	pause_time2 = data.child("scene").attribute("paused_time2").as_int();
+	pause_time1 = data.child("scene").attribute("paused_time1").as_int();
+
+	if(currentLevel != level_it)
+		App->scene->ChangeLevel(level_it, 0);
+
+
+	if (currentLevel == 1) {
+
+		if (pause_time1 > 0) {
+
+
+			PERF_START(Level1_Timer);
+			Level1_Timer.StartFrom(-pause_time1);
+		}
+		else
+			PERF_START(Level1_Timer);
+
+	}
+	else if (currentLevel == 2) {
+
+		if (pause_time2 > 0) {
+			PERF_START(Level2_Timer);
+			Level2_Timer.StartFrom(-pause_time2);
+
+		}
+		else
+			PERF_START(Level2_Timer);
+	}
+	return true;
+}
+
+// Save Game State
+bool j1Scene::Save(pugi::xml_node& data) const
+{
+	pugi::xml_node scene_node = data.append_child("scene");
+	scene_node.append_attribute("current_level") = currentLevel;
+
+	if (currentLevel == 1) {
+
+		scene_node.append_attribute("paused_time1") = Level1_Timer.Read();
+		scene_node.append_attribute("paused_time2") = 0;
+	}
+	else if (currentLevel == 2) {
+
+		scene_node.append_attribute("paused_time1") = 0;
+		scene_node.append_attribute("paused_time2") = Level2_Timer.Read();
+	}
+
+	return true;
 }
 
 

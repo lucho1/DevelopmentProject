@@ -32,6 +32,11 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 	button_wav = App->audio->LoadFx("audio/fx/Button.wav");
 	ray_touched_wav = App->audio->LoadFx("audio/fx/Ray_touched.wav");
 
+
+
+	lose_fx = App->audio->LoadFx("audio/fx/lose.wav");
+	win_fx = App->audio->LoadFx("audio/fx/win.wav");
+
 	life = 40;
 	
 }
@@ -208,10 +213,13 @@ void j1Player::FixUpdate(float dt) {
 
 	else if (life <= 0) {
 
+		App->audio->PlayFx(lose_fx);
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
-		if(Dead.Finished())
+
+		if (Dead.Finished())
 			App->entity_manager->DestroyEntity(this);
+		
 
 	}
 	//LOG("%d", life);
@@ -389,13 +397,6 @@ bool j1Player::Load(pugi::xml_node& data)
 	App->entity_manager->score = data.child("player").attribute("score").as_int();
 	App->entity_manager->coins = data.child("player").attribute("coins").as_int();
 
-	App->scene->pause_time = data.child("player").attribute("paused_time").as_int();
-	App->scene->Level_Timer.StartFrom(-App->scene->pause_time);
-
-	int level_it = data.child("player").attribute("current_level").as_int();
-
-	App->scene->IterateLevel(level_it - 1);
-
 	return true;
 }
 
@@ -409,8 +410,6 @@ bool j1Player::Save(pugi::xml_node& data) const
 	pl.append_attribute("life") = life;
 	pl.append_attribute("score") = App->entity_manager->score;
 	pl.append_attribute("coins") = App->entity_manager->coins;
-	pl.append_attribute("paused_time") = App->scene->Level_Timer.Read();
-	pl.append_attribute("current_level") = App->scene->currentLevel;
 
 	return true;
 }
@@ -510,6 +509,8 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 		App->scene->Change_Level = true;
 		App->map->TriggerActive = false;
+
+		App->audio->PlayFx(win_fx);
 
 		/*int level_switch = App->scene->currentLevel + 1;
 		App->fade->Fade(2.0f);

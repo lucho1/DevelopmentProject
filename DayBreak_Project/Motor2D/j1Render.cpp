@@ -78,8 +78,6 @@ bool j1Render::Start()
 bool j1Render::PreUpdate()
 {
 
-
-
 	BROFILER_CATEGORY("Render PreUpdate", Profiler::Color::ForestGreen);
 	SDL_RenderClear(renderer);
 	return true;

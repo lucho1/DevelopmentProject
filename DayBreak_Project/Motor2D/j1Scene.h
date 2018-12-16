@@ -48,13 +48,19 @@ public:
 	bool CleanUp();
 
 	//Used to iterate between Levels
-	void IterateLevel(int level_change);
+	void IterateLevel(int level_change, int increment = 1);
 
 	//Used to change the actual level
-	void ChangeLevel(int level_change);
+	void ChangeLevel(int level_change, int increment = 1);
 
 	//Load Map Objects
 	bool LoadObjects(const char*file_name);
+
+	//Load & Save
+	bool Load(pugi::xml_node& data);
+
+	//Save Game State
+	bool Save(pugi::xml_node& data) const;
 
 public:
 
@@ -74,8 +80,10 @@ public:
 	//Player
 	j1Player *Player = nullptr;
 
-	j1Timer Level_Timer;
-	int pause_time = 0;
+	j1Timer Level1_Timer;
+	j1Timer Level2_Timer;
+	int pause_time1 = 0;
+	int pause_time2 = 0;
 
 private:
 

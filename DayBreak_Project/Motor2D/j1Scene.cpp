@@ -382,7 +382,7 @@ bool j1Scene::Update(float dt)
 		}
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->entity_manager->coins >= 5) {
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN && App->entity_manager->coins >= 5) {
 
 		App->SaveGame("save_game.xml");
 		App->entity_manager->coins -= 5;

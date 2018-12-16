@@ -32,17 +32,19 @@ bool j1Gui::Start()
 {
 	atlas = App->tex->Load(atlas_file_name.GetString());
 
-
-
 	return true;
 }
 
 // Update all guis
 bool j1Gui::PreUpdate()
 {
+
 	return true;
 }
+bool j1Gui::Update() {
 
+	return true;
+}
 // Called after all Updates
 bool j1Gui::PostUpdate()
 {

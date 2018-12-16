@@ -184,6 +184,7 @@ bool j1Scene::Start()
 	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideMusic);
 	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideSFX);
 
+	UI_Elements_List.add(gameName);
 	UI_Elements_List.add(playButton);
 	UI_Elements_List.add(quitButton);
 	UI_Elements_List.add(continueButton);
@@ -198,9 +199,9 @@ bool j1Scene::Start()
 	UI_Elements_List.add(pauseButton);
 	UI_Elements_List.add(thumbMusic);
 	UI_Elements_List.add(thumbSFX);
+	UI_Elements_List.add(lifeBarBackground);
 	UI_Elements_List.add(lifeBar);
 	UI_Elements_List.add(BloodAlert);
-
 
 	return true;
 }
@@ -210,37 +211,21 @@ bool j1Scene::PreUpdate()
 {
 	BROFILER_CATEGORY("Scene PreUpdate", Profiler::Color::GreenYellow);
 
-	return true;
-}
-
-// Called each loop iteration
-bool j1Scene::Update(float dt)
-{
-	
 	lastMousePos = newMousePos;
 	App->input->GetMousePosition(newMousePos.x, newMousePos.y);
 	p2List_item<UI_Element*>*UI_Item = UI_Elements_List.end;
 	for (; UI_Item != nullptr; UI_Item = UI_Item->prev) {
 		if (UI_Item->data->isActive) {
-			if (UI_Item->data->Logic == DRAG) {
-				if (UI_Item->data->Clicked()) {
-					UI_Item->data->Drag();
-					break;
-				}
-			}
+			
 			if (UI_Item->data->Logic == LIFE_ALERT) {
 				if (Player != nullptr && Player->life <= 20) {
-					UI_Item->data->Active(BloodAlert);
 					UI_Item->data->Alert(bloodTex, bloodalpha);
 				}
-				else
-					UI_Item->data->Deactive(BloodAlert);
-					
 			}
 			if (UI_Item->data->Logic == ACTIVEWIN) {
 				if (UI_Item->data->Clicked()) {
 					if (UI_Item->data == settingsButton || UI_Item->data == settingsButton2) {
-						if(UI_Item->data == settingsButton)
+						if (UI_Item->data == settingsButton)
 							settingsPanel->Position.y = 170;
 						else
 							settingsPanel->Position.y = 60;
@@ -248,14 +233,14 @@ bool j1Scene::Update(float dt)
 						UI_Item->data->Active(settingsPanel);
 					}
 					else if (UI_Item->data == pauseButton) {
-				
+
 						UI_Item->data->Active(pausePanel);
 						pausedGame = true;
 					}
 				}
 			}
 			if (UI_Item->data->Logic == CLOSEWIN) {
-				if (UI_Item->data->Clicked()&&!onAction) {
+				if (UI_Item->data->Clicked() && !onAction) {
 					if (UI_Item->data == closeWinButon) {
 						UI_Item->data->Deactive(settingsPanel);
 					}
@@ -283,17 +268,25 @@ bool j1Scene::Update(float dt)
 			if (UI_Item->data->Logic == PLAY) {
 				if (UI_Item->data->Clicked()) {
 					Change_Level = true;
-					//Desactive al Main menu
+					//Desactive all Main menu
 					if (currentLevel == MAIN_MENU) {
-						UI_Item->data->Deactive(playButton);
+						playButton->toDesactive = true;
+						quitButton->toDesactive = true;
+						continueButton->toDesactive = true;
+						settingsButton->toDesactive = true;
+						webPageButton->toDesactive = true;
+						gameName->toDesactive = true;
+				/*		UI_Item->data->Deactive(playButton);
 						UI_Item->data->Deactive(quitButton);
 						UI_Item->data->Deactive(continueButton);
 						UI_Item->data->Deactive(settingsButton);
 						UI_Item->data->Deactive(webPageButton);
-						UI_Item->data->Deactive(gameName);
+						UI_Item->data->Deactive(gameName);*/
 						//active inGame UI
-						UI_Item->data->Active(pauseButton);
-						UI_Item->data->Active(lifeBarBackground);
+						pauseButton->toActive = true;
+						lifeBarBackground->toActive = true;
+						//UI_Item->data->Active(pauseButton);
+						//UI_Item->data->Active(lifeBarBackground);
 						pausedGame = false;
 					}
 				}
@@ -306,33 +299,46 @@ bool j1Scene::Update(float dt)
 				}
 			}
 			if (UI_Item->data->Logic == RETURN_MAIN_MENU) {
-				if (UI_Item->data->Clicked()&&!onAction) {
+				if (UI_Item->data->Clicked() && !onAction) {
 					if (currentLevel == LEVEL1) {
 						currentLevel = LEVEL2;
 						Change_Level = true;
 					}
 					else
 						Change_Level = true;
-					UI_Item->data->Active(playButton);
-					UI_Item->data->Active(quitButton);
-					UI_Item->data->Active(continueButton);
-					UI_Item->data->Active(settingsButton);
-					UI_Item->data->Active(webPageButton);
-					UI_Item->data->Active(gameName);
-					UI_Item->data->Deactive(pauseButton);
-					UI_Item->data->Deactive(lifeBarBackground);
-					UI_Item->data->Deactive(pausePanel);
+					playButton->toActive = true;
+					quitButton->toActive = true;
+					continueButton->toActive = true;
+					webPageButton->toActive = true;
+					gameName->toActive = true;
+					pauseButton->toDesactive = true;
+					lifeBarBackground->toDesactive = true;
+					pausePanel->toDesactive = true;
+
 				}
 			}
 			if (UI_Item->data->Logic == LIFE) {
 				if (Player != nullptr) {
 					float initialw = 363;
 					UI_Item->data->UI_Rect.w = initialw*((float)Player->life / 100);
+					if (Player->life <= 20) {
+						BloodAlert->isActive = true;
+					}
 				}
 			}
 		}
 	}
 	onAction = false;
+
+
+	return true;
+}
+
+// Called each loop iteration
+bool j1Scene::Update(float dt)
+{
+	
+
 	BROFILER_CATEGORY("Scene Update", Profiler::Color::PaleVioletRed);
 
 	if (Change_Level) {
@@ -342,6 +348,17 @@ bool j1Scene::Update(float dt)
 		if (App->fade->current_step == App->fade->fade_from_black) {
 			ChangeLevel(currentLevel);
 			Change_Level = false;
+			p2List_item<UI_Element*>*UI_Item = UI_Elements_List.start;
+			for (; UI_Item != nullptr; UI_Item = UI_Item->next) {
+				if (UI_Item->data->toDesactive == true) {
+					UI_Item->data->isActive = false;
+					UI_Item->data->toDesactive = false;
+				}
+				else if (UI_Item->data->toActive == true) {
+					UI_Item->data->isActive = true;
+					UI_Item->data->toActive = false;
+				}
+			}
 		}
 	}
 
@@ -400,6 +417,8 @@ bool j1Scene::Update(float dt)
 	}
 
 	App->map->Draw(current_map);
+
+
 	return true;
 }
 
@@ -512,6 +531,16 @@ void j1Scene::ChangeLevel(int level_change) {
 	}
 	if (currentLevel == MAIN_MENU) {
 		App->collisions->CleanUp();
+		playButton->isActive = true;
+		quitButton->isActive=true;
+		continueButton->isActive = true;
+		settingsButton->isActive = true;
+		webPageButton->isActive = true;
+		gameName->isActive = true;
+		pauseButton->isActive = false;
+		lifeBarBackground->isActive = false;
+		pausePanel->isActive = false;
+
 	}
 	if (currentLevel!=aux) {
 		LoadObjects(current_map.Filename.GetString());

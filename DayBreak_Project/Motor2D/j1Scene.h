@@ -118,9 +118,10 @@ public:
 	UI_Element* labelMusic = nullptr;
 	UI_Element* labelSFX = nullptr;
 
-
 	UI_Element* lifeBar = nullptr;
 	UI_Element* lifeBarBackground = nullptr;
+
+	UI_Element* coinsbarBackfround = nullptr;
 
 	UI_Element* loadButton = nullptr;
 	UI_Element* labelLoadButton = nullptr;
@@ -135,6 +136,7 @@ public:
 	UI_Element* labelreturnMainMenuButton = nullptr;
 
 	UI_Element* BloodAlert = nullptr;
+
 	int bloodalpha = 255;
 	SDL_Texture* bloodTex=nullptr;
 

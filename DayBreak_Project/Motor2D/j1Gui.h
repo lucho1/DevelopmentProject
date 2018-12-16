@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "j1Textures.h"
+#include "j1Input.h"
 #include "j1App.h"
 #define CURSOR_WIDTH 2
 
@@ -34,6 +35,7 @@ enum Button_Logic {
 	WEB,
 	CLICKTOWRITE,
 	DRAGVOLUME,
+	SCORE,
 	NONE_LOGIC
 };
 
@@ -202,6 +204,7 @@ public:
 	bool isClicked = false;;
 	bool isActive = true;
 	bool toDesactive = false;
+	bool toActive = false;
 
 	bool alphaReach = true;
 	int alpha=255;
@@ -228,6 +231,7 @@ public:
 	// Called before all Updates
 	bool PreUpdate();
 
+	bool Update();
 	// Called after all Updates
 	bool PostUpdate();
 

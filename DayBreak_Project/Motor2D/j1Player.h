@@ -103,6 +103,7 @@ public:
 
 private:
 
+	uint Shout_Die;
 	uint shoot_pl;
 	uint button_wav;
 	uint ray_touched_wav;

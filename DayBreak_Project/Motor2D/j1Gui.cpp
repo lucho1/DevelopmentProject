@@ -30,6 +30,9 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 // Called before the first frame
 bool j1Gui::Start()
 {
+
+	onTopSFX = App->audio->LoadFx("audio/fx/button_hover_sfx.wav");
+	clickSFX = App->audio->LoadFx("audio/fx/button_clicked_sfx.wav");
 	atlas = App->tex->Load(atlas_file_name.GetString());
 
 	return true;
@@ -54,6 +57,13 @@ bool j1Gui::PostUpdate()
 		Item->data->Update();
 		if (Item->data->isActive) {
 			Item->data->onTop();
+			if (Item->data->Clicked() == false) {
+				
+			}
+			if (Item->data->onTop() == false) {
+				Item->data->sound = true;
+				Item->data->isClicked = false;
+			}
 			Item->data->Draw();
 		}
 	}
@@ -123,6 +133,44 @@ UI_Element* j1Gui::Add_UIElement(UI_Type type, iPoint position, SDL_Rect Image_R
 
 }
 
+void UI_Element::Draw() {
 
+	App->render->Blit(texture, Position.x, Position.y, CurrentRect, false, angle, 0, 0, SDL_FLIP_NONE, scale);
+	if (App->gui->Debug == true)
+		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false, scale);
 
+}
+bool UI_Element::onTop() {
+	int y;
+	int x;
 
+	App->input->GetMousePosition(x, y);
+
+	if (x >= Position.x&&x < Position.x + UI_Rect.w*scale&&y >= Position.y&&y <= Position.y + UI_Rect.h*scale) {
+		if (sound) {
+			if(type==BUTTON)
+				App->audio->PlayFx(App->gui->onTopSFX);
+			sound = false;
+		}
+		return true;
+		}
+	else
+		return false;
+	
+}
+
+bool UI_Element::Clicked() {
+
+	if (onTop()) {
+		if (App->input->GetMouseButtonDown(KEY_DOWN) && isClicked == false) {
+			App->audio->PlayFx(App->gui->clickSFX);
+			if(Logic!=DRAGVOLUME)
+				isClicked = true;
+			return true;
+		}
+		else
+			return false;
+	}
+	else
+		return false;
+}

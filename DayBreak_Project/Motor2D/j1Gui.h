@@ -1,10 +1,16 @@
+
 #ifndef __j1GUI_H__
 #define __j1GUI_H__
+#define _CRT_SECURE_NO_WARNINGS
+
 
 #include "j1Module.h"
 #include "j1Textures.h"
 #include "j1Input.h"
-#include "j1App.h"
+#include "j1Fonts.h"
+#include "j1Audio.h"
+
+
 #define CURSOR_WIDTH 2
 
 // TODO 1: Create your structure of classes
@@ -25,7 +31,10 @@ enum Button_Logic {
 	RESUME_GAME,
 	LIFE_ALERT,
 	LOAD,
+	COINS,
+	TIME,
 	PLAY,
+	SCORE,
 	CONTINUE,
 	DRAG,
 	WRITE,
@@ -35,7 +44,6 @@ enum Button_Logic {
 	WEB,
 	CLICKTOWRITE,
 	DRAGVOLUME,
-	SCORE,
 	NONE_LOGIC
 };
 
@@ -71,6 +79,18 @@ public:
 			return true;
 	}
 
+	void Score(int score) {
+	char score_Text[10];
+	sprintf_s(score_Text, "%d", score); //warning: deprecated
+	App->font->CalcSize(score_Text, UI_Rect.w, UI_Rect.h);
+	texture = App->font->Print(score_Text);
+	}
+	void Time(int time) {
+		char score_Text[10];
+		sprintf_s(score_Text, "%02i", time); //warning: deprecated
+		App->font->CalcSize(score_Text, UI_Rect.w, UI_Rect.h);
+		texture = App->font->Print(score_Text);
+	}
 	virtual void Drag() {
 		if (Clicked()) {
 			int x = 0;
@@ -100,6 +120,9 @@ public:
 				}
 				else
 					CurrentRect = &UI_Rect_Pushed;
+			}
+			else if ((Logic == LOAD || Logic == CONTINUE) && App->GetSaves("save_game.xml") == false) {
+				CurrentRect = &UI_Rect_Pushed;
 			}
 			else {
 				CurrentRect = &UI_Rect;
@@ -136,14 +159,11 @@ public:
 		toDeactive->isActive = false;
 	}
 
-	virtual void Draw() {
-		App->render->Blit(texture, Position.x, Position.y, CurrentRect, false,angle,0,0,SDL_FLIP_NONE,scale);
-		App->render->DrawQuad({ Position.x,Position.y,UI_Rect.w,UI_Rect.h }, 255, 0, 0, 255, false, false,scale);
-	}
+	void Draw();
 
-	void goWeb() {
+	void goWeb(const char* web) {
 
-		ShellExecuteA(NULL, "open", "https://lucho1.github.io/DevelopmentProject/", NULL, NULL, SW_SHOWNORMAL);
+		ShellExecuteA(NULL, "open", web, NULL, NULL, SW_SHOWNORMAL);
 
 	}
 	void VolumeControl(iPoint newMousePos, iPoint lastMousePos) {
@@ -156,32 +176,12 @@ public:
 			initialPosition.x = Parent->UI_Rect.w*scale - UI_Rect.w*scale - 1;
 	}
 
-	bool onTop() {
-		int y;
-		int x;
+	bool onTop();
 
-		App->input->GetMousePosition(x, y);
-		if (x >= Position.x&&x < Position.x + UI_Rect.w*scale&&y >= Position.y&&y <= Position.y + UI_Rect.h*scale)
-			return true;
-		else
-			return false;
-	}
-	bool Clicked() {
-
-		if (onTop()) {
-			if (App->input->GetMouseButtonDown(KEY_DOWN))
-				return true;
-			else
-				return false;
-		}
-		else
-			return false;
-	}
+	bool Clicked();
 
 
 public:
-
-
 
 
 	iPoint initialPosition;
@@ -205,6 +205,7 @@ public:
 	bool isActive = true;
 	bool toDesactive = false;
 	bool toActive = false;
+	bool sound = true;
 
 	bool alphaReach = true;
 	int alpha=255;
@@ -252,8 +253,12 @@ public:
 	//UI_Element* Add_UIElement(UI_Type type, iPoint position, const char* Text = nullptr, UI_Element* Parent = nullptr);
 
 	p2List<UI_Element*> UI_Elements_List;
+	UI_Element*last;
 
+	uint32 onTopSFX;
+	uint32 clickSFX;
 
+	bool Debug = false;
 private:
 
 	SDL_Rect a = { 0, 0, 219, 57 };

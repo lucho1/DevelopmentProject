@@ -113,96 +113,9 @@ bool j1Scene::Start()
 
 	}
 
-	App->audio->ControlMUSVolume(0);
-	App->audio->ControlSFXVolume(0);
 	App->render->ResetCamera();
-	float scale = 0.8;
 
-	//MAIN MENU
-	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
-
-	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, PLAY, { 254, 88, 242, 76 }, { 254, 0, 242, 76 },scale);
-	labelPlayButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, playButton, "PLAY");
-
-	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, CONTINUE, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
-	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, continueButton, "CONTINE");
-
-	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
-	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsButton, "SETTINGS");
-
-
-	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(770,400), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 }, scale);
-	iconWebPageButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(30, 20), { 269, 404, 32, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, webPageButton);
-
-	quitButton = App->gui->Add_UIElement(BUTTON, iPoint(15,430), { 0, 178, 242, 76 },QUIT, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, scale);
-	labelQuitButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, quitButton, "QUIT");
-
-	//IN GAME UI
-
-	pauseButton= App->gui->Add_UIElement(BUTTON, iPoint(780,10), { 94,438,75,78 }, ACTIVEWIN, { 94,349,75,78 }, { 94,258,75,78 }, scale);
-	iconPauseButton= App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(20, 20), { 201, 301, 31,31 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, pauseButton);
-	pauseButton->isActive = false;
-
-	lifeBarBackground= App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(10, 10), {6, 525, 345, 87 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
-	lifeBarBackground->isActive = false;
-	lifeBar = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(67,18), { 513, 481, 254, 40 }, LIFE, NULL_RECT,NULL_RECT, scale,None,lifeBarBackground);
-
-	pausePanel = App->gui->Add_UIElement(PANEL, iPoint(310,80), { 776, 479, 247, 382 }, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.98);
-	pausePanel->isActive = false;
-	
-	settingsButton2 = App->gui->Add_UIElement(BUTTON, iPoint(55, 160), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7,None,pausePanel);
-	labelSettingsButton2 = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, settingsButton2, "SETTINGS");
-
-	returnMainMenuButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 280), { 0, 178, 242, 76 }, RETURN_MAIN_MENU, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, 0.7, None, pausePanel);
-	labelreturnMainMenuButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, returnMainMenuButton, "QUIT");
-
-	resumeButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 30), { 254, 178, 242, 76 }, RESUME_GAME, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
-	labelResumeButton= App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, resumeButton, "RESUME");
-
-	loadButton= App->gui->Add_UIElement(BUTTON, iPoint(55,95), { 254, 178, 242, 76 }, LOAD, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
-	labelLoadButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, loadButton, "LOAD");
-	
-	BloodAlert = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(0, 0), { 0, 0, 900, 500 }, LIFE_ALERT, NULL_RECT, NULL_RECT);
-	BloodAlert->texture = bloodTex;
-	BloodAlert->isActive = false;
-
-	SDL_SetTextureBlendMode(bloodTex, SDL_BLENDMODE_BLEND);
-	SDL_SetTextureAlphaMod(bloodTex, 200);
-
-	//GENERAL UI
-	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
-	settingsPanel->isActive = false;
-
-	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670 * scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
-	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
-
-	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
-	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
-	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "MUSIC");
-	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "SFX");
-
-	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideMusic);
-	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideSFX);
-
-	UI_Elements_List.add(gameName);
-	UI_Elements_List.add(playButton);
-	UI_Elements_List.add(quitButton);
-	UI_Elements_List.add(continueButton);
-	UI_Elements_List.add(settingsButton);
-	UI_Elements_List.add(webPageButton);
-	UI_Elements_List.add(settingsPanel);
-	UI_Elements_List.add(settingsButton2);
-	UI_Elements_List.add(closeWinButon);
-	UI_Elements_List.add(resumeButton);
-	UI_Elements_List.add(returnMainMenuButton);
-	UI_Elements_List.add(loadButton);
-	UI_Elements_List.add(pauseButton);
-	UI_Elements_List.add(thumbMusic);
-	UI_Elements_List.add(thumbSFX);
-	UI_Elements_List.add(lifeBarBackground);
-	UI_Elements_List.add(lifeBar);
-	UI_Elements_List.add(BloodAlert);
-
+	CreateUI_Elements();
 	return true;
 }
 
@@ -216,12 +129,43 @@ bool j1Scene::PreUpdate()
 	p2List_item<UI_Element*>*UI_Item = UI_Elements_List.end;
 	for (; UI_Item != nullptr; UI_Item = UI_Item->prev) {
 		if (UI_Item->data->isActive) {
-			
 			if (UI_Item->data->Logic == LIFE_ALERT) {
 				if (Player != nullptr && Player->life <= 20) {
 					UI_Item->data->Alert(bloodTex, bloodalpha);
 				}
 			}
+			if ((UI_Item->data->Logic == LOAD || UI_Item->data->Logic == CONTINUE)&&onAction==false) {
+				if (App->GetSaves("save_game.xml") == true) {
+					if (UI_Item->data->Clicked()) {
+						App->LoadGame("save_game.xml");
+					
+					if (currentLevel == MAIN_MENU) {
+						playButton->isActive = false;
+						quitButton->isActive = false;
+						continueButton->isActive= false;
+						settingsButton->isActive= false;
+						webPageButton->isActive= false;
+						gameName->isActive= false;
+
+						//active inGame UI
+						labelMinutes->isActive = true;
+						coinsbarBackfround->isActive= true;
+						pauseButton->isActive = true;
+						lifeBarBackground->isActive= true;
+						scoreTextBackground->isActive= true;
+
+						pausedGame = false;
+					}
+					}
+				}
+				else
+					UI_Item->data->CurrentRect = &UI_Item->data->UI_Rect_Pushed;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN&&currentLevel!= MAIN_MENU) {
+				UI_Item->data->Active(pausePanel);
+				pausedGame = true;
+			}
+			
 			if (UI_Item->data->Logic == ACTIVEWIN) {
 				if (UI_Item->data->Clicked()) {
 					if (UI_Item->data == settingsButton || UI_Item->data == settingsButton2) {
@@ -233,36 +177,83 @@ bool j1Scene::PreUpdate()
 						UI_Item->data->Active(settingsPanel);
 					}
 					else if (UI_Item->data == pauseButton) {
+						if(currentLevel==LEVEL1)
+							pause_time1 = Level1_Timer.Read();
+						else if(currentLevel==LEVEL2)
+							pause_time2 = Level2_Timer.Read();
 
 						UI_Item->data->Active(pausePanel);
 						pausedGame = true;
 					}
+					else if (UI_Item->data == creditButton) {
+						UI_Item->data->Active(creditsPanel);
+					}
 				}
+			}
+			if (UI_Item->data->Logic == TIME) {
+				if (UI_Item->data == labelSeconds) {
+					if (currentLevel == LEVEL1) {
+						int sec = (int)Level1_Timer.ReadSec() % 60;
+						UI_Item->data->Time(sec);
+					}
+					else if (currentLevel == LEVEL2) {
+						int sec = (int)Level2_Timer.ReadSec() % 60;
+						UI_Item->data->Score(Level2_Timer.ReadSec());
+					}
+				}
+				else if (UI_Item->data == labelMinutes) {
+					if (currentLevel == LEVEL1) {
+						int minutes = (int)Level1_Timer.ReadSec() / 60;
+						UI_Item->data->Time(minutes);
+					}
+					else if (currentLevel == LEVEL2) {
+						int minutes = (int)Level2_Timer.ReadSec() / 60;
+						UI_Item->data->Time(minutes);
+					}
+				}
+			}
+			if (UI_Item->data->Logic == COINS) {
+				UI_Item->data->Score(App->entity_manager->coins);
 			}
 			if (UI_Item->data->Logic == CLOSEWIN) {
 				if (UI_Item->data->Clicked() && !onAction) {
 					if (UI_Item->data == closeWinButon) {
 						UI_Item->data->Deactive(settingsPanel);
 					}
+					if (UI_Item->data == closeCreditsPanel) {
+						UI_Item->data->Deactive(creditsPanel);
+					}
 				}
 			}
-			if (UI_Item->data->Logic == LIFE_ALERT) {
-
+			if (UI_Item->data->Logic == SCORE) {
+				UI_Item->data->Score(App->entity_manager->score);
 			}
 			if (UI_Item->data->Logic == DRAGVOLUME) {
-
 				if (UI_Item->data->Clicked()) {
+					int initialPos = 100;
 					UI_Item->data->VolumeControl(newMousePos, lastMousePos);
+					if(UI_Item->data==thumbMusic)
+						App->audio->ControlMUSVolume(initialPos*UI_Item->data->initialPosition.x / 150);
+					else if(UI_Item->data==thumbSFX)
+						App->audio->ControlSFXVolume(initialPos*UI_Item->data->initialPosition.x / 150);
+
 					onAction = true;
 				}
 			}
 			if (UI_Item->data->Logic == WEB) {
-				if (UI_Item->data->Clicked())
-					UI_Item->data->goWeb();
+				if (UI_Item->data->Clicked()) {
+					if (UI_Item->data == webPageButton)
+						UI_Item->data->goWeb("https://lucho1.github.io/DevelopmentProject/");
+					else if (UI_Item->data == githubButonlucho)
+						UI_Item->data->goWeb("https://github.com/lucho1");
+					else if (UI_Item->data == githubButonRoger)
+						UI_Item->data->goWeb("https://github.com/rleonborras");
+				}
 			}
 			if (UI_Item->data->Logic == QUIT) {
 				if (UI_Item->data->Clicked()) {
-					SDL_Quit();
+					//SDL_Quit();
+					return false;
 				}
 			}
 			if (UI_Item->data->Logic == PLAY) {
@@ -276,23 +267,26 @@ bool j1Scene::PreUpdate()
 						settingsButton->toDesactive = true;
 						webPageButton->toDesactive = true;
 						gameName->toDesactive = true;
-				/*		UI_Item->data->Deactive(playButton);
-						UI_Item->data->Deactive(quitButton);
-						UI_Item->data->Deactive(continueButton);
-						UI_Item->data->Deactive(settingsButton);
-						UI_Item->data->Deactive(webPageButton);
-						UI_Item->data->Deactive(gameName);*/
+						creditButton->toDesactive = true;
+						creditsPanel->isActive = false;
+
 						//active inGame UI
+						labelMinutes->toActive = true;
+						coinsbarBackfround->toActive = true;
 						pauseButton->toActive = true;
 						lifeBarBackground->toActive = true;
-						//UI_Item->data->Active(pauseButton);
-						//UI_Item->data->Active(lifeBarBackground);
+						scoreTextBackground->toActive = true;
+			
 						pausedGame = false;
 					}
 				}
 			}
 			if (UI_Item->data->Logic == RESUME_GAME) {
 				if (UI_Item->data->Clicked() && !onAction) {
+					if (currentLevel == LEVEL1)
+						Level1_Timer.StartFrom(-pause_time1);
+					else if (currentLevel == LEVEL2)
+						Level2_Timer.StartFrom(-pause_time2);
 					UI_Item->data->Deactive(pausePanel);
 					UI_Item->data->Deactive(settingsPanel);
 					pausedGame = false;
@@ -311,9 +305,13 @@ bool j1Scene::PreUpdate()
 					continueButton->toActive = true;
 					webPageButton->toActive = true;
 					gameName->toActive = true;
+					creditButton->toActive = true;
 					pauseButton->toDesactive = true;
+					labelMinutes->toDesactive = true;
+					scoreTextBackground->toDesactive = true;
 					lifeBarBackground->toDesactive = true;
 					pausePanel->toDesactive = true;
+					coinsbarBackfround->toDesactive = true;
 
 				}
 			}
@@ -387,6 +385,9 @@ bool j1Scene::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->scene->currentLevel != MAIN_MENU)
 		App->SaveGame("save_game.xml");
+	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN) {
+		App->gui->Debug = !App->gui->Debug;
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && !changing_same_Level) {
 		//App->fade->Fade(2.0f);
@@ -399,14 +400,7 @@ bool j1Scene::Update(float dt)
 
 		Change_Level = true;
 		App->map->TriggerActive = false;
-	}
-
-	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level) {
-
-		pause_time1 = 0;
-		Change_Level = true;
-	}
-	
+	}	
 	
 	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN) {
 
@@ -435,7 +429,7 @@ bool j1Scene::Update(float dt)
 
 			if (currentLevel == LEVEL1)
 				pause_time1 = Level1_Timer.Read();
-			else if(currentLevel == LEVEL1)
+			else if(currentLevel == LEVEL2)
 				pause_time2 = Level2_Timer.Read();
 		}
 
@@ -443,7 +437,7 @@ bool j1Scene::Update(float dt)
 
 			if (currentLevel == LEVEL1)
 				Level1_Timer.StartFrom(-pause_time1);
-			else if (currentLevel == LEVEL1)
+			else if (currentLevel == LEVEL2)
 				Level2_Timer.StartFrom(-pause_time2);
 		}
 			
@@ -475,9 +469,6 @@ bool j1Scene::PostUpdate()
 
 	BROFILER_CATEGORY("Scene PostUpdate", Profiler::Color::YellowGreen);
 	bool ret = true;
-
-	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		ret = false;
 
 	return ret;
 }
@@ -596,9 +587,17 @@ void j1Scene::ChangeLevel(int level_change, int increment) {
 		settingsButton->isActive = true;
 		webPageButton->isActive = true;
 		gameName->isActive = true;
+		creditButton->isActive = true;
+		scoreTextBackground->isActive = false;
+		coinsbarBackfround->isActive = false;
 		pauseButton->isActive = false;
+		labelSeconds->isActive = false;
+		labelMinutes->isActive = false;
+		BloodAlert->isActive = false;
 		lifeBarBackground->isActive = false;
+
 		pausePanel->isActive = false;
+		App->audio->PlayMusic(music_node.attribute("intro2").as_string());
 
 	}
 
@@ -802,4 +801,139 @@ bool j1Scene::LoadObjects(const char*file_name) {
 
 
 	return true;
+}
+
+void j1Scene::CreateUI_Elements() {
+
+	float scale = 0.8f;
+	//MAIN MENU
+	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
+
+	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, PLAY, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelPlayButton = App->gui->Add_UIElement(LABEL, iPoint(50, 7), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, playButton, "PLAY");
+
+	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, CONTINUE, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 7), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, continueButton, "CONTINUE");
+
+	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 7), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsButton, "SETTINGS");
+
+	creditButton = App->gui->Add_UIElement(BUTTON, iPoint(15, 350), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelcreditButton = App->gui->Add_UIElement(LABEL, iPoint(15, 10), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, creditButton, "CREDITS");
+
+	creditsPanel = App->gui->Add_UIElement(PANEL, iPoint(310, 20), { 776, 479, 247, 382 }, NONE_LOGIC, NULL_RECT, NULL_RECT, 1.2f);
+	creditsPanel->isActive = false;
+
+	closeCreditsPanel = App->gui->Add_UIElement(BUTTON, iPoint(250, -10), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, creditsPanel);
+	iconCloseCreditsPanel = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeCreditsPanel);
+
+
+
+	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(770, 400), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 }, scale);
+	iconWebPageButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(30, 20), { 269, 404, 32, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, webPageButton);
+
+	quitButton = App->gui->Add_UIElement(BUTTON, iPoint(15, 430), { 0, 178, 242, 76 }, QUIT, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, scale);
+	labelQuitButton = App->gui->Add_UIElement(LABEL, iPoint(55, 7), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, quitButton, "QUIT");
+
+
+	//CREDITS
+	labelCreatorsofGame= App->gui->Add_UIElement(LABEL, iPoint(90, 30), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.5, None, creditsPanel, "CREATED BY");
+	labelLuchoAndRoger = App->gui->Add_UIElement(LABEL, iPoint(70,70), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.3, None,creditsPanel, "Lucho Suaya & Roger Leon");
+	githubButonlucho = App->gui->Add_UIElement(BUTTON, iPoint(90, 100), { 512,235,119,119 }, WEB, { 639,235,119,119 }, { 512,235,119,119 }, 0.6,None,creditsPanel);
+	githubButonRoger = App->gui->Add_UIElement(BUTTON, iPoint(200, 100), { 512,235,119,119 }, WEB, { 639,235,119,119 }, { 512,235,119,119 }, 0.6, None, creditsPanel);
+	License = App->gui->Add_UIElement(LABEL, iPoint(70, 240), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.3, None, creditsPanel, "LICENSED UNDER MIT");
+	//IN GAME UI
+
+	pauseButton = App->gui->Add_UIElement(BUTTON, iPoint(780, 10), { 94,438,75,78 }, ACTIVEWIN, { 94,349,75,78 }, { 94,258,75,78 }, scale);
+	iconPauseButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(20, 20), { 201, 301, 31,31 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, pauseButton);
+	pauseButton->isActive = false;
+
+	lifeBarBackground = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(10, 10), { 6, 525, 345, 87 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	lifeBarBackground->isActive = false;
+	lifeBar = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(67, 18), { 513, 481, 254, 40 }, LIFE, NULL_RECT, NULL_RECT, scale, None, lifeBarBackground);
+
+	pausePanel = App->gui->Add_UIElement(PANEL, iPoint(310, 80), { 776, 479, 247, 382 }, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.98);
+	pausePanel->isActive = false;
+
+	settingsButton2 = App->gui->Add_UIElement(BUTTON, iPoint(55, 160), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelSettingsButton2 = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, settingsButton2, "SETTINGS");
+
+	returnMainMenuButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 280), { 0, 178, 242, 76 }, RETURN_MAIN_MENU, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelreturnMainMenuButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, returnMainMenuButton, "QUIT");
+
+	resumeButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 30), { 254, 178, 242, 76 }, RESUME_GAME, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelResumeButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, resumeButton, "RESUME");
+
+	loadButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 95), { 254, 178, 242, 76 }, LOAD, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelLoadButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, loadButton, "LOAD");
+
+	BloodAlert = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(0, 0), { 0, 0, 900, 500 }, LIFE_ALERT, NULL_RECT, NULL_RECT);
+	BloodAlert->texture = bloodTex;
+	BloodAlert->isActive = false;
+
+	scoreTextBackground = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(565, 10), { 512, 135, 253, 87 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	scoreText = App->gui->Add_UIElement(LABEL, iPoint(75, 11), NULL_RECT, SCORE, NULL_RECT, NULL_RECT, scale, None, scoreTextBackground);
+	scoreTextBackground->isActive = false;
+
+	coinsbarBackfround = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(10, 425), { 368, 524, 254, 87 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	labelCoins = App->gui->Add_UIElement(LABEL, iPoint(125, 11), NULL_RECT, COINS, NULL_RECT, NULL_RECT, scale, None, coinsbarBackfround);
+	coinsbarBackfround->isActive = false;
+
+	labelMinutes = App->gui->Add_UIElement(LABEL, iPoint(320, 20), NULL_RECT, TIME, NULL_RECT, NULL_RECT, scale, None);
+	labelSeconds = App->gui->Add_UIElement(LABEL, iPoint(70, 0), NULL_RECT, TIME, NULL_RECT, NULL_RECT, scale, None, labelMinutes);
+	labelBetSecMin = App->gui->Add_UIElement(LABEL, iPoint(55, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, labelMinutes, ":");
+	labelMinutes->isActive = false;
+
+
+	SDL_SetTextureBlendMode(bloodTex, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(bloodTex, 200);
+
+	//GENERAL UI
+	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	settingsPanel->isActive = false;
+
+	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670 * scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
+	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
+
+	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
+	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
+	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "MUSIC");
+	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "SFX");
+
+	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideMusic);
+	thumbMusic->initialPosition.x = 50;
+	App->audio->ControlMUSVolume(100 * thumbMusic->initialPosition.x / 150);
+	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideSFX);
+	thumbSFX->initialPosition.x = 70;
+	App->audio->ControlSFXVolume(100 * thumbSFX->initialPosition.x / 150);
+
+	UI_Elements_List.add(gameName);
+	UI_Elements_List.add(playButton);
+	UI_Elements_List.add(githubButonlucho);
+	UI_Elements_List.add(githubButonRoger);
+	UI_Elements_List.add(quitButton);
+	UI_Elements_List.add(continueButton);
+	UI_Elements_List.add(settingsButton);
+	UI_Elements_List.add(webPageButton);
+	UI_Elements_List.add(creditButton);
+	UI_Elements_List.add(settingsPanel);
+	UI_Elements_List.add(settingsButton2);
+	UI_Elements_List.add(closeWinButon);
+	UI_Elements_List.add(resumeButton);
+	UI_Elements_List.add(returnMainMenuButton);
+	UI_Elements_List.add(loadButton);
+	UI_Elements_List.add(pauseButton);
+	UI_Elements_List.add(thumbMusic);
+	UI_Elements_List.add(closeCreditsPanel);
+	UI_Elements_List.add(thumbSFX);
+	UI_Elements_List.add(lifeBarBackground);
+	UI_Elements_List.add(lifeBar);
+	UI_Elements_List.add(BloodAlert);
+	UI_Elements_List.add(scoreTextBackground);
+	UI_Elements_List.add(scoreText);
+	UI_Elements_List.add(coinsbarBackfround);
+	UI_Elements_List.add(labelCoins);
+	UI_Elements_List.add(labelSeconds);
+	UI_Elements_List.add(labelMinutes);
+
 }

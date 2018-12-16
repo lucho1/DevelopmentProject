@@ -64,6 +64,8 @@ public:
 	//Save Game State
 	bool Save(pugi::xml_node& data) const;
 
+	void CreateUI_Elements();
+
 public:
 
 	bool Level1 = false;
@@ -87,7 +89,8 @@ public:
 	j1Timer Level2_Timer;
 	int pause_time1 = 0;
 	int pause_time2 = 0;
-
+	
+	
 	UI_Element* gameName=nullptr;
 
 	UI_Element* quitButton = nullptr;
@@ -114,6 +117,9 @@ public:
 	UI_Element* closeWinButon = nullptr;
 	UI_Element* iconCloseWinButton = nullptr;
 
+	UI_Element* closeCreditsPanel = nullptr;
+	UI_Element* iconCloseCreditsPanel= nullptr;
+
 	UI_Element* closePauseButon = nullptr;
 	UI_Element* iconClosePauseButton = nullptr;
 
@@ -134,6 +140,11 @@ public:
 	UI_Element* lifeBarBackground = nullptr;
 
 	UI_Element* coinsbarBackfround = nullptr;
+	UI_Element* labelCoins = nullptr;
+
+	UI_Element* labelSeconds;
+	UI_Element* labelMinutes;
+	UI_Element* labelBetSecMin;
 
 	UI_Element* loadButton = nullptr;
 	UI_Element* labelLoadButton = nullptr;
@@ -149,10 +160,29 @@ public:
 
 	UI_Element* BloodAlert = nullptr;
 
+	UI_Element* scoreText = nullptr;
+	UI_Element* scoreTextBackground=nullptr;
+
 	int bloodalpha = 255;
 	SDL_Texture* bloodTex=nullptr;
 
 	UI_Element* pausePanel = nullptr;
+	UI_Element* creditsPanel = nullptr;
+
+	UI_Element* githubButonlucho = nullptr;
+	UI_Element* icongitHubButonlucho = nullptr;
+
+	UI_Element* githubButonRoger = nullptr;
+	UI_Element* icongitHubButonRoger = nullptr;
+
+	UI_Element* labelCreatorsofGame = nullptr;
+	UI_Element* labelLuchoAndRoger = nullptr;
+	UI_Element* PathfindingProgramer = nullptr;
+	UI_Element* GUI_Programer = nullptr;
+	UI_Element* MainArtist = nullptr;
+	UI_Element* Roger = nullptr;
+	UI_Element* Lucho = nullptr;
+	UI_Element* License = nullptr;
 
 	p2List<UI_Element*> UI_Elements_List;
 	p2List<UI_Element*> UI_Elements_List_Playing;
@@ -160,11 +190,13 @@ public:
 
 	iPoint lastMousePos = { 0,0 };
 	iPoint newMousePos = { 0,0 };
+
 	bool onAction = false;
 	bool onTopSomething = false;
 	bool pausedGame = false;
 
 private:
+
 	SDL_Color None = { 255,255,255,255 };
 	MapData Intro_map;
 	MapData Level1_map;

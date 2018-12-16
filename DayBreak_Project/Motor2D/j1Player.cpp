@@ -33,8 +33,8 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 	ray_touched_wav = App->audio->LoadFx("audio/fx/Ray_touched.wav");
 	lose_fx = App->audio->LoadFx("audio/fx/lose.wav");
 	win_fx = App->audio->LoadFx("audio/fx/win.wav");
-
-	life = 40;
+	Shout_Die = App->audio->LoadFx("audio/fx/WilScream.wav");
+	life = 70;
 	
 }
 
@@ -99,15 +99,15 @@ void j1Player::FixUpdate(float dt) {
 
 		if (desaccelerating == true) {
 
-			if (acceleration.x > 0) {
+			if (player_velocity.x > 0) {
 
-				acceleration.x -= 0.2f;// acceleration.x; //?? Original: 0.2f
+				player_velocity.x -= acceleration.x*2;
 
 				if (direction_x == pl_RIGHT)
-					player_position.x += acceleration.x;
+					player_position.x += player_velocity.x;
 
 				else if (direction_x == pl_LEFT)
-					player_position.x -= acceleration.x;
+					player_position.x -= player_velocity.x;
 			}
 			else
 				desaccelerating = false;
@@ -143,7 +143,7 @@ void j1Player::FixUpdate(float dt) {
 
 				fall = false;
 				player_position.y -= player_velocity.y;
-				player_velocity.y -= 0.32f;//(acceleration.x * 2); //Original: 0.43f
+				player_velocity.y -= acceleration.y;//(acceleration.x * 2); //Original: 0.43f
 			}
 
 			else if (player_velocity.y < 0) {
@@ -164,7 +164,7 @@ void j1Player::FixUpdate(float dt) {
 			Jump.Reset();
 
 			current_animation = &Fall;
-			if (player_velocity.y < initial_vel.y) {
+			if (player_velocity.y < MaxVelocity.y) {
 
 				if (direction_x == pl_RIGHT) {
 
@@ -187,8 +187,7 @@ void j1Player::FixUpdate(float dt) {
 				}
 
 				player_velocity.y += acceleration.y;
-				acceleration.y += 0.2f; // acceleration.x; //?? original: 0.2f
-			}
+				}
 
 			player_position.y += player_velocity.y;
 		}
@@ -216,11 +215,10 @@ void j1Player::FixUpdate(float dt) {
 		else {
 
 		player_velocity.y += acceleration.y;
-		acceleration.y += 0.2f; // acceleration.x; //?? original: 0.2f
 		player_position.y += player_velocity.y;
 
 		}
-
+		App->audio->PlayFx(Shout_Die);
 		App->audio->PlayFx(lose_fx);
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
@@ -283,10 +281,10 @@ void j1Player::HandleInput(float dt) {
 
 		direction_x = pl_RIGHT;
 
-		player_position.x += (player_velocity.x + acceleration.x);
+		player_position.x += player_velocity.x ;
 
-		if (acceleration.x <= MaxVelocity.x)
-			acceleration.x += 0.2f;// acceleration.x; //?? WATCHOUT HERE 0.2f was the original
+		if (player_velocity.x <= MaxVelocity.x)
+			player_velocity.x +=acceleration.x;// acceleration.x; //?? WATCHOUT HERE 0.2f was the original
 
 
 		Gun_current_animation = &Gun_Run;
@@ -318,8 +316,8 @@ void j1Player::HandleInput(float dt) {
 
 		player_position.x -= player_velocity.x + acceleration.x;
 
-		if (acceleration.x < MaxVelocity.x)
-			acceleration.x += 0.2f;// acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
+		if (player_velocity.x <= MaxVelocity.x)
+			player_velocity.x += acceleration.x;// acceleration.x; //?? SAME THAN UPWARDS, original: 0.2f
 
 		Gun_current_animation = &Gun_Run;
 		current_animation = &Run;
@@ -344,7 +342,6 @@ void j1Player::HandleInput(float dt) {
 			jump = true;
 			jump_falling = false;
 
-			acceleration.y = 0.2f; // acceleration.x; //?? Same than upwards, original: 0.2f
 			auxY = player_position.y;
 			player_velocity.y = initial_vel.y;
 		}
@@ -354,7 +351,6 @@ void j1Player::HandleInput(float dt) {
 			doublejump = false;
 			jump_falling = false;
 
-			acceleration.y = 0.2f; // acceleration.x; //?? Same
 			auxY = player_position.y;
 			player_velocity.y = initial_vel.y;
 		}
@@ -384,13 +380,13 @@ void j1Player::HandleInput(float dt) {
 		if (direction_x == pl_RIGHT) {
 
 			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x + 20, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, fPoint(1000, 0), 0.8f); //Original speed 16, 0
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x + acceleration.x, 0), 1.1f);
+			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x + 20, player_position.y - 18, COLLIDER_NONE, fPoint( player_velocity.x+200, 0), 1.1f);
 		}
 
 		else if (direction_x == pl_LEFT) {
 
 			App->particles->AddParticle(App->particles->Player_Shoot, player_position.x + Adjusting_Gun_position.x - 80, player_position.y + Adjusting_Gun_position.y - 14, COLLIDER_PLAYER_BULLET, fPoint(-1000, 0), 0.8f, SDL_FLIP_HORIZONTAL); //Original speed 16, 0
-			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, fPoint(player_position.x - player_position.x - acceleration.x, 0), 1.1f);
+			App->particles->AddParticle(App->particles->Player_Shoot_Beam, player_position.x + Adjusting_Gun_position.x - 80, player_position.y - 18, COLLIDER_NONE, fPoint( player_velocity.x-200, 0), 1.1f);
 		}
 
 		Shooting = true;
@@ -461,7 +457,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				fall = false;
 				doublejump = false;
 				player_velocity.y = 0.0f;
-				acceleration.y = 0.2f;// acceleration.x; //?? Same than upwards
+				
 				player_position.y = c1->rect.y + c2->rect.h - (c1->rect.y - c2->rect.y) + 3;
 			}
 			else if (c1->rect.y + c1->rect.h >= c2->rect.y && c1->rect.y + c1->rect.h <= c2->rect.y + player_velocity.y + acceleration.y) { //Colliding Up (falling)
@@ -469,7 +465,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 				fall = false;
 				jump = false;
 				player_velocity.y = 0.0f;
-				acceleration.y = 0.2f; // acceleration.x; //?? Same
+				
 				player_position.y = c1->rect.y - ((c1->rect.y + c1->rect.h) - c2->rect.y);
 			}
 		}
@@ -479,7 +475,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
-			acceleration.x /= 1.1f; //??
 			player_position.x -= (c1->rect.x + c1->rect.w) - c2->rect.x + 1;
 
 		}
@@ -487,7 +482,6 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 			
 			desaccelerating = false;
 			player_velocity.x = 0.0f;
-			acceleration.x /= 1.1f; //??
 			player_position.x += (c2->rect.x + c2->rect.w) - c1->rect.x + 1;
 
 		}
@@ -497,7 +491,7 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 		//Checking if falling
 		if (c1->type == COLLIDER_FALL || c2->type == COLLIDER_FALL) //This mechanic is cool so we force the player to save before each decision
-			App->LoadGame("save_game.xml");
+			life = 0;
 	}
 
 	//Check if touched button or end level door
@@ -588,6 +582,7 @@ void j1Player::LoadPlayer(const char *file_name) {
 	acceleration.y = PlayerSettings.child("PlayerSettings").child("Acceleration").attribute("a.y").as_float();
 
 	MaxVelocity.x = initial_vel.x = PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.x").as_float();
+	MaxVelocity.y= PlayerSettings.child("PlayerSettings").child("MaxVelocity").attribute("velocity.y").as_float();
 	initial_vel.x = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.x").as_float();
 	initial_vel.y = PlayerSettings.child("PlayerSettings").child("Velocity").attribute("velocity.y").as_float();
 	direction_x = pl_RIGHT;

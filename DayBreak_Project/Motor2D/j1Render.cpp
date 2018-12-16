@@ -127,7 +127,7 @@ bool j1Render::PostUpdate()
 			camera.x += App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
 
 		else if (App->scene->Player->player_position.x >= -(camera.x - camera.w + camera.w / 2.5f))
-			camera.x -= App->scene->Player->player_velocity.x + App->scene->Player->acceleration.x;
+			camera.x -= App->scene->Player->player_velocity.x;
 
 
 		camera.y = -(App->scene->Player->player_position.y - (App->win->screen_surface->h / 3));

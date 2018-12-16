@@ -11,7 +11,7 @@ DayBreak is done with Tiled program, has 2 levels and save/load support. Also, t
 
 The game is licensed under an MIT License.
 
-![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/UML.png)
+![](https://github.com/lucho1/DevelopmentProject/blob/master/docs/Game20%Photo.png)
 
 
 <iframe width="1280" height="720" src="https://www.youtube.com/embed/isoApESpyFE" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>

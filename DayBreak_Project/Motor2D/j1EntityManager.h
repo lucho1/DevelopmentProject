@@ -7,6 +7,7 @@
 #include "j1Enemy.h"
 #include "PugiXml\src\pugixml.hpp"
 
+
 #define TIMES_PER_SEC 5
 #define PATHFINDING_PER_SEC 3
 
@@ -51,6 +52,10 @@ public:
 
 	bool do_logic;
 	bool do_enemies_logic;
+
+	uint score = 0;
+	uint coins = 0;
+	uint flyer_counter = 0;
 
 };
 

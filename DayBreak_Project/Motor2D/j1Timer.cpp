@@ -12,6 +12,11 @@ j1Timer::j1Timer()
 	Start();
 }
 
+void j1Timer::StartFrom(uint32 ms) {
+
+	started_at = SDL_GetTicks() + (ms);
+}
+
 // ---------------------------------------------
 void j1Timer::Start()
 {

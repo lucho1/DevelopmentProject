@@ -76,8 +76,10 @@ void j1Enemy::OnCollision(Collider *c1, Collider *c2) {
 				return;
 			
 			life -= 5;
+
 			Last_collided = c2;
 			App->particles->AddParticle(App->particles->Blood, enemy_position.x, enemy_position.y, COLLIDER_NONE, fPoint(0, 0), 1.5f, SDL_FLIP_NONE);	
+		
 		}
 		if (item->data->type == ENTITY_TYPE::ENEMY_ENT ) {
 

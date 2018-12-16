@@ -106,6 +106,8 @@ private:
 	uint shoot_pl;
 	uint button_wav;
 	uint ray_touched_wav;
+	uint lose_fx;
+	uint win_fx;
 
 public:
 

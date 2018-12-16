@@ -6,18 +6,20 @@
 	<audio />
 	<map />
 	<pathfinding />
-	<scene />
+	<Collisions />
+	<fonts />
+	<gui />
+	<scene>
+		<scene current_level="1" paused_time1="43546" paused_time2="0" />
+	</scene>
+	<Particles />
 	<entities>
 		<player>
-			<player x="1284" y="1455" life="70" />
+			<player x="877" y="1455" life="15" score="15" coins="1" />
 		</player>
 		<Enemy posX="3449" posY="1097" />
 		<Enemy posX="5329" posY="615" />
 		<Enemy posX="6713" posY="758" />
-		<Enemy posX="2759" posY="1607" />
-		<Enemy posX="3449" posY="1097" />
-		<Enemy posX="4100" posY="1440" />
-		<Enemy posX="5813" posY="758" />
 		<Objects />
 		<Objects />
 		<Objects />
@@ -30,11 +32,13 @@
 		<Objects />
 		<Objects />
 		<Objects />
+		<Enemy posX="2633" posY="1607" />
+		<Enemy posX="3483" posY="1097" />
+		<Enemy posX="4848" posY="1439" />
+		<Enemy posX="5353" posY="758" />
 	</entities>
-	<Particles />
-	<Collisions />
 	<Fade />
 	<renderer>
-		<camera x="-867" y="-1242" />
+		<camera x="-512" y="-1242" />
 	</renderer>
 </game_state>

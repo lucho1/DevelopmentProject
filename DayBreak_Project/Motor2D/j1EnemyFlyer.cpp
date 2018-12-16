@@ -32,7 +32,7 @@ j1EnemyFlyer::j1EnemyFlyer(iPoint pos, const char* path, pugi::xml_document &Ene
   
 	explosion = App->audio->LoadFx("audio/fx/Explosion.wav");
 	Start_exploding = false;
-	life = 20;
+	life = 15;
 
 }
 
@@ -80,8 +80,28 @@ void j1EnemyFlyer::Update(float dt) {
 			
 	Draw(dt);
 
-	if (life <= 0)
-		App->entity_manager->DestroyEntity(this);
+	if (life <= 0) {
+
+		current_animation = &Dead;
+		if (Dead.Finished()) {		
+
+			if (!exploded) {
+
+ 				App->entity_manager->flyer_counter++;
+				App->entity_manager->score += 5;
+
+				if (App->entity_manager->flyer_counter >= 2) {
+
+					App->entity_manager->coins++;
+					App->entity_manager->flyer_counter = 0;
+				}
+			}
+			else
+				exploded = false;
+
+			App->entity_manager->DestroyEntity(this);
+		}
+	}
 	
 }
 
@@ -156,9 +176,9 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 
 		enemy_velocity = initial_velocity;
 
-		if (Explosion_Time.ReadSec() >= 0.5f) {
+		if (Explosion_Time.ReadSec() >= 0.5f) 
 			current_animation = &Dead;
-		}
+		
 		if (Explosion_Time.ReadSec() > 1) {
 
 			App->audio->PlayFx(explosion);
@@ -167,6 +187,7 @@ void j1EnemyFlyer::Move(p2DynArray<iPoint>&path, float dt) {
 			App->render->power = 7.0f;
 			App->render->Time_Doing_Shake = 1.0f;
 			PERF_START(App->render->CameraShake_Time);
+			exploded = true;
 			life = 0;
 			if (App->scene->Player->player_position.x >= enemy_position.x - 100 && App->scene->Player->player_position.x <= enemy_position.x + 100
 				&& App->scene->Player->player_position.y >= enemy_position.y - 100 && App->scene->Player->player_position.y <= enemy_position.y + 100) {

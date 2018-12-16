@@ -70,6 +70,12 @@
     <ClCompile Include="j1Objects.cpp">
       <Filter>Entities\General</Filter>
     </ClCompile>
+    <ClCompile Include="j1Gui.cpp">
+      <Filter>Modules\Controllers\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Fonts.cpp">
+      <Filter>Modules\Controllers\Specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -164,6 +170,12 @@
     </ClInclude>
     <ClInclude Include="j1Objects.h">
       <Filter>Entities\General</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Gui.h">
+      <Filter>Modules\Controllers\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Fonts.h">
+      <Filter>Modules\Controllers\Specific</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

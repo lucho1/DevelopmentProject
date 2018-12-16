@@ -15,7 +15,9 @@
 #include "j1EntityManager.h"
 #include "j1Enemy.h"
 #include "j1Player.h"
+#include "j1Fonts.h"
 #include "j1Objects.h"
+#include "j1Gui.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -47,7 +49,7 @@ bool j1Scene::Start()
   
 	pugi::xml_parse_result load_scenedoc_res = SceneDocument.load_file("config.xml");
 	music_node = SceneDocument.child("config").child("music");
-
+	bloodTex =  App->tex->Load("gui/Blood.png");
 	if (load_scenedoc_res == NULL)
 		LOG("The xml file containing the music fails. Pugi error: %s", load_scenedoc_res.description());
 	
@@ -111,9 +113,95 @@ bool j1Scene::Start()
 
 	}
 
-	App->audio->ControlMUSVolume(30);
-	App->audio->ControlSFXVolume(30);
+	App->audio->ControlMUSVolume(0);
+	App->audio->ControlSFXVolume(0);
 	App->render->ResetCamera();
+	float scale = 0.8;
+
+	//MAIN MENU
+	gameName = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 50), SDL_Rect{ 515, 3, 506, 117 }, NONE_LOGIC);
+
+	playButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 200), { 254, 178, 242, 76 }, PLAY, { 254, 88, 242, 76 }, { 254, 0, 242, 76 },scale);
+	labelPlayButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, playButton, "PLAY");
+
+	continueButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 300), { 254, 178, 242, 76 }, CONTINUE, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelContinueButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, continueButton, "CONTINE");
+
+	settingsButton = App->gui->Add_UIElement(BUTTON, iPoint(360, 400), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, scale);
+	labelSettingsButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsButton, "SETTINGS");
+
+
+	webPageButton = App->gui->Add_UIElement(BUTTON, iPoint(770,400), { 387,267,108,110 }, WEB, { 389,390,108, 110 }, { 387,267,108,110 }, scale);
+	iconWebPageButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(30, 20), { 269, 404, 32, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, webPageButton);
+
+	quitButton = App->gui->Add_UIElement(BUTTON, iPoint(15,430), { 0, 178, 242, 76 },QUIT, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, scale);
+	labelQuitButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, quitButton, "QUIT");
+
+	//IN GAME UI
+
+	pauseButton= App->gui->Add_UIElement(BUTTON, iPoint(780,10), { 94,438,75,78 }, ACTIVEWIN, { 94,349,75,78 }, { 94,258,75,78 }, scale);
+	iconPauseButton= App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(20, 20), { 201, 301, 31,31 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, pauseButton);
+	pauseButton->isActive = false;
+
+	lifeBarBackground= App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(10, 10), {6, 525, 345, 87 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	lifeBarBackground->isActive = false;
+	lifeBar = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(67,18), { 513, 481, 254, 40 }, LIFE, NULL_RECT,NULL_RECT, scale,None,lifeBarBackground);
+
+	pausePanel = App->gui->Add_UIElement(PANEL, iPoint(310,80), { 776, 479, 247, 382 }, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.98);
+	pausePanel->isActive = false;
+	
+	settingsButton2 = App->gui->Add_UIElement(BUTTON, iPoint(55, 160), { 254, 178, 242, 76 }, ACTIVEWIN, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7,None,pausePanel);
+	labelSettingsButton2 = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, settingsButton2, "SETTINGS");
+
+	returnMainMenuButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 280), { 0, 178, 242, 76 }, RETURN_MAIN_MENU, { 0, 88, 242, 76 }, { 0, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelreturnMainMenuButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, returnMainMenuButton, "QUIT");
+
+	resumeButton = App->gui->Add_UIElement(BUTTON, iPoint(55, 30), { 254, 178, 242, 76 }, RESUME_GAME, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelResumeButton= App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, resumeButton, "RESUME");
+
+	loadButton= App->gui->Add_UIElement(BUTTON, iPoint(55,95), { 254, 178, 242, 76 }, LOAD, { 254, 88, 242, 76 }, { 254, 0, 242, 76 }, 0.7, None, pausePanel);
+	labelLoadButton = App->gui->Add_UIElement(LABEL, iPoint(10, 0), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, 0.7, None, loadButton, "LOAD");
+	
+	BloodAlert = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(0, 0), { 0, 0, 900, 500 }, LIFE_ALERT, NULL_RECT, NULL_RECT);
+	BloodAlert->texture = bloodTex;
+	BloodAlert->isActive = false;
+
+	SDL_SetTextureBlendMode(bloodTex, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(bloodTex, 200);
+
+	//GENERAL UI
+	settingsPanel = App->gui->Add_UIElement(PANEL, iPoint(180, 170), { 0, 657, 698, 365 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale);
+	settingsPanel->isActive = false;
+
+	closeWinButon = App->gui->Add_UIElement(BUTTON, iPoint(670 * scale, 0), { 3, 438, 76, 76 }, CLOSEWIN, { 3, 349, 76, 76 }, { 3, 259, 76, 76 }, scale, None, settingsPanel);
+	iconCloseWinButton = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(18, 18), { 197, 352, 34, 34 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, closeWinButon);
+
+	slideMusic = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 120), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
+	slideSFX = App->gui->Add_UIElement(NON_INTERACTIVE, iPoint(210, 190), { 8, 616, 388, 38 }, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel);
+	labelMusic = App->gui->Add_UIElement(LABEL, iPoint(30, 100), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "MUSIC");
+	labelSFX = App->gui->Add_UIElement(LABEL, iPoint(30, 170), NULL_RECT, NONE_LOGIC, NULL_RECT, NULL_RECT, scale, None, settingsPanel, "SFX");
+
+	thumbMusic = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideMusic);
+	thumbSFX = App->gui->Add_UIElement(PANEL, iPoint(0, -10), { 249, 260, 78, 64 }, DRAGVOLUME, NULL_RECT, NULL_RECT, scale, None, slideSFX);
+
+	UI_Elements_List.add(gameName);
+	UI_Elements_List.add(playButton);
+	UI_Elements_List.add(quitButton);
+	UI_Elements_List.add(continueButton);
+	UI_Elements_List.add(settingsButton);
+	UI_Elements_List.add(webPageButton);
+	UI_Elements_List.add(settingsPanel);
+	UI_Elements_List.add(settingsButton2);
+	UI_Elements_List.add(closeWinButon);
+	UI_Elements_List.add(resumeButton);
+	UI_Elements_List.add(returnMainMenuButton);
+	UI_Elements_List.add(loadButton);
+	UI_Elements_List.add(pauseButton);
+	UI_Elements_List.add(thumbMusic);
+	UI_Elements_List.add(thumbSFX);
+	UI_Elements_List.add(lifeBarBackground);
+	UI_Elements_List.add(lifeBar);
+	UI_Elements_List.add(BloodAlert);
 
 	return true;
 }
@@ -122,12 +210,134 @@ bool j1Scene::Start()
 bool j1Scene::PreUpdate()
 {
 	BROFILER_CATEGORY("Scene PreUpdate", Profiler::Color::GreenYellow);
+
+	lastMousePos = newMousePos;
+	App->input->GetMousePosition(newMousePos.x, newMousePos.y);
+	p2List_item<UI_Element*>*UI_Item = UI_Elements_List.end;
+	for (; UI_Item != nullptr; UI_Item = UI_Item->prev) {
+		if (UI_Item->data->isActive) {
+			
+			if (UI_Item->data->Logic == LIFE_ALERT) {
+				if (Player != nullptr && Player->life <= 20) {
+					UI_Item->data->Alert(bloodTex, bloodalpha);
+				}
+			}
+			if (UI_Item->data->Logic == ACTIVEWIN) {
+				if (UI_Item->data->Clicked()) {
+					if (UI_Item->data == settingsButton || UI_Item->data == settingsButton2) {
+						if (UI_Item->data == settingsButton)
+							settingsPanel->Position.y = 170;
+						else
+							settingsPanel->Position.y = 60;
+
+						UI_Item->data->Active(settingsPanel);
+					}
+					else if (UI_Item->data == pauseButton) {
+
+						UI_Item->data->Active(pausePanel);
+						pausedGame = true;
+					}
+				}
+			}
+			if (UI_Item->data->Logic == CLOSEWIN) {
+				if (UI_Item->data->Clicked() && !onAction) {
+					if (UI_Item->data == closeWinButon) {
+						UI_Item->data->Deactive(settingsPanel);
+					}
+				}
+			}
+			if (UI_Item->data->Logic == LIFE_ALERT) {
+
+			}
+			if (UI_Item->data->Logic == DRAGVOLUME) {
+
+				if (UI_Item->data->Clicked()) {
+					UI_Item->data->VolumeControl(newMousePos, lastMousePos);
+					onAction = true;
+				}
+			}
+			if (UI_Item->data->Logic == WEB) {
+				if (UI_Item->data->Clicked())
+					UI_Item->data->goWeb();
+			}
+			if (UI_Item->data->Logic == QUIT) {
+				if (UI_Item->data->Clicked()) {
+					SDL_Quit();
+				}
+			}
+			if (UI_Item->data->Logic == PLAY) {
+				if (UI_Item->data->Clicked()) {
+					Change_Level = true;
+					//Desactive all Main menu
+					if (currentLevel == MAIN_MENU) {
+						playButton->toDesactive = true;
+						quitButton->toDesactive = true;
+						continueButton->toDesactive = true;
+						settingsButton->toDesactive = true;
+						webPageButton->toDesactive = true;
+						gameName->toDesactive = true;
+				/*		UI_Item->data->Deactive(playButton);
+						UI_Item->data->Deactive(quitButton);
+						UI_Item->data->Deactive(continueButton);
+						UI_Item->data->Deactive(settingsButton);
+						UI_Item->data->Deactive(webPageButton);
+						UI_Item->data->Deactive(gameName);*/
+						//active inGame UI
+						pauseButton->toActive = true;
+						lifeBarBackground->toActive = true;
+						//UI_Item->data->Active(pauseButton);
+						//UI_Item->data->Active(lifeBarBackground);
+						pausedGame = false;
+					}
+				}
+			}
+			if (UI_Item->data->Logic == RESUME_GAME) {
+				if (UI_Item->data->Clicked() && !onAction) {
+					UI_Item->data->Deactive(pausePanel);
+					UI_Item->data->Deactive(settingsPanel);
+					pausedGame = false;
+				}
+			}
+			if (UI_Item->data->Logic == RETURN_MAIN_MENU) {
+				if (UI_Item->data->Clicked() && !onAction) {
+					if (currentLevel == LEVEL1) {
+						currentLevel = LEVEL2;
+						Change_Level = true;
+					}
+					else
+						Change_Level = true;
+					playButton->toActive = true;
+					quitButton->toActive = true;
+					continueButton->toActive = true;
+					webPageButton->toActive = true;
+					gameName->toActive = true;
+					pauseButton->toDesactive = true;
+					lifeBarBackground->toDesactive = true;
+					pausePanel->toDesactive = true;
+
+				}
+			}
+			if (UI_Item->data->Logic == LIFE) {
+				if (Player != nullptr) {
+					float initialw = 363;
+					UI_Item->data->UI_Rect.w = initialw*((float)Player->life / 100);
+					if (Player->life <= 20) {
+						BloodAlert->isActive = true;
+					}
+				}
+			}
+		}
+	}
+	onAction = false;
+
+
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+	
 
 	BROFILER_CATEGORY("Scene Update", Profiler::Color::PaleVioletRed);
 
@@ -138,6 +348,17 @@ bool j1Scene::Update(float dt)
 		if (App->fade->current_step == App->fade->fade_from_black) {
 			ChangeLevel(currentLevel);
 			Change_Level = false;
+			p2List_item<UI_Element*>*UI_Item = UI_Elements_List.start;
+			for (; UI_Item != nullptr; UI_Item = UI_Item->next) {
+				if (UI_Item->data->toDesactive == true) {
+					UI_Item->data->isActive = false;
+					UI_Item->data->toDesactive = false;
+				}
+				else if (UI_Item->data->toActive == true) {
+					UI_Item->data->isActive = true;
+					UI_Item->data->toActive = false;
+				}
+			}
 		}
 	}
 
@@ -152,11 +373,19 @@ bool j1Scene::Update(float dt)
 		}
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->entity_manager->coins >= 5) {
+
+		App->SaveGame("save_game.xml");
+		App->entity_manager->coins -= 5;
+		Player->life = 70;
+		
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) 
 		App->LoadGame("save_game.xml");
 	
 
-	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->scene->currentLevel != MAIN_MENU)
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && !changing_same_Level) {
@@ -172,8 +401,12 @@ bool j1Scene::Update(float dt)
 		App->map->TriggerActive = false;
 	}
 
-	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level)
+	if (currentLevel == MAIN_MENU && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && !Change_Level) {
+
+		pause_time1 = 0;
 		Change_Level = true;
+	}
+	
 	
 	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN) {
 
@@ -195,7 +428,44 @@ bool j1Scene::Update(float dt)
 		}
 	}
 
+	if ((currentLevel == LEVEL1 || currentLevel == LEVEL2) && Player != nullptr) {
+
+		
+		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) {
+
+			if (currentLevel == LEVEL1)
+				pause_time1 = Level1_Timer.Read();
+			else if(currentLevel == LEVEL1)
+				pause_time2 = Level2_Timer.Read();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
+
+			if (currentLevel == LEVEL1)
+				Level1_Timer.StartFrom(-pause_time1);
+			else if (currentLevel == LEVEL1)
+				Level2_Timer.StartFrom(-pause_time2);
+		}
+			
+		if (currentLevel == LEVEL1) {
+
+			int sec = (int)Level1_Timer.ReadSec() % 60;
+			int minutes = Level1_Timer.ReadSec() / 60;
+			LOG("PAUSED T1: %i", pause_time1);
+			LOG("TIMER1: %02i : %02i", minutes, sec);
+		}
+		else if (currentLevel == LEVEL2) {
+
+			int sec = (int)Level2_Timer.ReadSec() % 60;
+			int minutes = Level2_Timer.ReadSec() / 60;
+			LOG("PAUSED T2: %i", pause_time2);
+			LOG("TIMER2: %02i : %02i", minutes, sec);
+		}
+	}
+
 	App->map->Draw(current_map);
+
+
 	return true;
 }
 
@@ -220,21 +490,21 @@ bool j1Scene::CleanUp()
 	return true;
 }
 
-void j1Scene::ChangeLevel(int level_change) {
+void j1Scene::ChangeLevel(int level_change, int increment) {
 	
-	App->entity_manager->DesrtroyEnemies();
+	App->entity_manager->CleanUp();
+	/*App->entity_manager->DesrtroyEnemies();
 
 	if(Player!=nullptr)
 		Player->entity_collider->to_delete = true;
 
 	App->entity_manager->DestroyEntity(Player);
-	RELEASE(Player);
+	RELEASE(Player);*/
 	LEVELS aux = currentLevel;
-
 
 	if (level_change != NO_CHANGE) {
 		App->collisions->CleanUp();
-		IterateLevel(level_change);
+		IterateLevel(level_change, increment);
 	}
 
 	if (pathfinding) {
@@ -272,9 +542,13 @@ void j1Scene::ChangeLevel(int level_change) {
 			LOG("The xml file containing the player tileset fails. Pugi error: %s", Enemies_doc_res2.description());
 
 		en_pos = EnemiesPositions.child("config").child("Level1").child("Enemy1");
+		LoadObjects(current_map.Filename.GetString());
+		App->collisions->AssignMapColliders(current_map.Filename.GetString());
 
 		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
 
+	//	PERF_START(Level1_Timer);
+	//	Level1_Timer.StartFrom(-pause_time1);
 	
 	}
 	if (currentLevel == LEVEL2) {
@@ -303,21 +577,62 @@ void j1Scene::ChangeLevel(int level_change) {
 
 		en_pos = EnemiesPositions.child("config").child("Level2").child("Enemy1");
 
+
+		LoadObjects(current_map.Filename.GetString());
+		App->collisions->AssignMapColliders(current_map.Filename.GetString());
+
 		App->entity_manager->LoadSceneEnemeies(en_pos, WALKER, "Enemy1_Tileset.png", EnemiesDocument);
+
+
+	/*	PERF_START(Level2_Timer);
+		Level2_Timer.StartFrom(-pause_time2);*/
 
 	}
 	if (currentLevel == MAIN_MENU) {
 		App->collisions->CleanUp();
+		playButton->isActive = true;
+		quitButton->isActive=true;
+		continueButton->isActive = true;
+		settingsButton->isActive = true;
+		webPageButton->isActive = true;
+		gameName->isActive = true;
+		pauseButton->isActive = false;
+		lifeBarBackground->isActive = false;
+		pausePanel->isActive = false;
+
 	}
-	if (currentLevel!=aux) {
+
+	if (currentLevel == 1) {
+
+		if (pause_time1 > 0) {
+
+
+			PERF_START(Level1_Timer);
+			Level1_Timer.StartFrom(-pause_time1);
+		}
+		else
+			PERF_START(Level1_Timer);
+
+	}
+	else if (currentLevel == 2) {
+
+		if (pause_time2 > 0) {
+			PERF_START(Level2_Timer);
+			Level2_Timer.StartFrom(-pause_time2);
+
+		}
+		else
+			PERF_START(Level2_Timer);
+	}
+	/*if (currentLevel!=aux) {
 		LoadObjects(current_map.Filename.GetString());
 		App->collisions->AssignMapColliders(current_map.Filename.GetString());
-	}
+	}*/
 }
 
-void j1Scene::IterateLevel(int level_change) {
+void j1Scene::IterateLevel(int level_change, int increment) {
 
-	level_change++;
+	level_change += increment;
 	LevelIterator = level_change;
 	
 
@@ -357,6 +672,63 @@ void j1Scene::IterateLevel(int level_change) {
 			current_pathfinding_map = Level2_pathfinding_map;
 			pathfinding = true;
 	}
+}
+
+
+bool j1Scene::Load(pugi::xml_node& data)
+{
+
+	int level_it = data.child("scene").attribute("current_level").as_int();
+	pause_time2 = data.child("scene").attribute("paused_time2").as_int();
+	pause_time1 = data.child("scene").attribute("paused_time1").as_int();
+
+	if(currentLevel != level_it)
+		App->scene->ChangeLevel(level_it, 0);
+
+
+	if (currentLevel == 1) {
+
+		if (pause_time1 > 0) {
+
+
+			PERF_START(Level1_Timer);
+			Level1_Timer.StartFrom(-pause_time1);
+		}
+		else
+			PERF_START(Level1_Timer);
+
+	}
+	else if (currentLevel == 2) {
+
+		if (pause_time2 > 0) {
+			PERF_START(Level2_Timer);
+			Level2_Timer.StartFrom(-pause_time2);
+
+		}
+		else
+			PERF_START(Level2_Timer);
+	}
+	return true;
+}
+
+// Save Game State
+bool j1Scene::Save(pugi::xml_node& data) const
+{
+	pugi::xml_node scene_node = data.append_child("scene");
+	scene_node.append_attribute("current_level") = currentLevel;
+
+	if (currentLevel == 1) {
+
+		scene_node.append_attribute("paused_time1") = Level1_Timer.Read();
+		scene_node.append_attribute("paused_time2") = 0;
+	}
+	else if (currentLevel == 2) {
+
+		scene_node.append_attribute("paused_time1") = 0;
+		scene_node.append_attribute("paused_time2") = Level2_Timer.Read();
+	}
+
+	return true;
 }
 
 

@@ -16,4 +16,12 @@
 	<renderer>
 		<camera x="0" y="-1242" />
 	</renderer>
+	<Objects loop="true" speed="0.17">
+	  <Pushback x="16" y="18" w="6" h="8"/>
+      <Pushback x="22" y="18" w="6" h="8"/>
+      <Pushback x="28" y="18" w="6" h="8"/>
+      <Pushback x="0" y="26" w="6" h="8"/>
+      <Pushback x="6" y="26" w="6" h="8"/>
+      <Pushback x="12" y="26" w="6" h="8"/>
+	</Objects>
 </game_state>

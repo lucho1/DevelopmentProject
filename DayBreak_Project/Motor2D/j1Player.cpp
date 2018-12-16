@@ -31,6 +31,8 @@ j1Player::j1Player(iPoint pos) : j1Entity(ENTITY_TYPE::PLAYER_ENT), player_posit
 	shoot_pl = App->audio->LoadFx("audio/fx/Shoot.wav");
 	button_wav = App->audio->LoadFx("audio/fx/Button.wav");
 	ray_touched_wav = App->audio->LoadFx("audio/fx/Ray_touched.wav");
+	lose_fx = App->audio->LoadFx("audio/fx/lose.wav");
+	win_fx = App->audio->LoadFx("audio/fx/win.wav");
 
 	life = 40;
 	
@@ -46,7 +48,7 @@ void j1Player::CleanUp() {
 
 	if (current_animation != nullptr)
 		current_animation = nullptr;
-
+	
 	App->tex->UnLoad(Player_texture);
 	active = false;
 
@@ -66,7 +68,7 @@ void j1Player::FixUpdate(float dt) {
 	HandleInput(dt);
 
 	if (life > 0) {
-
+		
 		//Gun Handle
 		if ((!jump || !fall) && state != pl_RUN) {
 
@@ -208,13 +210,27 @@ void j1Player::FixUpdate(float dt) {
 
 	else if (life <= 0) {
 
+		if (fall == false)
+			fall = true;
+
+		else {
+
+		player_velocity.y += acceleration.y;
+		acceleration.y += 0.2f; // acceleration.x; //?? original: 0.2f
+		player_position.y += player_velocity.y;
+
+		}
+
+		App->audio->PlayFx(lose_fx);
 		current_animation = &Dead;
 		Gun_current_animation = &Gun_None;
-		if(Dead.Finished())
+
+		if (Dead.Finished())
 			App->entity_manager->DestroyEntity(this);
 
+
 	}
-	//LOG("%d", life);
+	LOG("%d", life);
 
 }
 
@@ -386,6 +402,8 @@ bool j1Player::Load(pugi::xml_node& data)
 	player_position.x = data.child("player").attribute("x").as_int();
 	player_position.y = data.child("player").attribute("y").as_int();
 	life = data.child("player").attribute("life").as_int();
+	App->entity_manager->score = data.child("player").attribute("score").as_int();
+	App->entity_manager->coins = data.child("player").attribute("coins").as_int();
 
 	return true;
 }
@@ -398,6 +416,8 @@ bool j1Player::Save(pugi::xml_node& data) const
 	pl.append_attribute("x") = player_position.x;
 	pl.append_attribute("y") = player_position.y;
 	pl.append_attribute("life") = life;
+	pl.append_attribute("score") = App->entity_manager->score;
+	pl.append_attribute("coins") = App->entity_manager->coins;
 
 	return true;
 }
@@ -497,6 +517,8 @@ void j1Player::OnCollision(Collider *c1, Collider *c2) {
 
 		App->scene->Change_Level = true;
 		App->map->TriggerActive = false;
+
+		App->audio->PlayFx(win_fx);
 
 		/*int level_switch = App->scene->currentLevel + 1;
 		App->fade->Fade(2.0f);

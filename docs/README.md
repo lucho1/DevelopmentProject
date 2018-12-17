@@ -9,7 +9,7 @@ have active/unactive platforms that obstaculize the path to success.
 
 DayBreak is done with Tiled program, has 2 levels and save/load support. Also, the game supports pathfinding for enemies.
 
-The game is licensed under an MIT License.
+The game is licensed under an MIT License. 
 
 <iframe width="1280" height="720" src="https://www.youtube.com/watch?v=09pPxgbtmFY&feature=youtu.be" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 

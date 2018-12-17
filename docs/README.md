@@ -13,7 +13,7 @@ The game is licensed under an MIT License.
 
 <iframe width="1280" height="720" src="https://www.youtube.com/watch?v=09pPxgbtmFY&feature=youtu.be" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
-### Download the game [here](https://github.com/lucho1/DevelopmentProject/releases/download/DayBreak-v0.5/Daybreak.v0.5.zip)
+### Download the game [here](https://github.com/lucho1/DevelopmentProject/releases/download/DayBreak-v1.0/DayBreak_v1_0.zip)
 #### Github Repo: [DayBreak](https://github.com/lucho1/DevelopmentProject)
 
 ## Developers

@@ -9,9 +9,14 @@ have active/unactive platforms that obstaculize the path to success.
 
 DayBreak is done with Tiled program, has 2 levels and save/load support. Also, the game supports pathfinding for enemies.
 
-The game is licensed under an MIT License. 
+The game is licensed under an MIT License.
 
-<iframe width="1280" height="720" src="https://www.youtube.com/watch?v=09pPxgbtmFY&feature=youtu.be" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+<video src="daybreak-official-trailer.mp4" align="center" width="1280" height="720" controls preload></video>
+
+<p align="center">
+If embedded video cannot be seen, or is seen with low quality
+<a href="https://www.youtube.com/watch?v=09pPxgbtmFY&feature=youtu.be">open it at Youtube</a> (it will be in a higher quality).<br><br>
+</p>
 
 ### Download the game [here](https://github.com/lucho1/DevelopmentProject/releases/download/DayBreak-v1.0/DayBreak_v1_0.zip)
 #### Github Repo: [DayBreak](https://github.com/lucho1/DevelopmentProject)

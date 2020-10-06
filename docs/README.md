@@ -11,7 +11,7 @@ DayBreak is done with Tiled program, has 2 levels and save/load support. Also, t
 
 The game is licensed under an MIT License.
 
-<video src="daybreak-official-trailer.mp4" align="center" width="1280" height="720" controls preload></video>
+<video src="docs/daybreak-official-trailer.mp4" align="center" width="1280" height="720" controls preload></video>
 
 <p align="center">
 If embedded video cannot be seen, or is seen with low quality
